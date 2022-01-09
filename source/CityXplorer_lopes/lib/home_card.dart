@@ -18,7 +18,7 @@ class Home extends StatelessWidget {
               ),
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/jocelin.jpg'),
+                  image: AssetImage('assets/tour_eiffel.jpeg'),
                   fit: BoxFit.cover,
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -45,7 +45,7 @@ class Home extends StatelessWidget {
                     width: 140.0,
                     height: 60.0,
                     child: TextButton (
-                      child: const Text("Dashboard"),
+                      child: const Text("Mes postes"),
                       style: TextButton.styleFrom(
                         primary: Colors.black,
                         backgroundColor: Colors.greenAccent,
