@@ -7,11 +7,74 @@ class DashBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    //Size size = MediaQuery.of(context).size;
-
-    return Container(
-        color: Colors.yellow
+    return Column(
+      children: [
+        Container(
+          height: 470,
+          color: Colors.transparent,
+          child: Padding(
+            padding:  EdgeInsets.symmetric(horizontal: 30.0),
+            child: Column(
+              children:  <Widget>[
+                ExpansionTile(
+                  title: Text(
+                    "Mes listes",
+                    style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  children: <Widget>[
+                    ExpansionTile(
+                      title: Text(
+                        "Les places de Nancy",
+                        style: TextStyle(
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      children: <Widget>[
+                        _renderListTile('Plan Stanislas'),
+                        _renderListTile('Place Carnot'),
+                      ],
+                    ),
+                    ExpansionTile(
+                      title: Text(
+                        "Les bars branchés de Laxou",
+                        style: TextStyle(
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      children: <Widget>[
+                        _renderListTile('Bar 1'),
+                      ],
+                    ),
+                  ],
+                ),
+                ExpansionTile(
+                  title: Text(
+                    "Mes postes enregistrés",
+                    style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  children: <Widget>[
+                    _renderListTile('Statue Blandan'),
+                  ],
+                ),
+              ],
+            ),
+        ),
+        ),
+      ],
+    );
+  }
+  Widget _renderListTile(String s) {
+    return ListTile(
+      title: Text(s),
+      trailing :  Icon(Icons.more_vert),
     );
   }
 }
