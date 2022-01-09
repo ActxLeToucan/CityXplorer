@@ -56,7 +56,22 @@ class AppBarPerso extends StatelessWidget {
                     ),
                 ],
               ),
-              const Spacer(),//--> OP
+              const Spacer(),
+              Container(
+                color: Colors.transparent,
+                width: 120.0,
+                height: 40.0,
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Chercher un utilisateur',
+                  ),
+                  style: TextStyle(
+                    fontSize: 9.0,
+                    height: 2.0,
+                  ),
+                ),
+              ),
               IconButton(
                 icon: const Icon(Icons.person_search),
                 iconSize: 35,
