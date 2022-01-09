@@ -34,6 +34,9 @@ class Post extends StatelessWidget{
                   )
                 ],
               ),
+              Text(//le nom du poste
+                'Nancy, le 08/01/2022',
+              ),
               Container(//la photo du poste
                 constraints: const BoxConstraints.expand(
                   width: 300,
@@ -41,7 +44,7 @@ class Post extends StatelessWidget{
                 ),
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/antoine.jpg'),
+                    image: AssetImage('assets/statue_blandan.jpg'),
                   ),
                 ),
               ),
@@ -49,7 +52,7 @@ class Post extends StatelessWidget{
                 padding: const EdgeInsets.all(12.0),
                 child: Text(//le nom du poste
                   "Une statut d'un grand homme sur la place Blandan" ,
-                  style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.2),
+                  style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.1),
                 ),
               ),
               ShareBar(),
@@ -58,5 +61,4 @@ class Post extends StatelessWidget{
       ),
     );
   }
-
 }
