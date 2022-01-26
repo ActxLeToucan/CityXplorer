@@ -1,5 +1,6 @@
-
 import 'package:cityxplorer/components/appbar_default.dart';
+import 'package:cityxplorer/main.dart';
+import 'package:cityxplorer/vues/take_photo_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../components/menu.dart';
@@ -18,8 +19,7 @@ class _MainInterfaceState extends State<MainInterface> {
 
   static List<Widget> pages = <Widget>[
     Home(),
-    //AddPost(),
-    Home(),
+    TakePictureScreen(camera: getCameras()[0]),
     const DashBoard(
       lists: {
         "Ma liste 1": ["item 1", "item 2", "item 3"],
