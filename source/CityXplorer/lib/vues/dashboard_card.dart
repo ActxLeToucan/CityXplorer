@@ -8,39 +8,27 @@ class DashBoard extends StatelessWidget {
 
   const DashBoard({required this.lists, required this.savedItems});
 
+  @override
   Widget build(BuildContext context) {
+    List<Widget> mesListes = [];
+    lists.forEach((key, value) {
+      List<Widget> items = [];
+      for (final item in value) {
+        items.add(_renderListTile(item.toString()));
+      }
+      mesListes.add(ExpansionTile(title: Text(key), children: items));
+    });
+
+    List<Widget> itemsEnregistres = [];
+    for (final item in this.savedItems) {
+      itemsEnregistres.add(_renderListTile(item.toString()));
+    }
+
     return Column(
       children: <Widget>[
+        ExpansionTile(title: Text("Mes listes"), children: mesListes),
         ExpansionTile(
-          title: Text("Mes listes"),
-          children: <Widget>[
-            ExpansionTile(
-              title: Text("Ma liste 1"),
-              children: <Widget>[
-                _renderListTile("Item 1"),
-                _renderListTile("Item 2"),
-                _renderListTile("Item 3"),
-                _renderListTile("Item 4"),
-              ],
-            ),
-            ExpansionTile(
-              title: Text("Ma liste 2"),
-              children: <Widget>[
-                _renderListTile("Item 1"),
-                _renderListTile("Item 2"),
-                _renderListTile("Item 3"),
-                _renderListTile("Item 4"),
-              ],
-            ),
-          ],
-        ),
-        ExpansionTile(
-          title: Text("Items enregistrés"),
-          children: <Widget>[
-            for (final item in this.savedItems)
-              _renderListTile(item.toString()),
-          ],
-        ),
+            title: Text("Items enregistrés"), children: itemsEnregistres),
       ],
     );
   }
