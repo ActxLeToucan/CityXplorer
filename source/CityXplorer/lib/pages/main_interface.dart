@@ -18,19 +18,21 @@ class _MainInterfaceState extends State<MainInterface> {
   int _selectedIndex = 0;
 
   static List<Widget> pages = <Widget>[
-    Home(),
+    SingleChildScrollView(child: Home()),
     TakePictureScreen(camera: getCameras()[0]),
-    const DashBoard(
+    SingleChildScrollView(
+        child: DashBoard(
       lists: {
         "Ma liste 1": ["item 1", "item 2", "item 3"],
-        "Ma liste 2": ["item 4"]
+        "Ma liste 2": ["item 4"],
+        "Ma liste 3": ["item 5", "item 6"],
       },
       savedItems: [
         "item enregistré 1",
         "item enregistré 2",
         "item enregistré 3"
       ],
-    ),
+    )),
   ];
 
   void _onItemTapped(int index) {
@@ -43,11 +45,7 @@ class _MainInterfaceState extends State<MainInterface> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildDefaultAppBar(context),
-      body: SingleChildScrollView(
-        child: Column(children: [
-          pages[_selectedIndex],
-        ]),
-      ),
+      body: pages[_selectedIndex],
       drawer: Menu(
           nom: "Alexis Lopes Vaz",
           email: "tiplou@gmail.com",

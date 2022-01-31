@@ -1,11 +1,10 @@
-
 import 'package:cityxplorer/components/appbar_default.dart';
 import 'package:flutter/material.dart';
 import '../post.dart';
 
 // contenu de la page profil de l utilisateur
-class UserProfil extends StatelessWidget {
-  const UserProfil({Key? key}) : super(key: key);
+class UserProfile extends StatelessWidget {
+  const UserProfile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

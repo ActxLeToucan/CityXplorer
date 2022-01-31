@@ -1,4 +1,3 @@
-import 'package:cityxplorer/vues/profil_card.dart';
 import 'package:flutter/material.dart';
 
 import '../styles.dart';
@@ -24,19 +23,17 @@ class Menu extends StatelessWidget {
         accountName: Text(this.nom),
         accountEmail: Text(this.email),
         currentAccountPicture: GestureDetector(
-          child: CircleAvatar(
-            backgroundColor: Colors.grey,
-            foregroundImage: this.avatar,
-          ),
-          onTap: () => Navigator.push(
-              context, MaterialPageRoute(builder: (context) => UserProfil())),
-        ),
+            child: CircleAvatar(
+              backgroundColor: Colors.grey,
+              foregroundImage: this.avatar,
+            ),
+            onTap: () => Navigator.pushNamed(context, "userProfile")),
       ),
       ListTile(
         leading: Icon(Icons.settings),
         title: Text("Settings"),
         onTap: () {
-          Navigator.pop(context);
+          Navigator.pushNamed(context, "userProfile");
         },
       ),
     ]));
