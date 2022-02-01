@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
           fontSize: 25,
           textColor: Colors.green
       );
-      //Navigator.push(context, MaterialPageRoute(builder: (context)=>DashBoard(),),); Suite ICI
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>'Map': (context) => GeolocationMap()));
     } else {
       Fluttertoast.showToast(
           msg: 'Username or password invalid',

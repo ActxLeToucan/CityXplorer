@@ -10,7 +10,6 @@ import 'package:login_tutorial/widgets/widgets.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class CreateNewAccount extends StatefulWidget {
-
   @override
   State<CreateNewAccount> createState() => _CreateNewAccountState();
 }
