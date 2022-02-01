@@ -1,6 +1,7 @@
 // A screen that allows users to take a picture using a given camera.
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import '../pages/display_picture_screen.dart';
 
 class TakePictureScreen extends StatefulWidget {
@@ -54,19 +55,31 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             // If the Future is complete, display the preview.
             _controller.getMaxZoomLevel().then((value) => _zoomMax = value);
 
-            return Column(children: [
-              CameraPreview(_controller),
-              Slider(
-                  value: _sliderValue,
-                  onChanged: (dynamic newValue) {
-                    setState(() {
-                      _sliderValue = newValue;
-                      _controller.setZoomLevel(newValue);
-                    });
-                  },
-                  min: 1,
-                  max: _zoomMax),
-              TextButton(
+            return Stack(children: [
+              ListView(
+                children: [CameraPreview(_controller)],
+                physics: const NeverScrollableScrollPhysics(),
+              ),
+              Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: _renderButtons())
+            ]);
+          } else {
+            // Otherwise, display a loading indicator.
+            return const Center(child: CircularProgressIndicator());
+          }
+        });
+  }
+
+  List<Widget> _renderButtons() {
+    return [
+      Container(
+          decoration: const BoxDecoration(
+              boxShadow: [BoxShadow(color: Colors.black54, spreadRadius: 10)]),
+          child: Column(children: [
+            IconButton(
+                icon: const Icon(Icons.camera_alt),
+                color: Colors.white,
                 onPressed: () async {
                   // Take the Picture in a try / catch block. If anything goes wrong,
                   // catch the error.
@@ -89,17 +102,20 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                       ),
                     );
                   } catch (e) {
-                    // If an error occurs, log the error to the console.
                     print(e);
                   }
+                }),
+            Slider(
+                value: _sliderValue,
+                onChanged: (dynamic newValue) {
+                  setState(() {
+                    _sliderValue = newValue;
+                    _controller.setZoomLevel(newValue);
+                  });
                 },
-                child: const Icon(Icons.camera_alt),
-              )
-            ]);
-          } else {
-            // Otherwise, display a loading indicator.
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+                min: 1,
+                max: _zoomMax)
+          ]))
+    ];
   }
 }

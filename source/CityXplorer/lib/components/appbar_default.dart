@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../pages/search_page.dart';
 import '../styles.dart';
 
 buildDefaultAppBar(BuildContext context) {
@@ -10,8 +9,7 @@ buildDefaultAppBar(BuildContext context) {
     actions: [
       // Navigate to the Search Screen
       IconButton(
-          onPressed: () => Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => SearchPage())),
+          onPressed: () => Navigator.pushNamed(context, "searchPage"),
           icon: Icon(Icons.search))
     ],
   );
