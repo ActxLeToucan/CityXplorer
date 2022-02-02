@@ -15,13 +15,12 @@ class CreateNewAccount extends StatefulWidget {
 }
 
 class _CreateNewAccountState extends State<CreateNewAccount> {
-
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController email = TextEditingController();
 
   Future register() async {
-    var url = "http://192.168.1.34/phpFlutterLogin/register.php";
+    var url = "http://10.11.35.193/phpFlutterLogin/register.php";
     var response = await http.post(Uri.parse(url), body: {
       "username": username.text,
       "password": password.text,
@@ -34,16 +33,12 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
 
     if (res == "Error") {
       Fluttertoast.showToast(
-          msg: 'User already exit!',
-          fontSize: 25,
-          textColor: Colors.red
-          );
+          msg: 'User already exit!', fontSize: 25, textColor: Colors.red);
     } else {
       Fluttertoast.showToast(
           msg: 'Registration Successful',
           fontSize: 25,
-          textColor: Colors.green
-      );
+          textColor: Colors.green);
       Navigator.pushNamed(context, '/');
     }
   }
@@ -143,10 +138,12 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                           child: Text(
                             'Login',
                             style: TextStyle(
-                                fontSize: 22, color: Colors.white, height: 1.5)
+                                    fontSize: 22,
+                                    color: Colors.white,
+                                    height: 1.5)
                                 .copyWith(
-                                color: Color(0xff5663ff),
-                                fontWeight: FontWeight.bold),
+                                    color: Color(0xff5663ff),
+                                    fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
@@ -163,5 +160,4 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
       ],
     );
   }
-
 }

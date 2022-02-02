@@ -8,26 +8,21 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:login_tutorial/widgets/rounded-button.dart';
 
 class LoginScreen extends StatefulWidget {
-
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-
-
 class _LoginScreenState extends State<LoginScreen> {
-
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
 
   Future login() async {
-    var url = "http://192.168.1.34/phpFlutterLogin/login.php";
+    var url = "http://10.11.35.193/phpFlutterLogin/login.php";
 
     var response = await http.post(Uri.parse(url), body: {
       'username': username.text,
       'password': password.text,
-    }
-    );
+    });
 
     //var data = response.body.toString().replaceAll("\n","");
     final Map<String, dynamic> data = json.decode(response.body);
@@ -37,20 +32,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (res == '1') {
       Fluttertoast.showToast(
-          msg: 'Login Successful',
-          fontSize: 25,
-          textColor: Colors.green
-      );
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>'Map': (context) => GeolocationMap()));
+          msg: 'Login Successful', fontSize: 25, textColor: Colors.green);
+      Navigator.pushNamed(context, 'Map');
     } else {
       Fluttertoast.showToast(
           msg: 'Username or password invalid',
           fontSize: 25,
-          textColor: Colors.red
-      );
+          textColor: Colors.red);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -118,11 +108,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Container(
                   child: Text(
                     'Create New Account',
-                    style: TextStyle(fontSize: 22, color: Colors.white, height: 1.5),
+                    style: TextStyle(
+                        fontSize: 22, color: Colors.white, height: 1.5),
                   ),
                   decoration: BoxDecoration(
-                      border:
-                          Border(bottom: BorderSide(width: 1, color: Colors.white))),
+                      border: Border(
+                          bottom: BorderSide(width: 1, color: Colors.white))),
                 ),
               ),
               SizedBox(
@@ -135,11 +126,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-
-
-
-
-
-
-
