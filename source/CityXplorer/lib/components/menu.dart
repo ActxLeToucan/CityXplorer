@@ -33,7 +33,7 @@ class Menu extends StatelessWidget {
         leading: Icon(Icons.settings),
         title: Text("Settings"),
         onTap: () {
-          Navigator.pushNamed(context, "userProfile");
+          Navigator.pushNamed(context, "login");
         },
       ),
     ]));
