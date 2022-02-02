@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../styles.dart';
+
 class TextInputField extends StatelessWidget {
   const TextInputField({
     required this.icon,
@@ -21,10 +23,10 @@ class TextInputField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Container(
-        height: size.height * 0.08,
-        width: size.width * 0.8,
+        height: size.height * Styles.heightElementLogin,
+        width: size.width * Styles.widthElementLogin,
         decoration: BoxDecoration(
-          color: Colors.grey[500]?.withOpacity(0.5),
+          color: Styles.backgroundColorInput,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Center(
@@ -37,13 +39,13 @@ class TextInputField extends StatelessWidget {
                 child: Icon(
                   icon,
                   size: 28,
-                  color: Colors.white,
+                  color: Styles.loginTextColor,
                 ),
               ),
               hintText: hint,
-              hintStyle: TextStyle(fontSize: 22, color: Colors.white, height: 1.5),
+              hintStyle: Styles.textStyleInput,
             ),
-            style: TextStyle(fontSize: 22, color: Colors.white, height: 1.5),
+            style: Styles.textStyleInput,
             keyboardType: inputType,
             textInputAction: inputAction,
           ),
