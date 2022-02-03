@@ -18,6 +18,7 @@ class _GeolocationMapState extends State<GeolocationMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: GoogleMap(
         initialCameraPosition: _initialisationCameraPosition,
       ),

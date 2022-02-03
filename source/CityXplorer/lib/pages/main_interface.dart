@@ -46,10 +46,8 @@ class _MainInterfaceState extends State<MainInterface> {
     return Scaffold(
       appBar: buildDefaultAppBar(context),
       body: pages[_selectedIndex],
-      drawer: Menu(
-          nom: "Alexis Lopes Vaz",
-          email: "tiplou@gmail.com",
-          avatar: AssetImage('assets/alexis.jpg')),
+      drawer: const Menu(
+          email: "tiplou@gmail.com", avatar: AssetImage('assets/alexis.jpg')),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Theme.of(context).textSelectionTheme.selectionColor,
         currentIndex: _selectedIndex,
