@@ -6,6 +6,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../conf.dart';
 import '../styles.dart';
@@ -78,7 +79,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               GestureDetector(
-                onTap: () => Navigator.pushNamed(context, 'newAccount'),
+                onTap: () =>
+                    Navigator.of(context).pushReplacementNamed('newAccount'),
                 child: Container(
                   child: const Text('Create New Account',
                       style: Styles.textStyleInput,
@@ -116,7 +118,10 @@ class _LoginScreenState extends State<LoginScreen> {
     if (res == '1') {
       Fluttertoast.showToast(
           msg: 'Login Successful', fontSize: 25, textColor: Colors.green);
-      Navigator.pushNamed(context, '/');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString(Conf.stayLogin, username.text);
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
     } else {
       Fluttertoast.showToast(
           msg: 'Username or password invalid',

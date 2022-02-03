@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../conf.dart';
 import '../styles.dart';
 
 class Menu extends StatelessWidget {
   final email;
   final ImageProvider avatar;
-  final nom;
 
-  const Menu(
-      {Key? key,
-      required String this.nom,
-      required String this.email,
-      required this.avatar})
+  const Menu({Key? key, required String this.email, required this.avatar})
       : super(key: key);
 
   @override
@@ -20,7 +17,16 @@ class Menu extends StatelessWidget {
         child: ListView(padding: EdgeInsets.zero, children: [
       UserAccountsDrawerHeader(
         decoration: BoxDecoration(color: Styles.mainBackgroundColor),
-        accountName: Text(this.nom),
+        accountName: FutureBuilder<String>(
+          future: _getPseudo(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Text('${snapshot.data}');
+            } else {
+              return Text("chargement...");
+            }
+          },
+        ),
         accountEmail: Text(this.email),
         currentAccountPicture: GestureDetector(
             child: CircleAvatar(
@@ -30,12 +36,21 @@ class Menu extends StatelessWidget {
             onTap: () => Navigator.pushNamed(context, "userProfile")),
       ),
       ListTile(
-        leading: Icon(Icons.settings),
-        title: Text("Settings"),
-        onTap: () {
-          Navigator.pushNamed(context, "login");
+        leading: const Icon(Icons.logout),
+        title: const Text("Se déconnecter"),
+        onTap: () async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.remove(Conf.stayLogin);
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              'login', (Route<dynamic> route) => false);
         },
       ),
     ]));
+  }
+
+  Future<String> _getPseudo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? pseudo = prefs.getString(Conf.stayLogin);
+    return (pseudo ?? "invalid");
   }
 }

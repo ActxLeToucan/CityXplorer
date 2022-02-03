@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../conf.dart';
 import '../styles.dart';
@@ -101,7 +102,8 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                       height: 30,
                     ),
                     GestureDetector(
-                      onTap: () => Navigator.pushNamed(context, 'login'),
+                      onTap: () =>
+                          Navigator.of(context).pushReplacementNamed('login'),
                       child: Container(
                         child: const Text(
                             'Vous avez déjà un compte ?\nConnectez-vous.',
@@ -146,7 +148,10 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
           msg: 'Registration Successful',
           fontSize: 25,
           textColor: Colors.green);
-      Navigator.pushNamed(context, '/');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString(Conf.stayLogin, username.text);
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
     }
   }
 }
