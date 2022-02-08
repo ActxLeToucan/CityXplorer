@@ -1,5 +1,5 @@
 <?php
-$db = mysqli_connect('localhost','flutter','flutter','fluttertestlogin');
+$db = mysqli_connect('localhost','cityxplorer','cityxplorer','cityxplorer');
 
 $username = $_POST['username'];
 $password = $_POST['password'];

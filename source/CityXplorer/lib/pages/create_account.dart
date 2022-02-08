@@ -99,7 +99,7 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                       ),
                     ),
                     const SizedBox(
-                      height: 30,
+                      height: 100,
                     ),
                     GestureDetector(
                       onTap: () =>

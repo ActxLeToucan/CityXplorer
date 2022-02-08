@@ -1,5 +1,5 @@
 class Conf {
-  static const String bddIp = "192.168.1.54";
-  static const String bddPath = "/phpFlutterLogin";
+  static const String bddIp = "163.172.178.146:1707";
+  static const String bddPath = "/";
   static const String stayLogin = "pseudo";
 }
