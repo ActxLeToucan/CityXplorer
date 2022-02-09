@@ -1,4 +1,3 @@
-// A widget that displays the picture taken by the user.
 import 'dart:io';
 import 'package:cityxplorer/components/appbar_default.dart';
 import 'package:flutter/foundation.dart';
@@ -21,7 +20,7 @@ class DisplayPictureScreen extends StatelessWidget {
           child: Column(children: [
         kIsWeb ? Image.network(imagePath) : Image.file(File(imagePath)),
         Container(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 0),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
           child: FutureBuilder<String>(
             future: _getLocation(),
             builder: (context, snapshot) {
@@ -38,7 +37,7 @@ class DisplayPictureScreen extends StatelessWidget {
   }
 
   Future<String> _getLocation() async {
-    Location location = new Location();
+    Location location = Location();
 
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;

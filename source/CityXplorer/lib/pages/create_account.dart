@@ -15,6 +15,8 @@ import '../conf.dart';
 import '../styles.dart';
 
 class CreateNewAccount extends StatefulWidget {
+  const CreateNewAccount({Key? key}) : super(key: key);
+
   @override
   State<CreateNewAccount> createState() => _CreateNewAccountState();
 }
@@ -130,28 +132,29 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
 
   Future register() async {
     String url = "http://" + Conf.bddIp + Conf.bddPath + "/register.php";
-    var response = await http.post(Uri.parse(url), body: {
-      "username": username.text,
-      "password": password.text,
-      "email": email.text
-    });
-    print(username.text);
 
-    final Map<String, dynamic> data = json.decode(response.body);
-    var res = data['result'];
+    try {
+      var response = await http.post(Uri.parse(url), body: {
+        "username": username.text,
+        "password": password.text,
+        "email": email.text
+      });
+      print(username.text);
 
-    if (res == "Error") {
-      Fluttertoast.showToast(
-          msg: 'User already exit!', fontSize: 25, textColor: Colors.red);
-    } else {
-      Fluttertoast.showToast(
-          msg: 'Registration Successful',
-          fontSize: 25,
-          textColor: Colors.green);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString(Conf.stayLogin, username.text);
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
+      final Map<String, dynamic> data = json.decode(response.body);
+      var res = data['result'];
+
+      if (res == "Error") {
+        Fluttertoast.showToast(msg: 'User already exit!');
+      } else {
+        Fluttertoast.showToast(msg: 'Inscription effectuée !');
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString(Conf.stayLogin, username.text);
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
   }
 }

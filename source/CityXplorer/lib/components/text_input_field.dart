@@ -4,12 +4,13 @@ import '../styles.dart';
 
 class TextInputField extends StatelessWidget {
   const TextInputField({
+    Key? key,
     required this.icon,
     required this.hint,
     required this.controller,
     this.inputType,
     this.inputAction,
-  });
+  }) : super(key: key);
 
   final IconData icon;
   final String hint;

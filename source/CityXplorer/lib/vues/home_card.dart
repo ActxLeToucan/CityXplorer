@@ -9,7 +9,7 @@ class Home extends StatelessWidget {
     return Column(
       children: [
         Container(
-          constraints: BoxConstraints.expand(height: 250),
+          constraints: const BoxConstraints.expand(height: 250),
           child: Image.asset(
             'assets/tour_eiffel.jpeg',
             fit: BoxFit.cover,
@@ -23,7 +23,7 @@ class Home extends StatelessWidget {
               width: 140.0,
               height: 60.0,
               child: TextButton(
-                child: Text("Profil"),
+                child: const Text("Profil"),
                 style: TextButton.styleFrom(
                   primary: Colors.black,
                   backgroundColor: Colors.greenAccent,
@@ -53,7 +53,7 @@ class Home extends StatelessWidget {
             width: 350,
             decoration: BoxDecoration(
               border: Border.all(width: 1.5),
-              borderRadius: BorderRadius.all(Radius.circular(10)),
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
             ),
             child: Text(
               "Sauvegardez des photos de lieux qui vous intéressent, partagez-les avec vos amis et consultez les leurs !",

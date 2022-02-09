@@ -6,7 +6,8 @@ class DashBoard extends StatelessWidget {
 
   final List<String> savedItems;
 
-  const DashBoard({required this.lists, required this.savedItems});
+  const DashBoard({Key? key, required this.lists, required this.savedItems})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +21,15 @@ class DashBoard extends StatelessWidget {
     });
 
     List<Widget> itemsEnregistres = [];
-    for (final item in this.savedItems) {
+    for (final item in savedItems) {
       itemsEnregistres.add(_renderListTile(item.toString()));
     }
 
     return Column(
       children: <Widget>[
-        ExpansionTile(title: Text("Mes listes"), children: mesListes),
+        ExpansionTile(title: const Text("Mes listes"), children: mesListes),
         ExpansionTile(
-            title: Text("Items enregistrés"), children: itemsEnregistres),
+            title: const Text("Items enregistrés"), children: itemsEnregistres),
       ],
     );
   }
@@ -36,7 +37,7 @@ class DashBoard extends StatelessWidget {
   Widget _renderListTile(String s) {
     return ListTile(
       title: Text(s),
-      trailing: Icon(Icons.more_vert),
+      trailing: const Icon(Icons.more_vert),
     );
   }
 }

@@ -18,9 +18,11 @@ class _MainInterfaceState extends State<MainInterface> {
   int _selectedIndex = 0;
 
   static List<Widget> pages = <Widget>[
-    SingleChildScrollView(child: Home()),
-    TakePictureScreen(camera: getCameras()[0]),
-    SingleChildScrollView(
+    const SingleChildScrollView(child: Home()),
+    getCameras().length > 0
+        ? TakePictureScreen(camera: getCameras()[0])
+        : const Text("Erreur camera"),
+    const SingleChildScrollView(
         child: DashBoard(
       lists: {
         "Ma liste 1": ["item 1", "item 2", "item 3"],

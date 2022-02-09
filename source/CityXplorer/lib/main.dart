@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'conf.dart';
@@ -28,13 +27,13 @@ Future<void> main() async {
 
   runApp(MaterialApp(
     title: 'CityXplorer',
-    home: (pseudo == null ? LoginScreen() : MainInterface()),
+    home: (pseudo == null ? const LoginScreen() : const MainInterface()),
     routes: {
-      'main': (context) => MainInterface(),
-      'searchPage': (context) => SearchPage(),
-      'userProfile': (context) => UserProfile(),
-      'login': (context) => LoginScreen(),
-      'newAccount': (context) => CreateNewAccount()
+      'main': (context) => const MainInterface(),
+      'searchPage': (context) => const SearchPage(),
+      'userProfile': (context) => const UserProfile(),
+      'login': (context) => const LoginScreen(),
+      'newAccount': (context) => const CreateNewAccount()
     },
   ));
 }

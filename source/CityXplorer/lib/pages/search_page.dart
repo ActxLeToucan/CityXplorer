@@ -11,7 +11,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   List<int> _searchIndexList = [];
-  List<String> _list = [
+  final List<String> _list = [
     'English Textbook',
     'Japanese Textbook',
     'English Vocabulary',

@@ -12,6 +12,8 @@ import '../conf.dart';
 import '../styles.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -107,29 +109,27 @@ class _LoginScreenState extends State<LoginScreen> {
   Future login() async {
     String url = "http://" + Conf.bddIp + Conf.bddPath + "/login.php";
 
-    var response = await http.post(Uri.parse(url), body: {
-      'username': username.text,
-      'password': password.text,
-    });
+    try {
+      var response = await http.post(Uri.parse(url), body: {
+        'username': username.text,
+        'password': password.text,
+      });
 
-    //var data = response.body.toString().replaceAll("\n","");
-    final Map<String, dynamic> data = json.decode(response.body);
-    var res = data['result'];
+      //var data = response.body.toString().replaceAll("\n","");
+      final Map<String, dynamic> data = json.decode(response.body);
+      var res = data['result'];
 
-    print(res);
-
-    if (res == '1') {
-      Fluttertoast.showToast(
-          msg: 'Login Successful', fontSize: 25, textColor: Colors.green);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString(Conf.stayLogin, username.text);
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
-    } else {
-      Fluttertoast.showToast(
-          msg: 'Username or password invalid',
-          fontSize: 25,
-          textColor: Colors.red);
+      if (res == '1') {
+        Fluttertoast.showToast(msg: 'Vous êtes connecté.');
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString(Conf.stayLogin, username.text);
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
+      } else {
+        Fluttertoast.showToast(msg: 'Pseudo ou mot de passe invalide.');
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
   }
 }

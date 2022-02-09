@@ -4,12 +4,13 @@ import '../styles.dart';
 
 class PasswordInput extends StatelessWidget {
   const PasswordInput({
+    Key? key,
     required this.controller,
     required this.icon,
     required this.hint,
     this.inputType,
     this.inputAction,
-  });
+  }) : super(key: key);
 
   final TextEditingController controller;
   final IconData icon;

@@ -5,10 +5,10 @@ import '../conf.dart';
 import '../styles.dart';
 
 class Menu extends StatelessWidget {
-  final email;
+  final String email;
   final ImageProvider avatar;
 
-  const Menu({Key? key, required String this.email, required this.avatar})
+  const Menu({Key? key, required this.email, required this.avatar})
       : super(key: key);
 
   @override
@@ -23,15 +23,15 @@ class Menu extends StatelessWidget {
             if (snapshot.hasData) {
               return Text('${snapshot.data}');
             } else {
-              return Text("chargement...");
+              return const Text("chargement...");
             }
           },
         ),
-        accountEmail: Text(this.email),
+        accountEmail: Text(email),
         currentAccountPicture: GestureDetector(
             child: CircleAvatar(
               backgroundColor: Colors.grey,
-              foregroundImage: this.avatar,
+              foregroundImage: avatar,
             ),
             onTap: () => Navigator.pushNamed(context, "userProfile")),
       ),
