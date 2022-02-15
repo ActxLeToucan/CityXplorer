@@ -19,6 +19,9 @@ $app = new App(dbInit::init());
 $app->get('/help', function (Request $rq, Response $rs, array $args): Response {
     return $rs->withRedirect('https://documenter.getpostman.com/view/18314767/UVkgxyyz');
 });
+$app->get('/doc', function (Request $rq, Response $rs, array $args): Response {
+    return $rs->withRedirect('https://documenter.getpostman.com/view/18314767/UVkgxyyz');
+});
 
 $app->post('/createPost',
     function (Request $rq, Response $rs, array $args): Response {
