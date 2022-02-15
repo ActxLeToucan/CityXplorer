@@ -18,9 +18,11 @@ class _MainInterfaceState extends State<MainInterface> {
   int _selectedIndex = 0;
 
   static List<Widget> pages = <Widget>[
-    SingleChildScrollView(child: Home()),
-    TakePictureScreen(camera: getCameras()[0]),
-    SingleChildScrollView(
+    const SingleChildScrollView(child: Home()),
+    getCameras().length > 0
+        ? TakePictureScreen(camera: getCameras()[0])
+        : const Text("Erreur camera"),
+    const SingleChildScrollView(
         child: DashBoard(
       lists: {
         "Ma liste 1": ["item 1", "item 2", "item 3"],
@@ -46,10 +48,8 @@ class _MainInterfaceState extends State<MainInterface> {
     return Scaffold(
       appBar: buildDefaultAppBar(context),
       body: pages[_selectedIndex],
-      drawer: Menu(
-          nom: "Alexis Lopes Vaz",
-          email: "tiplou@gmail.com",
-          avatar: AssetImage('assets/alexis.jpg')),
+      drawer: const Menu(
+          email: "tiplou@gmail.com", avatar: AssetImage('assets/alexis.jpg')),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Theme.of(context).textSelectionTheme.selectionColor,
         currentIndex: _selectedIndex,

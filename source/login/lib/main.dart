@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => LoginScreen(),
         'CreateNewAccount': (context) => CreateNewAccount(),
+        'Map': (context) => GeolocationMap(),
       },
     );
   }
