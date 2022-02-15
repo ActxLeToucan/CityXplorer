@@ -131,7 +131,7 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
   }
 
   Future register() async {
-    String url = "http://" + Conf.bddIp + Conf.bddPath + "/register.php";
+    String url = "http://" + Conf.bddIp + Conf.bddPath + "/register";
 
     try {
       var response = await http.post(Uri.parse(url), body: {
@@ -139,20 +139,17 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
         "password": password.text,
         "email": email.text
       });
-      print(username.text);
-
       final Map<String, dynamic> data = json.decode(response.body);
       var res = data['result'];
 
-      if (res == "Error") {
-        Fluttertoast.showToast(msg: 'User already exit!');
-      } else {
-        Fluttertoast.showToast(msg: 'Inscription effectuée !');
+      if (res == 1) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString(Conf.stayLogin, username.text);
+        prefs.setString(Conf.stayLogin, data['user']['pseudo']);
+        prefs.setString("email", data['user']['email']);
         Navigator.of(context)
             .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
       }
+      Fluttertoast.showToast(msg: data['message']);
     } catch (e) {
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }

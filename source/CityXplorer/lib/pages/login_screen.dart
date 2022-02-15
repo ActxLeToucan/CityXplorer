@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onTap: () =>
                       Navigator.of(context).pushReplacementNamed('newAccount'),
                   child: Container(
-                    child: const Text('Create New Account',
+                    child: const Text('Créer un compte',
                         style: Styles.textStyleInput,
                         textAlign: TextAlign.center),
                     decoration: const BoxDecoration(
@@ -107,27 +107,24 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future login() async {
-    String url = "http://" + Conf.bddIp + Conf.bddPath + "/login.php";
+    String url = "http://" + Conf.bddIp + Conf.bddPath + "/login";
 
     try {
       var response = await http.post(Uri.parse(url), body: {
         'username': username.text,
         'password': password.text,
       });
-
-      //var data = response.body.toString().replaceAll("\n","");
       final Map<String, dynamic> data = json.decode(response.body);
       var res = data['result'];
 
-      if (res == '1') {
-        Fluttertoast.showToast(msg: 'Vous êtes connecté.');
+      if (res == 1) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString(Conf.stayLogin, username.text);
+        prefs.setString(Conf.stayLogin, data['user']['pseudo']);
+        prefs.setString("email", data['user']['email']);
         Navigator.of(context)
             .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
-      } else {
-        Fluttertoast.showToast(msg: 'Pseudo ou mot de passe invalide.');
       }
+      Fluttertoast.showToast(msg: data['message']);
     } catch (e) {
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }

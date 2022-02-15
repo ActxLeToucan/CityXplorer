@@ -5,11 +5,9 @@ import '../conf.dart';
 import '../styles.dart';
 
 class Menu extends StatelessWidget {
-  final String email;
   final ImageProvider avatar;
 
-  const Menu({Key? key, required this.email, required this.avatar})
-      : super(key: key);
+  const Menu({Key? key, required this.avatar}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +25,16 @@ class Menu extends StatelessWidget {
             }
           },
         ),
-        accountEmail: Text(email),
+        accountEmail: FutureBuilder<String>(
+          future: _getEmail(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Text('${snapshot.data}');
+            } else {
+              return const Text("chargement...");
+            }
+          },
+        ),
         currentAccountPicture: GestureDetector(
             child: CircleAvatar(
               backgroundColor: Colors.grey,
@@ -41,6 +48,7 @@ class Menu extends StatelessWidget {
         onTap: () async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.remove(Conf.stayLogin);
+          prefs.remove("email");
           Navigator.of(context).pushNamedAndRemoveUntil(
               'login', (Route<dynamic> route) => false);
         },
@@ -52,5 +60,11 @@ class Menu extends StatelessWidget {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? pseudo = prefs.getString(Conf.stayLogin);
     return (pseudo ?? "invalid");
+  }
+
+  Future<String> _getEmail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? email = prefs.getString("email");
+    return (email ?? "invalid");
   }
 }

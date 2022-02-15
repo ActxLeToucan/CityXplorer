@@ -40,16 +40,16 @@ CREATE TABLE `administrateur` (
 --
 
 CREATE TABLE `avotepour` (
-  `loginUtilisateur` varchar(50) NOT NULL,
-  `idPoste` int(5) NOT NULL
+  `idUtilisateur` int(5) NOT NULL,
+  `idPost` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `avotepour`
 --
 
-INSERT INTO `avotepour` (`loginUtilisateur`, `idPoste`) VALUES
-('PierreDu78000', 2);
+INSERT INTO `avotepour` (`idUtilisateur`, `idPost`) VALUES
+(3, 2);
 
 -- --------------------------------------------------------
 
@@ -59,14 +59,14 @@ INSERT INTO `avotepour` (`loginUtilisateur`, `idPoste`) VALUES
 
 CREATE TABLE `contient` (
   `idListe` int(5) NOT NULL,
-  `idPoste` int(5) NOT NULL
+  `idPost` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `contient`
 --
 
-INSERT INTO `contient` (`idListe`, `idPoste`) VALUES
+INSERT INTO `contient` (`idListe`, `idPost`) VALUES
 (1, 1),
 (1, 2);
 
@@ -97,15 +97,15 @@ INSERT INTO `listeaffichable` (`idliste`, `nomListe`, `descriptionListe`) VALUES
 
 CREATE TABLE `listeenregistrées` (
   `idListe` int(5) NOT NULL,
-  `loginUtilisateur` varchar(50) NOT NULL
+  `idUtilisateur` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `listeenregistrées`
 --
 
-INSERT INTO `listeenregistrées` (`idListe`, `loginUtilisateur`) VALUES
-(1, 'JacobFromTheStreet');
+INSERT INTO `listeenregistrées` (`idListe`, `idUtilisateur`) VALUES
+(1, 2);
 
 -- --------------------------------------------------------
 
@@ -114,16 +114,16 @@ INSERT INTO `listeenregistrées` (`idListe`, `loginUtilisateur`) VALUES
 --
 
 CREATE TABLE `partage` (
-  `loginUtilisateur` varchar(50) NOT NULL,
-  `idPoste` int(5) NOT NULL
+  `idUtilisateur` int(5) NOT NULL,
+  `idPost` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `partage`
 --
 
-INSERT INTO `partage` (`loginUtilisateur`, `idPoste`) VALUES
-('PierreDu78000', 1);
+INSERT INTO `partage` (`idUtilisateur`, `idPost`) VALUES
+(3, 1);
 
 -- --------------------------------------------------------
 
@@ -149,25 +149,25 @@ INSERT INTO `photo` (`idPhoto`, `idPost`, `url`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `poste`
+-- Structure de la table `post`
 --
 
-CREATE TABLE `poste` (
-  `idPoste` int(5) NOT NULL,
+CREATE TABLE `post` (
+  `idPost` int(5) NOT NULL,
   `emplacementX` varchar(100) DEFAULT NULL,
   `emplacementY` varchar(100) DEFAULT NULL,
   `description` varchar(200) DEFAULT NULL,
   `titre` varchar(100) DEFAULT NULL,
-  `datePoste` date DEFAULT NULL,
+  `datePost` date DEFAULT NULL,
   `etat` varchar(10) DEFAULT NULL,
   `photo` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Déchargement des données de la table `poste`
+-- Déchargement des données de la table `post`
 --
 
-INSERT INTO `poste` (`idPoste`, `emplacementX`, `emplacementY`, `description`, `titre`, `datePoste`, `etat`, `photo`) VALUES
+INSERT INTO `post` (`idPost`, `emplacementX`, `emplacementY`, `description`, `titre`, `datePost`, `etat`, `photo`) VALUES
 (1, '10', '10', 'Photo de la tour de pise', 'Tour de Pise', '2021-12-28', 'Invalide', ''),
 (2, '87', '32', 'Gare MontParnasse', 'Gare MontParnasse', '2021-12-28', 'Valide', ''),
 (5, '10', '10', 'Voici un chateau', 'Le chateau très beau', NULL, 'Invalide', '');
@@ -210,13 +210,13 @@ ALTER TABLE `administrateur`
 -- Index pour la table `avotepour`
 --
 ALTER TABLE `avotepour`
-  ADD PRIMARY KEY (`loginUtilisateur`,`idPoste`);
+  ADD PRIMARY KEY (`idUtilisateur`,`idPost`);
 
 --
 -- Index pour la table `contient`
 --
 ALTER TABLE `contient`
-  ADD PRIMARY KEY (`idListe`,`idPoste`);
+  ADD PRIMARY KEY (`idListe`,`idPost`);
 
 --
 -- Index pour la table `listeaffichable`
@@ -228,13 +228,13 @@ ALTER TABLE `listeaffichable`
 -- Index pour la table `listeenregistrées`
 --
 ALTER TABLE `listeenregistrées`
-  ADD PRIMARY KEY (`idListe`,`loginUtilisateur`);
+  ADD PRIMARY KEY (`idListe`,`idUtilisateur`);
 
 --
 -- Index pour la table `partage`
 --
 ALTER TABLE `partage`
-  ADD PRIMARY KEY (`loginUtilisateur`,`idPoste`);
+  ADD PRIMARY KEY (`idUtilisateur`,`idPost`);
 
 --
 -- Index pour la table `photo`
@@ -243,10 +243,10 @@ ALTER TABLE `photo`
   ADD PRIMARY KEY (`idPhoto`);
 
 --
--- Index pour la table `poste`
+-- Index pour la table `post`
 --
-ALTER TABLE `poste`
-  ADD PRIMARY KEY (`idPoste`);
+ALTER TABLE `post`
+  ADD PRIMARY KEY (`idPost`);
 
 --
 -- Index pour la table `utilisateur`
@@ -271,10 +271,10 @@ ALTER TABLE `photo`
   MODIFY `idPhoto` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT pour la table `poste`
+-- AUTO_INCREMENT pour la table `post`
 --
-ALTER TABLE `poste`
-  MODIFY `idPoste` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+ALTER TABLE `post`
+  MODIFY `idPost` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
@@ -290,29 +290,29 @@ ALTER TABLE `utilisateur`
 -- Contraintes pour la table `avotepour`
 --
 ALTER TABLE `avotepour`
-  ADD CONSTRAINT `idpostvote_Foreign_key` FOREIGN KEY (`idPoste`) REFERENCES `poste` (`idPoste`),
-  ADD CONSTRAINT `loginuser_vote_foreign_key` FOREIGN KEY (`loginUtilisateur`) REFERENCES `utilisateur` (`login`);
+  ADD CONSTRAINT `idpostvote_Foreign_key` FOREIGN KEY (`idPost`) REFERENCES `post` (`idPost`),
+  ADD CONSTRAINT `loginuser_vote_foreign_key` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`);
 
 --
 -- Contraintes pour la table `contient`
 --
 ALTER TABLE `contient`
   ADD CONSTRAINT `idListContient_foreign_key` FOREIGN KEY (`idListe`) REFERENCES `listeaffichable` (`idliste`),
-  ADD CONSTRAINT `idpostContient_Foreign_key` FOREIGN KEY (`idPoste`) REFERENCES `poste` (`idPoste`);
+  ADD CONSTRAINT `idpostContient_Foreign_key` FOREIGN KEY (`idPost`) REFERENCES `post` (`idPost`);
 
 --
 -- Contraintes pour la table `listeenregistrées`
 --
 ALTER TABLE `listeenregistrées`
   ADD CONSTRAINT `idListSave_foreign_key` FOREIGN KEY (`idListe`) REFERENCES `listeaffichable` (`idliste`),
-  ADD CONSTRAINT `loginuserListSave_foreign_key` FOREIGN KEY (`loginUtilisateur`) REFERENCES `utilisateur` (`login`);
+  ADD CONSTRAINT `loginuserListSave_foreign_key` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`);
 
 --
 -- Contraintes pour la table `partage`
 --
 ALTER TABLE `partage`
-  ADD CONSTRAINT `idPoste_Foreign_key` FOREIGN KEY (`idPoste`) REFERENCES `poste` (`idPoste`),
-  ADD CONSTRAINT `login_utilisateur_foreign_key` FOREIGN KEY (`loginUtilisateur`) REFERENCES `utilisateur` (`login`);
+  ADD CONSTRAINT `idPost_Foreign_key` FOREIGN KEY (`idPost`) REFERENCES `post` (`idPost`),
+  ADD CONSTRAINT `login_utilisateur_foreign_key` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

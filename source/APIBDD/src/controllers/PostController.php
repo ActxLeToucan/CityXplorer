@@ -4,13 +4,11 @@ namespace cityXplorer\controllers;
 
 use cityXplorer\models\Photo;
 use cityXplorer\models\Post;
-use cityXplorer\models\Authenticate;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Illuminate\Support\Facades\Date;
 
 class PostController{
-    const CREATE_POST ='create_post';
     /**
      * @var object container
      */
@@ -34,7 +32,7 @@ class PostController{
         $posY=$content['$posY'];
         $descr=$content['$description'];
         $titre=$content['titre'];
-        $datePoste= new date();
+        $datePost= new date();
         $photo=$content['photo'];
 
 
@@ -44,7 +42,7 @@ class PostController{
         $PostToAdd->emplacementY=$posY;
         $PostToAdd->description=$descr;
         $PostToAdd->titre=$titre;
-        $PostToAdd->datePoste=$datePoste;
+        $PostToAdd->datePost=$datePost;
         $PostToAdd->etat='Invalide';
         $PostToAdd->photo=$photo;
         $PostToAdd->save();
@@ -61,15 +59,15 @@ class PostController{
 
         $id = 1;
 
-        $posteTestBDD=Post::where("idPoste","=",$id)->first();
+        $postTestBDD=Post::where("idPost","=",$id)->first();
         $imagesTestBDD=Photo::where("idPost","=",$id)->get();
-        $titre=$posteTestBDD->titre;
-        $tab=["titre"=>$posteTestBDD->titre,
-            "emplacement-x"=>$posteTestBDD->emplacementX,
-            "emplacement-y"=>$posteTestBDD->emplacementY,
-            "description"=>$posteTestBDD->description,
-            "datePoste"=>$posteTestBDD->datePoste,
-            "etat"=>$posteTestBDD->etat,
+        $titre=$postTestBDD->titre;
+        $tab=["titre"=>$postTestBDD->titre,
+            "emplacement-x"=>$postTestBDD->emplacementX,
+            "emplacement-y"=>$postTestBDD->emplacementY,
+            "description"=>$postTestBDD->description,
+            "datePost"=>$postTestBDD->datePost,
+            "etat"=>$postTestBDD->etat,
         "photos"=>$imagesTestBDD];
 
         return $tab;

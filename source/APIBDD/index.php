@@ -1,5 +1,7 @@
 <?php
 
+ini_set('display_errors', 1);
+
 use cityXplorer\controllers\PostController;
 use cityXplorer\controllers\RegisterController;
 use cityXplorer\dbInit;

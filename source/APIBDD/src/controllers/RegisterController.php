@@ -3,12 +3,9 @@
 
 namespace cityXplorer\controllers;
 
-use cityXplorer\models\Photo;
-use cityXplorer\models\Post;
 use cityXplorer\models\Authenticate;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Illuminate\Support\Facades\Date;
 
 class RegisterController {
     const TAILLE_USERNAME_MIN = 4;
@@ -122,7 +119,7 @@ class RegisterController {
         $username =$content['username'];
         $password =$content['password'];
         $userNameExist = Authenticate::where("login", "=", $username)->count();
-        $userTest = Authenticate::where("login", "=", $username)->first();
+
         if ($userNameExist == 1) {
             $getUser=Authenticate::where("login","=",$username)->first();
             $hashedPassword=$getUser->motDePasse;
