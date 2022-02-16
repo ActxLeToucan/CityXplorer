@@ -3,13 +3,13 @@ import 'dart:ui';
 import 'package:cityxplorer/components/background_image.dart';
 import 'package:cityxplorer/components/password_input.dart';
 import 'package:cityxplorer/components/text_input_field.dart';
+import 'package:cityxplorer/main.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../conf.dart';
 import '../styles.dart';
@@ -22,9 +22,9 @@ class CreateNewAccount extends StatefulWidget {
 }
 
 class _CreateNewAccountState extends State<CreateNewAccount> {
-  TextEditingController username = TextEditingController();
+  TextEditingController pseudo = TextEditingController();
   TextEditingController password = TextEditingController();
-  TextEditingController email = TextEditingController();
+  TextEditingController name = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -66,17 +66,17 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                 Column(
                   children: [
                     TextInputField(
-                      controller: username,
+                      controller: pseudo,
                       icon: Icons.account_circle,
                       hint: 'Pseudo',
                       inputType: TextInputType.name,
                       inputAction: TextInputAction.next,
                     ),
                     TextInputField(
-                      controller: email,
-                      icon: Icons.email,
-                      hint: 'Email',
-                      inputType: TextInputType.emailAddress,
+                      controller: name,
+                      icon: Icons.accessibility_new,
+                      hint: 'Nom',
+                      inputType: TextInputType.name,
                       inputAction: TextInputAction.next,
                     ),
                     PasswordInput(
@@ -131,21 +131,19 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
   }
 
   Future register() async {
-    String url = "http://" + Conf.bddIp + Conf.bddPath + "/register";
+    String url = Conf.bddDomainUrl + Conf.bddPath + "/register";
 
     try {
       var response = await http.post(Uri.parse(url), body: {
-        "username": username.text,
+        "pseudo": pseudo.text,
         "password": password.text,
-        "email": email.text
+        "name": name.text
       });
       final Map<String, dynamic> data = json.decode(response.body);
       var res = data['result'];
 
       if (res == 1) {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString(Conf.stayLogin, data['user']['pseudo']);
-        prefs.setString("email", data['user']['email']);
+        connexion(data);
         Navigator.of(context)
             .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
       }

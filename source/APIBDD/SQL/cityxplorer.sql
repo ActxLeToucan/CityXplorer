@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 4.9.5deb2
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1
--- Généré le : mar. 15 fév. 2022 à 18:02
--- Version du serveur : 10.4.21-MariaDB
--- Version de PHP : 8.0.11
+-- Hôte : localhost:3306
+-- Généré le : mer. 16 fév. 2022 à 12:52
+-- Version du serveur :  10.3.32-MariaDB-0ubuntu0.20.04.1
+-- Version de PHP : 7.4.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -18,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `cityxplorertest`
+-- Base de données : `cityxplorer`
 --
 
 -- --------------------------------------------------------
@@ -43,13 +44,6 @@ CREATE TABLE `avotepour` (
   `idUtilisateur` int(5) NOT NULL,
   `idPost` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Déchargement des données de la table `avotepour`
---
-
-INSERT INTO `avotepour` (`idUtilisateur`, `idPost`) VALUES
-(3, 2);
 
 -- --------------------------------------------------------
 
@@ -100,13 +94,6 @@ CREATE TABLE `listeenregistrées` (
   `idUtilisateur` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Déchargement des données de la table `listeenregistrées`
---
-
-INSERT INTO `listeenregistrées` (`idListe`, `idUtilisateur`) VALUES
-(1, 2);
-
 -- --------------------------------------------------------
 
 --
@@ -117,13 +104,6 @@ CREATE TABLE `partage` (
   `idUtilisateur` int(5) NOT NULL,
   `idPost` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Déchargement des données de la table `partage`
---
-
-INSERT INTO `partage` (`idUtilisateur`, `idPost`) VALUES
-(3, 1);
 
 -- --------------------------------------------------------
 
@@ -180,21 +160,20 @@ INSERT INTO `post` (`idPost`, `emplacementX`, `emplacementY`, `description`, `ti
 
 CREATE TABLE `utilisateur` (
   `id` int(11) NOT NULL,
-  `login` varchar(50) NOT NULL,
-  `email` varchar(256) DEFAULT NULL,
-  `motDePasse` varchar(256) DEFAULT NULL,
-  `photoDeProfil` varchar(250) DEFAULT NULL,
-  `niveauAcces` int(5) NOT NULL DEFAULT 1
+  `pseudo` varchar(50) NOT NULL,
+  `name` varchar(256) DEFAULT NULL,
+  `password` varchar(256) DEFAULT NULL,
+  `avatar` varchar(250) DEFAULT '',
+  `niveauAcces` int(5) NOT NULL DEFAULT 1,
+  `token` varchar(256) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `utilisateur`
 --
 
-INSERT INTO `utilisateur` (`id`, `login`, `email`, `motDePasse`, `photoDeProfil`, `niveauAcces`) VALUES
-(1, 'antoine', 'a@a.a', '$2y$12$eKIPYSrDDdmop8a7sOWIAu5EKNJdZLvdKY33kyIQd/QfGCg6l8ZIa', NULL, 1),
-(2, 'JacobFromTheStreet', 'JacobFromTheStreet@gmail.com', '$2y$12$eKIPYSrDDdmop8a7sOWIAu5EKNJdZLvdKY33kyIQd/QfGCg6l8ZIa', 'Lien photo de profil', 1),
-(3, 'PierreDu78000', 'pierre@gmail.com', '1234', 'Lien photo de profil', 1);
+INSERT INTO `utilisateur` (`id`, `pseudo`, `name`, `password`, `avatar`, `niveauAcces`, `token`) VALUES
+(1, 'antoine54', 'Antoine CONTOUX', '$2y$12$eKIPYSrDDdmop8a7sOWIAu5EKNJdZLvdKY33kyIQd/QfGCg6l8ZIa', 'antoine.jpg', 1, '1645012186aeb999b417f2802b8341d8df60e6f303daf5b9c875a84b803eb145d8e3d8e2b649e54102141d1c8835bc8a7f0bfa3eb54189a08a4240ca1aaf8e99f9c89d0bce');
 
 --
 -- Index pour les tables déchargées
@@ -210,13 +189,15 @@ ALTER TABLE `administrateur`
 -- Index pour la table `avotepour`
 --
 ALTER TABLE `avotepour`
-  ADD PRIMARY KEY (`idUtilisateur`,`idPost`);
+  ADD PRIMARY KEY (`idUtilisateur`,`idPost`),
+  ADD KEY `idpostvote_Foreign_key` (`idPost`);
 
 --
 -- Index pour la table `contient`
 --
 ALTER TABLE `contient`
-  ADD PRIMARY KEY (`idListe`,`idPost`);
+  ADD PRIMARY KEY (`idListe`,`idPost`),
+  ADD KEY `idpostContient_Foreign_key` (`idPost`);
 
 --
 -- Index pour la table `listeaffichable`
@@ -228,13 +209,15 @@ ALTER TABLE `listeaffichable`
 -- Index pour la table `listeenregistrées`
 --
 ALTER TABLE `listeenregistrées`
-  ADD PRIMARY KEY (`idListe`,`idUtilisateur`);
+  ADD PRIMARY KEY (`idListe`,`idUtilisateur`),
+  ADD KEY `loginuserListSave_foreign_key` (`idUtilisateur`);
 
 --
 -- Index pour la table `partage`
 --
 ALTER TABLE `partage`
-  ADD PRIMARY KEY (`idUtilisateur`,`idPost`);
+  ADD PRIMARY KEY (`idUtilisateur`,`idPost`),
+  ADD KEY `idPost_Foreign_key` (`idPost`);
 
 --
 -- Index pour la table `photo`
@@ -280,7 +263,7 @@ ALTER TABLE `post`
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Contraintes pour les tables déchargées

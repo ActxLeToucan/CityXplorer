@@ -48,7 +48,7 @@ class _MainInterfaceState extends State<MainInterface> {
     return Scaffold(
       appBar: buildDefaultAppBar(context),
       body: pages[_selectedIndex],
-      drawer: const Menu(avatar: AssetImage('assets/alexis.jpg')),
+      drawer: const Menu(),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Theme.of(context).textSelectionTheme.selectionColor,
         currentIndex: _selectedIndex,

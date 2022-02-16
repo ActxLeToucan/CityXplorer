@@ -8,8 +8,11 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class RegisterController {
-    const TAILLE_USERNAME_MIN = 4;
-    const TAILLE_USERNAME_MAX = 50;
+    const TAILLE_PSEUDO_MIN = 4;
+    const TAILLE_PSEUDO_MAX = 50;
+    const REGEX_PSEUDO = '/^[\w\-]*$/';
+    const TAILLE_NAME_MIN = 4;
+    const TAILLE_NAME_MAX = 50;
     const TAILLE_MDP_MIN = 8;
     const TAILLE_MDP_MAX = 256;
 
@@ -41,23 +44,29 @@ class RegisterController {
         $url = $base . $route_uri;
         $content = $rq->getParsedBody();
 
-        $username = filter_var($content['username'], FILTER_SANITIZE_STRING);
+        $pseudo = filter_var($content['pseudo'], FILTER_SANITIZE_STRING);
         $password = $content['password'];
+        $name = $content['name'];
         $options = ['cost' => 12];
-        $email = filter_var($content['email'], FILTER_SANITIZE_EMAIL);
 
-        $userNameExist = Authenticate::where("login", "=", $username)->count();
+        $userNameExist = Authenticate::where("pseudo", "=", $pseudo)->count();
 
-        if (strlen($username) < self::TAILLE_USERNAME_MIN) {
+        if (strlen($pseudo) < self::TAILLE_PSEUDO_MIN) {
             return [
                 "result" => 0,
                 "message" => "Ce nom d'utilisateur est trop court. Réessayez.",
                 "user" => null
             ];
-        } else if (strlen($username) > self::TAILLE_USERNAME_MAX) {
+        } else if (strlen($pseudo) > self::TAILLE_PSEUDO_MAX) {
             return [
                 "result" => 0,
                 "message" => "Ce nom d'utilisateur est trop long. Réessayez.",
+                "user" => null
+            ];
+        } else if (preg_match(self::REGEX_PSEUDO, $pseudo) == 0) {
+            return [
+                "result" => 0,
+                "message" => "Ce nom d'utilisateur est invalide. Réessayez.",
                 "user" => null
             ];
         } else if ($userNameExist != 0) {
@@ -66,7 +75,19 @@ class RegisterController {
                 "message" => "Ce nom d'utilisateur est déjà pris. Réessayez.",
                 "user" => null
             ];
-        } else if (strlen($password) < self::TAILLE_MDP_MIN) {
+        } else if (strlen($name) < self::TAILLE_NAME_MIN) {
+            return [
+                "result" => 0,
+                "message" => "Ce nom est trop court. Réessayez.",
+                "user" => null
+            ];
+        } else if (strlen($password) > self::TAILLE_NAME_MAX) {
+            return [
+                "result" => 0,
+                "message" => "Ce nom est trop long. Réessayez.",
+                "user" => null
+            ];
+        } else if (strlen($name) < self::TAILLE_MDP_MIN) {
             return [
                 "result" => 0,
                 "message" => "Ce mot de passe est trop court. Réessayez.",
@@ -81,21 +102,23 @@ class RegisterController {
         } else {
             $password = password_hash($password, PASSWORD_DEFAULT, $options);
             $newUser = new Authenticate();
-            $newUser->login=$username;
-            $newUser->motDePasse=$password;
-            $newUser->email=$email;
-            $newUser->niveauAcces=1;
+            $newUser->pseudo = $pseudo;
+            $newUser->password = $password;
+            $newUser->name = $name;
+            $newUser->niveauAcces = 1;
+            $newUser->token = time().bin2hex(openssl_random_pseudo_bytes(64));
             $newUser->save();
 
-            $user = Authenticate::where('login', '=', $username)->first();
+            $user = Authenticate::where('pseudo', '=', $pseudo)->first();
 
             return [
                 "result" => 1,
-                "message" => "Vous êtes connecté en tant que $user->login.",
+                "message" => "Vous êtes connecté en tant que $user->pseudo.",
                 "user" => [
-                    "pseudo" => $user->login,
-                    "email" => $user->email,
-                    "photo" => $user->photoDeProfil,
+                    "pseudo" => $user->pseudo,
+                    "token" => $user->token,
+                    "name" => $user->name,
+                    "avatar" => $user->avatar,
                     "niveauAcces" => $user->niveauAcces
                 ]
             ];
@@ -116,23 +139,24 @@ class RegisterController {
         $url = $base . $route_uri;
         $content = $rq->getParsedBody();
 
-        $username =$content['username'];
-        $password =$content['password'];
-        $userNameExist = Authenticate::where("login", "=", $username)->count();
+        $pseudo = $content['pseudo'];
+        $password = $content['password'];
+        $userNameExist = Authenticate::where("pseudo", "=", $pseudo)->count();
 
         if ($userNameExist == 1) {
-            $getUser=Authenticate::where("login","=",$username)->first();
-            $hashedPassword=$getUser->motDePasse;
+            $getUser=Authenticate::where("pseudo","=",$pseudo)->first();
+            $hashedPassword=$getUser->password;
             if (password_verify($password,$hashedPassword)) {
-                $user = Authenticate::where('login', '=', $username)->first();
+                $user = Authenticate::where('pseudo', '=', $pseudo)->first();
 
                 return [
                     "result" => 1,
-                    "message" => "Vous êtes connecté en tant que $user->login.",
+                    "message" => "Vous êtes connecté en tant que $user->pseudo.",
                     "user" => [
-                        "pseudo" => $user->login,
-                        "email" => $user->email,
-                        "photo" => $user->photoDeProfil,
+                        "pseudo" => $user->pseudo,
+                        "token" => $user->token,
+                        "name" => $user->name,
+                        "avatar" => $user->avatar,
                         "niveauAcces" => $user->niveauAcces
                     ]
                 ];

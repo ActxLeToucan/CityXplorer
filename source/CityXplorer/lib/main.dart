@@ -23,11 +23,11 @@ Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  var pseudo = prefs.getString(Conf.stayLogin);
+  var token = prefs.getString("token");
 
   runApp(MaterialApp(
     title: 'CityXplorer',
-    home: (pseudo == null ? const LoginScreen() : const MainInterface()),
+    home: (token == null ? const LoginScreen() : const MainInterface()),
     routes: {
       'main': (context) => const MainInterface(),
       'searchPage': (context) => const SearchPage(),
@@ -40,4 +40,20 @@ Future<void> main() async {
 
 getCameras() {
   return cameras;
+}
+
+connexion(Map<String, dynamic> data) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString("token", data['user']['token']);
+  prefs.setString("pseudo", data['user']['pseudo']);
+  prefs.setString("user-name", data['user']['name']);
+  prefs.setString("avatar", data['user']['avatar']);
+}
+
+deconnexion() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove("token");
+  prefs.remove("pseudo");
+  prefs.remove("user-name");
+  prefs.remove("avatar");
 }
