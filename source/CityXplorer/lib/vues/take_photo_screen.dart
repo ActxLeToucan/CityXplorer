@@ -1,9 +1,9 @@
 // A screen that allows users to take a picture using a given camera.
 import 'package:camera/camera.dart';
-import 'package:cityxplorer/pages/creation_post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../pages/display_picture_screen.dart';
+import 'package:cityxplorer/pages/new_post.dart';
 
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -96,7 +96,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                     await Navigator.of(context).push(
                       MaterialPageRoute(
                         //builder: (context) => DisplayPictureScreen(
-                        builder: (context) => CreationPostScreen(
+                        builder: (context) => NewPostScreen(
                           // Pass the automatically generated path to
                           // the DisplayPictureScreen widget.
                           imagePath: image.path,
