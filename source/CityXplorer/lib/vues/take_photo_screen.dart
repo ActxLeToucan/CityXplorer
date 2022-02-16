@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import '../pages/display_picture_screen.dart';
+import 'package:cityxplorer/pages/new_post.dart';
 
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -92,7 +93,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                     // If the picture was taken, display it on a new screen.
                     await Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => DisplayPictureScreen(
+                        //builder: (context) => DisplayPictureScreen(
+                        builder: (context) => NewPostScreen(
                           // Pass the automatically generated path to
                           // the DisplayPictureScreen widget.
                           imagePath: image.path,
