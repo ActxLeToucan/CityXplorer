@@ -91,7 +91,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                     final image = await _controller.takePicture();
 
                     // If the picture was taken, display it on a new screen.
-                    await Navigator.of(context).push(
+                    Navigator.of(context).push(
                       MaterialPageRoute(
                         //builder: (context) => DisplayPictureScreen(
                         builder: (context) => NewPostScreen(

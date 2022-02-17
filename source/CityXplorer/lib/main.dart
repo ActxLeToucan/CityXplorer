@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'conf.dart';
+import 'models/user.dart';
 import 'my_http_overrides.dart';
 import 'pages/pages.dart';
 
@@ -31,7 +33,6 @@ Future<void> main() async {
     routes: {
       'main': (context) => const MainInterface(),
       'searchPage': (context) => const SearchPage(),
-      'userProfile': (context) => const UserProfile(),
       'login': (context) => const LoginScreen(),
       'newAccount': (context) => const CreateNewAccount()
     },
@@ -42,18 +43,12 @@ getCameras() {
   return cameras;
 }
 
-connexion(Map<String, dynamic> data) async {
+connexion(User user) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString("token", data['user']['token']);
-  prefs.setString("pseudo", data['user']['pseudo']);
-  prefs.setString("user-name", data['user']['name']);
-  prefs.setString("avatar", data['user']['avatar']);
+  prefs.setString("user", jsonEncode(user));
 }
 
 deconnexion() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.remove("token");
-  prefs.remove("pseudo");
-  prefs.remove("user-name");
-  prefs.remove("avatar");
+  prefs.remove("user");
 }

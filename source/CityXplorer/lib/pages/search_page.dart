@@ -1,5 +1,12 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:cityxplorer/pages/pages.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+
+import '../conf.dart';
+import '../models/user.dart';
 import '../styles.dart';
 
 class SearchPage extends StatefulWidget {
@@ -10,14 +17,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  List<int> _searchIndexList = [];
-  final List<String> _list = [
-    'English Textbook',
-    'Japanese Textbook',
-    'English Vocabulary',
-    'Japanese Vocabulary',
-    'Lorem ipsum dolor sit amet.'
-  ];
+  List<User> _list = [];
 
   final TextEditingController _controller = TextEditingController();
 
@@ -41,10 +41,21 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _searchListView() {
     return ListView.builder(
-        itemCount: _searchIndexList.length,
+        itemCount: _list.length,
         itemBuilder: (context, index) {
-          index = _searchIndexList[index];
-          return Card(child: ListTile(title: Text(_list[index])));
+          return Card(
+              child: GestureDetector(
+            child: ListTile(
+                title: Text(_list[index].name),
+                subtitle: Text("@${_list[index].pseudo}")),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => UserProfile(user: _list[index]),
+                ),
+              );
+            },
+          ));
         });
   }
 
@@ -52,15 +63,27 @@ class _SearchPageState extends State<SearchPage> {
     return TextField(
       textInputAction: TextInputAction.search,
       controller: _controller,
-      onSubmitted: (String text) {
-        setState(() {
-          _searchIndexList = [];
-          for (int i = 0; i < _list.length; i++) {
-            if (_list[i].toLowerCase().contains(text.toLowerCase())) {
-              _searchIndexList.add(i);
-            }
+      onSubmitted: (String text) async {
+        String url =
+            Conf.bddDomainUrl + Conf.bddPath + "/users?q=${text.toLowerCase()}";
+
+        try {
+          var response = await http.get(Uri.parse(url));
+          final Map<String, dynamic> data = json.decode(response.body);
+          var res = data['result'].length;
+
+          if (res == 0) {
+            Fluttertoast.showToast(msg: "Aucun résultat.");
+          } else {
+            _list = data['result'];
           }
-        });
+        } catch (e) {
+          print(e);
+          Fluttertoast.showToast(
+              msg: "Impossible d'accéder à la base de données.");
+        }
+
+        setState(() {});
       },
       autocorrect: false,
       autofocus: true,

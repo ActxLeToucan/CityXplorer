@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:cityxplorer/main.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../conf.dart';
+import '../models/user.dart';
+import '../pages/user_profile.dart';
 import '../styles.dart';
 
 class Menu extends StatelessWidget {
@@ -14,21 +18,21 @@ class Menu extends StatelessWidget {
         child: ListView(padding: EdgeInsets.zero, children: [
       UserAccountsDrawerHeader(
           decoration: BoxDecoration(color: Styles.mainBackgroundColor),
-          accountName: FutureBuilder<String>(
-            future: _getName(),
+          accountName: FutureBuilder<User>(
+            future: _getUser(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Text('${snapshot.data}');
+                return Text(snapshot.requireData.name);
               } else {
                 return const Text("chargement...");
               }
             },
           ),
-          accountEmail: FutureBuilder<String>(
-            future: _getPseudo(),
+          accountEmail: FutureBuilder<User>(
+            future: _getUser(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Text('${snapshot.data}');
+                return Text('@${snapshot.requireData.pseudo}');
               } else {
                 return const Text("chargement...");
               }
@@ -63,25 +67,29 @@ class Menu extends StatelessWidget {
                 );
               }
             }),
-        onTap: () => Navigator.pushNamed(context, "userProfile"));
+        onTap: () async {
+          User user = await _getUser();
+          if (!user.isEmpty()) {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => UserProfile(user: user)));
+          }
+        });
   }
 
-  Future<String> _getPseudo() async {
+  Future<User> _getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? pseudo = prefs.getString("pseudo");
-    return (pseudo != null ? "@$pseudo" : "invalid");
-  }
-
-  Future<String> _getName() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? name = prefs.getString("user-name");
-    return (name ?? "invalid");
+    var userString = prefs.getString('user');
+    User user = User.empty();
+    if (userString != null) {
+      user = User.fromJson(jsonDecode(userString));
+    }
+    return user;
   }
 
   Future<String> _getAvatarUrl() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? photo = prefs.getString("avatar");
-    if (photo == null || photo == "") {
+    User user = await _getUser();
+    String photo = user.avatar;
+    if (photo == "") {
       return "";
     } else {
       return "${Conf.bddDomainUrl}/img/avatar/$photo";

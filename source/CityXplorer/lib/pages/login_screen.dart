@@ -2,8 +2,8 @@ import 'package:cityxplorer/components/background_image.dart';
 import 'package:cityxplorer/components/password_input.dart';
 import 'package:cityxplorer/components/text_input_field.dart';
 import 'package:cityxplorer/main.dart';
+import 'package:cityxplorer/models/user.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -119,12 +119,15 @@ class _LoginScreenState extends State<LoginScreen> {
       var res = data['result'];
 
       if (res == 1) {
-        connexion(data);
+        User user = User.fromJson(data['user']);
+        connexion(user);
+
         Navigator.of(context)
             .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
       }
       Fluttertoast.showToast(msg: data['message']);
     } catch (e) {
+      print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
   }
