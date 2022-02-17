@@ -169,4 +169,15 @@ class RegisterController {
             "user" => null
         ];
     }
+    public function getAllUser(Request $rq,Response $rs, array $args): array{
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('getPost');
+        $url = $base . $route_uri;
+
+        $content = $rq->getParsedBody();
+
+        $usernameToSearch='%'.$content['usernames'].'%';
+        $userTest=Authenticate::where("utilisateur","=",$usernameToSearch);
+    }
 }
