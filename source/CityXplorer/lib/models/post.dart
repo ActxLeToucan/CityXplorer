@@ -1,3 +1,4 @@
+import 'package:cityxplorer/components/icon_menu_post_profil.dart';
 import 'package:cityxplorer/components/share_bar_icon.dart';
 import 'package:flutter/material.dart';
 
@@ -64,7 +65,6 @@ class Post {
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
               )),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))
             ]),
             Row(children: [
               Expanded(
@@ -134,8 +134,7 @@ class Post {
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 24),
                     )),
-                    IconButton(
-                        onPressed: () {}, icon: const Icon(Icons.more_vert))
+                    const IconMenuPost(),
                   ]),
               Text(
                 "$ville, le ${date.day}/${date.month}/${date.year} à ${date.hour}:${date.minute.toString().length == 1 ? "0${date.minute}" : date.minute}.",

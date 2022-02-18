@@ -59,8 +59,8 @@ class _MainInterfaceState extends State<MainInterface> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.plus_one),
-            label: 'Ajouter un poste',
+            icon: Icon(Icons.add_a_photo_rounded),
+            label: 'Créer un post',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.speed),

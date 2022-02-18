@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cityxplorer/components/icon_menu_item_liste.dart';
 
 //contenu de la page dashboard
 class DashBoard extends StatelessWidget {
@@ -37,7 +38,7 @@ class DashBoard extends StatelessWidget {
   Widget _renderListTile(String s) {
     return ListTile(
       title: Text(s),
-      trailing: const Icon(Icons.more_vert),
+      trailing: IconMenu(),
     );
   }
 }

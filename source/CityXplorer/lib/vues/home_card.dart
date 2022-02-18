@@ -1,5 +1,10 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:cityxplorer/models/user.dart';
+import 'package:cityxplorer/pages/user_profile.dart';
+import 'package:flutter/material.dart';
+import 'package:cityxplorer/components/menu.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //contenu de la page d accueil
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -28,7 +33,18 @@ class Home extends StatelessWidget {
                   primary: Colors.black,
                   backgroundColor: Colors.greenAccent,
                 ),
-                onPressed: () {},
+                  onPressed: () async {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    var userString = prefs.getString('user');
+                    User user = User.empty();
+                    if (userString != null) {
+                      user = User.fromJson(jsonDecode(userString));
+                    }
+                    if (!user.isEmpty()) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => UserProfile(user: user)));
+                    }
+                  }
               ),
             ),
             const SizedBox(width: 30),
