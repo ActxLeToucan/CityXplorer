@@ -2,13 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:cityxplorer/pages/create_account.dart';
+import 'package:cityxplorer/pages/login_screen.dart';
+import 'package:cityxplorer/pages/main_interface.dart';
+import 'package:cityxplorer/pages/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'conf.dart';
 import 'models/user.dart';
 import 'my_http_overrides.dart';
-import 'pages/pages.dart';
 
 List<CameraDescription> cameras = [];
 

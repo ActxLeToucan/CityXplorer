@@ -17,7 +17,7 @@ class Menu extends StatelessWidget {
     return Drawer(
         child: ListView(padding: EdgeInsets.zero, children: [
       UserAccountsDrawerHeader(
-          decoration: BoxDecoration(color: Styles.mainBackgroundColor),
+          decoration: BoxDecoration(color: Styles.mainColor),
           accountName: FutureBuilder<User>(
             future: _getUser(),
             builder: (context, snapshot) {

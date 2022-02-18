@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:cityxplorer/pages/pages.dart';
+import 'package:cityxplorer/pages/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -25,7 +25,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Styles.mainBackgroundColor,
+          backgroundColor: Styles.mainColor,
           title: Container(
             width: double.infinity,
             height: 40,

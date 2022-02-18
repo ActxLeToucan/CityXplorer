@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class Styles {
   // global
-  static final Color? mainBackgroundColor = Colors.green[700];
+  static final Color? mainColor = Colors.green[700];
+  static const TextStyle textStyleLink = TextStyle(color: Colors.green);
 
   // login
   static final Color? backgroundColorInput = Colors.grey[500]?.withOpacity(0.5);
