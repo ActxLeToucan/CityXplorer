@@ -7,7 +7,8 @@ class ShareBar extends StatefulWidget {
   State<ShareBar> createState() => _ShareBarState();
 }
 
-class _ShareBarState extends State<ShareBar>{
+// TODO: lier des actions aux boutons
+class _ShareBarState extends State<ShareBar> {
   bool _isFavorited = false;
   @override
   Widget build(BuildContext context) {
@@ -18,19 +19,13 @@ class _ShareBarState extends State<ShareBar>{
           icon: const Icon(Icons.share),
           iconSize: 28,
           color: Colors.black,
-          onPressed: () {
-            const snackBar = SnackBar(content: Text('partager'));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          },
+          onPressed: () {},
         ),
         IconButton(
           icon: const Icon(Icons.map),
           iconSize: 28,
           color: Colors.black,
-          onPressed: () {
-            const snackBar = SnackBar(content: Text('carte'));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          },
+          onPressed: () {},
         ),
         IconButton(
           icon: Icon(_isFavorited ? Icons.favorite : Icons.favorite_border),
