@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../models/user.dart';
-import '../styles.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -25,16 +24,15 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Styles.mainColor,
           title: Container(
-            width: double.infinity,
-            height: 40,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(5)),
-            child: Center(
-              child: _renderSearchBar(),
-            ),
-          )),
+        width: double.infinity,
+        height: 40,
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(5)),
+        child: Center(
+          child: _renderSearchBar(),
+        ),
+      )),
       body: _searchListView(),
     );
   }
@@ -95,7 +93,7 @@ class _SearchPageState extends State<SearchPage> {
               _controller.text = "";
             },
           ),
-          hintText: 'Rechercher un utilisateur...',
+          hintText: 'Pseudo...',
           border: InputBorder.none),
     );
   }

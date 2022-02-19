@@ -5,7 +5,6 @@ buildDefaultAppBar(BuildContext context) {
   return AppBar(
     title: const Text("CityXplorer"),
     centerTitle: true,
-    backgroundColor: Styles.mainColor,
     actions: [
       // Navigate to the Search Screen
       IconButton(

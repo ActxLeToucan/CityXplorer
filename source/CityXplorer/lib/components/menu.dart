@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:cityxplorer/main.dart';
+import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
+import '../main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../conf.dart';
@@ -17,9 +19,9 @@ class Menu extends StatelessWidget {
     return Drawer(
         child: ListView(padding: EdgeInsets.zero, children: [
       UserAccountsDrawerHeader(
-          decoration: BoxDecoration(color: Styles.mainColor),
+          decoration: const BoxDecoration(color: Styles.mainColor),
           accountName: FutureBuilder<User>(
-            future: _getUser(),
+            future: getUser(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Text(snapshot.requireData.name);
@@ -28,8 +30,8 @@ class Menu extends StatelessWidget {
               }
             },
           ),
-          accountEmail: FutureBuilder<User>(
-            future: _getUser(),
+          accountEmail: FutureBuilder<UserConneted>(
+            future: getUser(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Text('@${snapshot.requireData.pseudo}');
@@ -68,7 +70,7 @@ class Menu extends StatelessWidget {
               }
             }),
         onTap: () async {
-          User user = await _getUser();
+          UserConneted user = await getUser();
           if (!user.isEmpty()) {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => UserProfile(user: user)));
@@ -76,18 +78,8 @@ class Menu extends StatelessWidget {
         });
   }
 
-  Future<User> _getUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var userString = prefs.getString('user');
-    User user = User.empty();
-    if (userString != null) {
-      user = User.fromJson(jsonDecode(userString));
-    }
-    return user;
-  }
-
   Future<String> _getAvatarUrl() async {
-    User user = await _getUser();
+    UserConneted user = await getUser();
     String photo = user.avatar;
     if (photo == "") {
       return "";

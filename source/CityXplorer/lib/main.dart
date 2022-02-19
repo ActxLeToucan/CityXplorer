@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:cityxplorer/models/user_connected.dart';
 import 'package:cityxplorer/pages/create_account.dart';
 import 'package:cityxplorer/pages/login_screen.dart';
 import 'package:cityxplorer/pages/main_interface.dart';
 import 'package:cityxplorer/pages/search_page.dart';
+import 'package:cityxplorer/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,6 +33,7 @@ Future<void> main() async {
 
   runApp(MaterialApp(
     title: 'CityXplorer',
+    theme: ThemeData(colorScheme: ColorScheme.light(primary: Styles.mainColor)),
     home: (token == null ? const LoginScreen() : const MainInterface()),
     routes: {
       'main': (context) => const MainInterface(),
@@ -45,7 +48,7 @@ getCameras() {
   return cameras;
 }
 
-connexion(User user) async {
+connexion(UserConneted user) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString("user", jsonEncode(user));
 }
@@ -53,4 +56,14 @@ connexion(User user) async {
 deconnexion() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.remove("user");
+}
+
+Future<UserConneted> getUser() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var userString = prefs.getString('user');
+  UserConneted user = UserConneted.empty();
+  if (userString != null) {
+    user = UserConneted.fromJson(jsonDecode(userString));
+  }
+  return user;
 }
