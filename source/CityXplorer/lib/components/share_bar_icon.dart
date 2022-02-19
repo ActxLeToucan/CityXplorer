@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ShareBar extends StatefulWidget {
   const ShareBar({Key? key}) : super(key: key);
@@ -34,6 +35,11 @@ class _ShareBarState extends State<ShareBar> {
           onPressed: () {
             setState(() {
               _isFavorited = !_isFavorited;
+              if(_isFavorited){
+                Fluttertoast.showToast(msg: "Ajouté aux favoris");
+              }else{
+                Fluttertoast.showToast(msg: "Retiré des favoris");
+              }
             });
           },
         ),
