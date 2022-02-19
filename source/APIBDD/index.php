@@ -26,8 +26,8 @@ $app->get('/doc', function (Request $rq, Response $rs, array $args): Response {
 $app->post('/createPost',
     function (Request $rq, Response $rs, array $args): Response {
     $controller =new PostController($this);
-    return $controller->addPost($rq,$rs,$args);
-})->setName("createItem");
+    return $rs->withJson($controller->addPost($rq,$rs,$args),200);
+})->setName("createPost");
 
 $app->get('/getPost',
     function (Request $rq, Response $rs, array $args): Response {
@@ -47,7 +47,21 @@ $app->post('/register',
         $controller=new RegisterController($this);
         return $rs->withJson($controller->register($rq,$rs,$args),200);
     })->setName("register");
+$app->get('/users',
+    function (Request $rq,Response $rs, array $args):Response{
+        $controller=new RegisterController($this);
+        return $rs->withJson($controller->searchUsers($rq,$rs,$args),200);
+    })->setName("users");
+$app->get('/postUser',
+    function (Request $rq,Response $rs, array $args):Response{
+        $controller=new PostController($this);
+        return $rs->withJson($controller->getUserPost($rq,$rs,$args),200);
+    })->setName("postUser");
 
+
+$app->get('/hello/{name}', function ($rq,$rs,$args) {
+    echo $args['name'] ;
+});
 try {
     $app->run();
 } catch (Throwable $e) {

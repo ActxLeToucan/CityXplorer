@@ -169,15 +169,24 @@ class RegisterController {
             "user" => null
         ];
     }
-    public function getAllUser(Request $rq,Response $rs, array $args): array{
+    public function searchUsers(Request $rq, Response $rs, array $args): array{
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('getPost');
+        $route_uri = $container->router->pathFor('users');
         $url = $base . $route_uri;
-
-        $content = $rq->getParsedBody();
-
-        $usernameToSearch='%'.$content['usernames'].'%';
-        $userTest=Authenticate::where("utilisateur","=",$usernameToSearch);
+        $usernameToSearch='%'.$_GET["pseudo"].'%';
+        $userTest=Authenticate::where("pseudo","like",strtolower($usernameToSearch))->get();
+        $tab=[];
+        foreach ($userTest as $value) {
+            $tabToPush=[
+                "pseudo"=>$value->pseudo,
+                "name"=> $value->name,
+                "avatar"=>$value->avatar,
+                "niveauAcces"=>$value->niveauAcces
+            ];
+            array_push($tab,$tabToPush);
+        }
+        return $tab;
     }
+
 }
