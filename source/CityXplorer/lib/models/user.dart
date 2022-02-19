@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:cityxplorer/models/post.dart';
 import 'package:cityxplorer/pages/user_profile.dart';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,23 +12,27 @@ class User {
   final String name;
   final String avatar;
   final int niveauAcces;
+  final String description;
 
   const User(
       {required this.pseudo,
       required this.name,
       required this.avatar,
-      required this.niveauAcces});
+      required this.niveauAcces,
+      required this.description});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
         pseudo: json['pseudo'],
         name: json['name'],
         avatar: json['avatar'],
-        niveauAcces: json['niveauAcces']);
+        niveauAcces: json['niveauAcces'],
+        description: json['description']);
   }
 
   factory User.empty() {
-    return const User(pseudo: "", name: "", avatar: "", niveauAcces: 0);
+    return const User(
+        pseudo: "", name: "", avatar: "", niveauAcces: 0, description: "");
   }
 
   static fromPseudo(String pseudo) async {
@@ -57,8 +60,14 @@ class User {
       "pseudo": this.pseudo,
       "name": this.name,
       "avatar": this.avatar,
-      "niveauAcces": this.niveauAcces
+      "niveauAcces": this.niveauAcces,
+      "description": this.description
     };
+  }
+
+  @override
+  String toString() {
+    return jsonEncode(this);
   }
 
   bool isEmpty() {

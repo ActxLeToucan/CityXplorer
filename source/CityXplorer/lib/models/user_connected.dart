@@ -8,12 +8,14 @@ class UserConneted extends User {
       required String pseudo,
       required String name,
       required String avatar,
-      required int niveauAcces})
+      required int niveauAcces,
+      required String description})
       : super(
             pseudo: pseudo,
             name: name,
             avatar: avatar,
-            niveauAcces: niveauAcces);
+            niveauAcces: niveauAcces,
+            description: description);
 
   factory UserConneted.fromJson(Map<String, dynamic> json) {
     return UserConneted(
@@ -21,12 +23,18 @@ class UserConneted extends User {
         pseudo: json['pseudo'],
         name: json['name'],
         avatar: json['avatar'],
-        niveauAcces: json['niveauAcces']);
+        niveauAcces: json['niveauAcces'],
+        description: json['description']);
   }
 
   factory UserConneted.empty() {
     return UserConneted(
-        token: "", pseudo: "", name: "", avatar: "", niveauAcces: 0);
+        token: "",
+        pseudo: "",
+        name: "",
+        avatar: "",
+        niveauAcces: 0,
+        description: "");
   }
 
   @override
@@ -36,7 +44,8 @@ class UserConneted extends User {
       "pseudo": this.pseudo,
       "name": this.name,
       "avatar": this.avatar,
-      "niveauAcces": this.niveauAcces
+      "niveauAcces": this.niveauAcces,
+      "description": this.description
     };
   }
 }

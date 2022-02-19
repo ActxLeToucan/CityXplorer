@@ -67,3 +67,8 @@ Future<UserConneted> getUser() async {
   }
   return user;
 }
+
+Future<bool> isCurrentUser(String pseudo) async {
+  UserConneted user = await getUser();
+  return user.pseudo.compareTo(pseudo) == 0;
+}

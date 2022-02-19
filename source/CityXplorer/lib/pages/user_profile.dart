@@ -7,7 +7,6 @@ import '../components/numbers_widget.dart';
 import '../components/profile_widget.dart';
 import '../models/post.dart';
 import '../models/user.dart';
-import '../styles.dart';
 import 'edit_profile.dart';
 
 class UserProfile extends StatefulWidget {
@@ -40,7 +39,10 @@ class _UserProfileState extends State<UserProfile> {
               physics: const AlwaysScrollableScrollPhysics(),
               children: [
                 _renderProgressBar(context),
-                _userInfos(),
+                Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: _userInfos(),
+                ),
                 postsLoaded,
                 Post(
                         date: DateTime.parse("2020-12-24"),
@@ -95,18 +97,19 @@ class _UserProfileState extends State<UserProfile> {
     return Column(
       children: [
         ProfileWidget(
-          user: widget.user,
-          onClicked: () {
-            if (widget.user is UserConneted) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                    builder: (context) => EditProfilePage(
-                          user: (widget.user as UserConneted),
-                        )),
-              );
-            }
-          },
-        ),
+            user: widget.user,
+            onClicked: () async {
+              UserConneted userConneted = UserConneted.empty();
+              if (widget.user is UserConneted) {
+                userConneted = (widget.user as UserConneted);
+              } else if (await isCurrentUser(widget.user.pseudo)) {
+                userConneted = await getUser();
+              }
+              if (!userConneted.isEmpty()) {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => EditProfilePage(user: userConneted)));
+              }
+            }),
         const SizedBox(height: 24),
         buildName(widget.user),
         const SizedBox(height: 24),
@@ -137,31 +140,38 @@ class _UserProfileState extends State<UserProfile> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'À propos',
+              'Description',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            Text(
-              //user.about,
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac ex ullamcorper, iaculis nisl id, maximus augue. Morbi condimentum dui tellus, quis fermentum ante interdum eget. Proin et turpis leo. Praesent ac quam malesuada, sollicitudin eros vulputate, pharetra ligula. Vestibulum pellentesque ligula euismod nulla elementum lobortis. Suspendisse eget dictum nibh.",
-              style: TextStyle(fontSize: 16, height: 1.4),
-            ),
+            user.description == ""
+                ? const Text(
+                    "Aucune description.",
+                    style: TextStyle(
+                        fontSize: 16,
+                        height: 1.4,
+                        color: Colors.grey,
+                        fontStyle: FontStyle.italic),
+                  )
+                : Text(
+                    user.description,
+                    style: const TextStyle(fontSize: 16, height: 1.4),
+                  ),
           ],
         ),
       );
 
   Future<Widget> _renderPosts(BuildContext context) async {
     List<Post> posts = await widget.user.getPosts();
-    User currentUser = await getUser();
+    bool isCurrent = await isCurrentUser(widget.user.pseudo);
     if (posts.isEmpty) {
-      return const Expanded(
-          child: Text("Aucun post publié par cet utilisateur."));
+      return const Center(
+        child: Text("Aucun post n'a été publié par cet utilisateur."),
+      );
     } else {
       List<Widget> list = [];
       for (Post post in posts) {
-        if (post.isValid() ||
-            widget.user.niveauAcces >= 2 ||
-            widget.user.pseudo.compareTo(currentUser.pseudo) == 0) {
+        if (post.isValid() || widget.user.niveauAcces >= 2 || isCurrent) {
           list.add(post.toWidget(context));
         }
       }

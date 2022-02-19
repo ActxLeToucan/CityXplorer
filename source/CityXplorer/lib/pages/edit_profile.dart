@@ -37,10 +37,8 @@ class EditProfilePage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           TextFieldWidget(
-            label: 'À propos',
-            //text: user.about,
-            text:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac ex ullamcorper, iaculis nisl id, maximus augue. Morbi condimentum dui tellus, quis fermentum ante interdum eget. Proin et turpis leo. Praesent ac quam malesuada, sollicitudin eros vulputate, pharetra ligula. Vestibulum pellentesque ligula euismod nulla elementum lobortis. Suspendisse eget dictum nibh.",
+            label: 'Description',
+            text: user.description,
             maxLines: 5,
             onChanged: (about) {},
           ),

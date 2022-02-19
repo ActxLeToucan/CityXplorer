@@ -65,15 +65,17 @@ class _SearchPageState extends State<SearchPage> {
         String url =
             Conf.bddDomainUrl + Conf.bddPath + "/users?q=${text.toLowerCase()}";
 
+        _list = [];
         try {
           var response = await http.get(Uri.parse(url));
-          final Map<String, dynamic> data = json.decode(response.body);
-          var res = data['result'].length;
+          final List<dynamic> data = json.decode(response.body);
 
-          if (res == 0) {
+          if (data.isEmpty) {
             Fluttertoast.showToast(msg: "Aucun résultat.");
           } else {
-            _list = data['result'];
+            for (var user in data) {
+              _list.add(User.fromJson(user));
+            }
           }
         } catch (e) {
           print(e);

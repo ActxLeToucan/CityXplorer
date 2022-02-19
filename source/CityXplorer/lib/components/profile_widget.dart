@@ -1,3 +1,4 @@
+import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 
@@ -18,28 +19,20 @@ class ProfileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.primary;
-
-    Widget icon = Container();
-    if (user is UserConneted) {
-      icon = Positioned(
-        bottom: 0,
-        right: 4,
-        child: buildIcon(color, isEdit ? Icons.add_a_photo : Icons.edit),
-      );
-    } else if (user.niveauAcces >= 2) {
-      icon = Positioned(
-        bottom: 0,
-        right: 4,
-        child: buildIcon(color, Icons.shield),
-      );
-    }
-
     return Center(
       child: Stack(
         children: [
           buildImage(),
-          icon,
+          FutureBuilder<Widget>(
+            future: _icon(context),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return snapshot.requireData;
+              } else {
+                return Container();
+              }
+            },
+          ),
         ],
       ),
     );
@@ -61,6 +54,27 @@ class ProfileWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<Widget> _icon(BuildContext context) async {
+    final color = Theme.of(context).colorScheme.primary;
+
+    Widget icon = Container();
+    if (user is UserConneted || await isCurrentUser(user.pseudo)) {
+      icon = Positioned(
+        bottom: 0,
+        right: 4,
+        child: buildIcon(color, isEdit ? Icons.add_a_photo : Icons.edit),
+      );
+    } else if (user.niveauAcces >= 2) {
+      icon = Positioned(
+        bottom: 0,
+        right: 4,
+        child: buildIcon(color, Icons.shield),
+      );
+    }
+
+    return icon;
   }
 
   Widget buildIcon(Color color, IconData iconData) => buildCircle(
