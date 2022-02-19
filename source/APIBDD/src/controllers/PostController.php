@@ -41,12 +41,12 @@ class PostController{
         $route_uri = $container->router->pathFor('createPost');
         $url = $base . $route_uri;
         $content = $rq->getParsedBody();
-
+        $startTime=strtotime($content['date']);
         $posX=$content['posX'];
         $posY=$content['posY'];
         $descr=$content['description'];
         $titre=$content['titre'];
-        $datePost=$content['date'];
+        $datePost=date("Y-m-d H:i:s",$startTime);
         $photo=$content['photo'];
 
 
