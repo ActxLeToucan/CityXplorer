@@ -159,6 +159,7 @@ class PostController{
             "description"=>$postTestBDD->description,
             "user-pseudo"=>$this->getUserWhoCreatedPostById($rq,$rs,$args,$id),
             "etat"=>$postTestBDD->etat,
+            "iduser"=>$postTestBDD->idUser
             ];
 
         return $tab;
@@ -175,8 +176,7 @@ class PostController{
 
         $user=Authenticate::where("pseudo","=",$usernameToGetPost)->first();
         $id=$user->id;
-        $PostFromUser=Partage::where("idUtilisateur","=",$id)->get();
-        $i=1;
+        $PostFromUser=Post::where("idUser","=",$id)->get();
         $tab=[];
         foreach ($PostFromUser as $value){
             array_push($tab,$this->getPostById($rq,$rs,$args,$value->idPost));
