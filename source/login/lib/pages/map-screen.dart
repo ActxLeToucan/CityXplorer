@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:login_tutorial/services/directionsM.dart';
+import 'package:login_tutorial/services/directionsR.dart';
 
 class GeolocationMap extends StatefulWidget {
   @override
@@ -14,9 +15,13 @@ class _GeolocationMapState extends State<GeolocationMap> {
 
   StreamSubscription _locationSubscription;
   Location _locationTracker = Location();
-  Marker User;
 
-  Marker destination;
+  Marker _User;
+  Marker _destination;
+  Directions _data;
+  String distance = "";
+  String temps = "";
+
 
   GoogleMapController _controller;
 
@@ -26,13 +31,13 @@ class _GeolocationMapState extends State<GeolocationMap> {
   );
 
 
-  void updateMarkerAndCircle(LocationData newLocalData) {
+  void updateMarkerAndCircle(LocationData newLocalData) async {
     LatLng latlng = LatLng(newLocalData.latitude, newLocalData.longitude);
     this.setState(() {
-      User = Marker(
+      this._User = Marker(
           markerId: MarkerId("Ici"),
           position: latlng,
-          rotation: newLocalData.heading,
+          //rotation: newLocalData.heading,
           draggable: false,
           zIndex: 2,
           flat: true,
@@ -40,6 +45,15 @@ class _GeolocationMapState extends State<GeolocationMap> {
           icon: BitmapDescriptor.defaultMarker,
       );
     });
+    final directions = await DirectionsRepository()
+        .getDirections(origin: latlng, destination: _destination.position);
+    setState(() => _data = directions);
+
+    if (_data != null) {
+      distance = _data.totalDistance;
+      temps = _data.totalDuration;
+    }
+
   }
 
   void getCurrentLocation() async {
@@ -57,11 +71,13 @@ class _GeolocationMapState extends State<GeolocationMap> {
 
       _locationSubscription = _locationTracker.onLocationChanged().listen((newLocalData) {
         if (_controller != null) {
-         _controller.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+         /*_controller.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
               bearing: 192.8334901395799,
               target: LatLng(newLocalData.latitude, newLocalData.longitude),
               tilt: 0,
               zoom: 18.00)));
+
+          */
 
 
           updateMarkerAndCircle(newLocalData);
@@ -75,10 +91,10 @@ class _GeolocationMapState extends State<GeolocationMap> {
     }
   }
 
-  void addMarkerDestination() {
+  void addMarkerDestination() async {
     LatLng latlng = LatLng(48.68572846037453, 6.171208548605282);
     this.setState(() {
-      destination = Marker(
+      this._destination = Marker(
         markerId: MarkerId("maison"),
         position: latlng,
         draggable: false,
@@ -88,6 +104,7 @@ class _GeolocationMapState extends State<GeolocationMap> {
         icon: BitmapDescriptor.defaultMarker,
       );
     });
+
   }
 
   @override
@@ -98,27 +115,54 @@ class _GeolocationMapState extends State<GeolocationMap> {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body:  GoogleMap(
-        mapType: MapType.hybrid,
-        initialCameraPosition: initialLocation,
+      appBar: AppBar(
+        title: Text(
+          'Il vous reste ${distance}, ${temps}',
+          style: const TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      body:  Stack(
+        alignment: Alignment.center,
+        children: [
+          GoogleMap(
+            mapType: MapType.hybrid,
+            initialCameraPosition: initialLocation,
 
 
-        markers: Set.of((User != null) ? [User , destination] : []),
+            markers: Set.of((_User != null) ? [_User , _destination] : []),
 
+            onMapCreated: (GoogleMapController controller) {
+              _controller = controller;
+              addMarkerDestination();
+              getCurrentLocation();
+            },
 
+            polylines: {
+              if (_data != null)
+                Polyline(
+                  polylineId: const PolylineId('overview_polyline'),
+                  color: Colors.blue,
+                  width: 4,
+                  points: _data.polylinePoints
+                      .map((e) => LatLng(e.latitude, e.longitude))
+                      .toList(),
+                ),
+            },
 
-        onMapCreated: (GoogleMapController controller) {
-          _controller = controller;
-          addMarkerDestination();
-          getCurrentLocation();
-        },
+          ),
+        ],
       ),
 
     );
   }
 
 }
+
+
