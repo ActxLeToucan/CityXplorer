@@ -208,7 +208,7 @@ class Post {
               const IconMenuPost(),
             ]),
         Text(
-          "$ville, le ${date.day}/${date.month}/${date.year} à ${date.hour}:${date.minute.toString().length == 1 ? "0${date.minute}" : date.minute}.",
+          "$ville, le ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} à ${date.hour}:${date.minute.toString().padLeft(2, '0')}.",
           style: const TextStyle(color: Colors.black45),
         ),
         Padding(

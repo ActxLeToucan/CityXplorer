@@ -9,6 +9,7 @@ use cityXplorer\models\Post;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Illuminate\Support\Facades\Date;
+use function MongoDB\BSON\toJSON;
 
 class PostController{
     /**
@@ -35,67 +36,84 @@ class PostController{
             $PartageToAdd->idPost=$idPost;
             $PartageToAdd->save();
     }
+    
     public function addPost(Request $rq, Response $rs, array $args): array{
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('createPost');
         $url = $base . $route_uri;
         $content = $rq->getParsedBody();
-        $startTime=strtotime($content['date']);
-        $posX=$content['posX'];
-        $posY=$content['posY'];
-        $descr=$content['description'];
-        $titre=$content['titre'];
-        $datePost=date("Y-m-d H:i:s",$startTime);
-        $photo=$content['photo'];
 
+        $startTime = strtotime($content['date']);
+        $posX = filter_var($content['posX'], FILTER_SANITIZE_NUMBER_FLOAT);
+        $posY = filter_var($content['posY'], FILTER_SANITIZE_NUMBER_FLOAT);
+        $descr = filter_var($content['description'], FILTER_SANITIZE_STRING);
+        $titre = filter_var($content['titre'], FILTER_SANITIZE_STRING);
+        $datePost = date("Y-m-d H:i:s", $startTime);
 
-        $tab=[];
+        $tab = [
+            "result" => 0,
+            "message" => "Erreur lors de l'insertion",
+            "post" => null
+        ];
 
-        $user=Authenticate::where("token","=",$content['token'])->first();
-        if($user!=[]){
-            $PostToAdd =new Post();
-            $PostToAdd->emplacementX=$posX;
-            $PostToAdd->emplacementY=$posY;
-            $PostToAdd->description=$descr;
-            $PostToAdd->titre=$titre;
-            $PostToAdd->datePost=$datePost;
-            $PostToAdd->etat='Invalide';
-            $PostToAdd->photo=$photo;
-            $PostToAdd->idUser=$user->id;
-            $PostToAdd->save();
-
-            $Retrieve=Post::where(["titre"=>$titre,"idUser"=>$user->id])->first();
-
-
-
-            $tab =[
-                "result" => 1,
-                "message" => "Insertion effectuée",
-                "post" => [
-                    "titre" => $titre,
-                    "posX"=>$posX,
-                    "posY" => $posY,
-                    "descr" => $descr,
-                    "date" => $datePost
-                ]
-            ];
-        }else{
-            $tab =[
+        if (isset($content['token'])) {
+            $user = Authenticate::where("token", "=", $content['token'])->first();
+            $tab = [
                 "result" => 0,
-                "message" => "Erreur lors de l'insertion",
-                "post" => [
-                    "titre" => $titre,
-                    "posX"=>$posX,
-                    "posY" => $posY,
-                    "descr" => $descr,
-                    "date" => $datePost
-                ]
+                "message" => "Erreur : token invalide",
+                "post" => null
             ];
+            if(!is_null($user)){
+                // upload image
+                $extension = $_FILES['photo']['type'];
+                $cheminServeur = $_FILES['photo']['tmp_name'];
+                $fileName = str_replace('image/', time().bin2hex(openssl_random_pseudo_bytes(20)).'.', $extension);
+                $uploadFile = "/var/www/cityxplorer/img/posts/$fileName";
+                move_uploaded_file($cheminServeur, $uploadFile);
+
+                // creation post
+                $newPost = new Post();
+                $newPost->emplacementX=$posX;
+                $newPost->emplacementY=$posY;
+                $newPost->description=$descr;
+                $newPost->titre=$titre;
+                $newPost->datePost=$datePost;
+                $newPost->etat='Invalide';
+                $newPost->idUser=$user->id;
+                $newPost->save();
+
+                // creation photo
+                $newPhoto = new Photo();
+                $newPhoto->idPost = $newPost->idPost;
+                $newPhoto->url = $fileName;
+                $newPhoto->save();
+
+                // récupérations de toutes les photos
+                $tabPhotos = [];
+                foreach ($newPost->photos as $photo) {
+                    $tabPhotos[] = $photo->url;
+                }
+
+                // résultats
+                $tab =[
+                    "result" => 1,
+                    "message" => "Insertion effectuée",
+                    "post" => [
+                        "titre" => $titre,
+                        "posX"=>$posX,
+                        "posY" => $posY,
+                        "descr" => $descr,
+                        "date" => $datePost,
+                        "photos" => $tabPhotos
+                    ]
+                ];
+            }
         }
 
         return $tab;
     }
+
     public function getPost(Request $rq, Response $rs, array $args): array{
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();

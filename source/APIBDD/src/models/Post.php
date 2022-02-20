@@ -11,6 +11,6 @@ class Post extends Model{
     public $timestamps = false;
 
     public function photos(): HasMany {
-        return $this->hasMany('cityXplorer\models\Photo',"idPhoto");
+        return $this->hasMany('cityXplorer\models\Photo',"idPost");
     }
 }

@@ -11,6 +11,6 @@ class Photo extends Model{
     public $timestamps = false;
 
     public function post(): BelongsTo {
-        return $this->belongsTo('cityXplorer\models\Liste',"idPost");
+        return $this->belongsTo('cityXplorer\models\Post',"idPost");
     }
 }

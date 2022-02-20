@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : Dim 20 fév. 2022 à 10:17
+-- Généré le : Dim 20 fév. 2022 à 15:26
 -- Version du serveur :  10.3.32-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 7.4.3
 
@@ -132,7 +132,9 @@ CREATE TABLE `photo` (
 INSERT INTO `photo` (`idPhoto`, `idPost`, `url`) VALUES
 (1, 1, 'Lien image tour de pise'),
 (2, 2, 'Lien imageGare MontParnasse'),
-(3, 1, 'zqg mkjzlkdgjz');
+(3, 1, 'zqg mkjzlkdgjz'),
+(7, 21, '16453704226e4daef1c8c0a9bcf3778b9a2ad750c361bec0ec.png'),
+(8, 22, '164537065693ae3b3951220e4733350eb0d5921e3139230a8b.png');
 
 -- --------------------------------------------------------
 
@@ -146,9 +148,8 @@ CREATE TABLE `post` (
   `emplacementY` varchar(100) DEFAULT NULL,
   `description` varchar(200) DEFAULT NULL,
   `titre` varchar(100) DEFAULT NULL,
-  `datePost` date DEFAULT NULL,
+  `datePost` datetime DEFAULT current_timestamp(),
   `etat` varchar(10) DEFAULT NULL,
-  `photo` varchar(500) NOT NULL,
   `idUser` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -156,20 +157,22 @@ CREATE TABLE `post` (
 -- Déchargement des données de la table `post`
 --
 
-INSERT INTO `post` (`idPost`, `emplacementX`, `emplacementY`, `description`, `titre`, `datePost`, `etat`, `photo`, `idUser`) VALUES
-(1, '10', '10', 'Photo de la tour de pise', 'Tour de Pise', '2021-12-28', 'Invalide', '', 0),
-(2, '87', '32', 'Gare MontParnasse', 'Gare MontParnasse', '2021-12-28', 'Valide', '', 1),
-(5, '10', '10', 'Voici un chateau', 'Le chateau très beau', NULL, 'Invalide', '', 1),
-(6, NULL, NULL, NULL, 'blabla', NULL, 'Invalide', 'url photo', 5),
-(7, NULL, NULL, NULL, 'blabla', NULL, 'Invalide', 'url photo', 5),
-(8, '11', '11', NULL, 'blabla', NULL, 'Invalide', 'url photo', 5),
-(9, '11', '11', 'blabla', 'blabla', NULL, 'Invalide', 'url photo', 5),
-(10, '11', '11', 'blabla', 'blabla', '0000-00-00', 'Invalide', 'url photo', 5),
-(11, '11', '11', 'blabla', 'blabla', '0000-00-00', 'Invalide', 'url photo', 5),
-(12, '11', '11', 'blabla', 'blabla', '0000-00-00', 'Invalide', 'url photo', 5),
-(13, '11', '11', 'blabla', 'blabla', '0000-00-00', 'Invalide', 'url photo', 5),
-(14, '11', '11', 'blabla', 'blabla', '0000-00-00', 'Invalide', 'url photo', 5),
-(15, '11', '11', 'blabla', 'blabla', '2011-06-10', 'Invalide', 'url photo', 5);
+INSERT INTO `post` (`idPost`, `emplacementX`, `emplacementY`, `description`, `titre`, `datePost`, `etat`, `idUser`) VALUES
+(1, '10', '10', 'Photo de la tour de pise', 'Tour de Pise', '2021-12-28 00:00:00', 'Invalide', 0),
+(2, '87', '32', 'Gare MontParnasse', 'Gare MontParnasse', '2021-12-28 00:00:00', 'Valide', 1),
+(5, '10', '10', 'Voici un chateau', 'Le chateau très beau', NULL, 'Invalide', 1),
+(6, NULL, NULL, NULL, 'blabla', NULL, 'Invalide', 5),
+(7, NULL, NULL, NULL, 'blabla', NULL, 'Invalide', 5),
+(8, '11', '11', NULL, 'blabla', NULL, 'Invalide', 5),
+(9, '11', '11', 'blabla', 'blabla', NULL, 'Invalide', 5),
+(10, '11', '11', 'blabla', 'blabla', '0000-00-00 00:00:00', 'Invalide', 5),
+(11, '11', '11', 'blabla', 'blabla', '0000-00-00 00:00:00', 'Invalide', 5),
+(12, '11', '11', 'blabla', 'blabla', '0000-00-00 00:00:00', 'Invalide', 5),
+(13, '11', '11', 'blabla', 'blabla', '0000-00-00 00:00:00', 'Invalide', 5),
+(14, '11', '11', 'blabla', 'blabla', '0000-00-00 00:00:00', 'Invalide', 5),
+(15, '11', '11', 'blabla', 'blabla', '2011-06-10 00:00:00', 'Invalide', 5),
+(21, '10', '12', 'la description', 'Un titre', '2002-12-23 23:54:09', 'Invalide', 1),
+(22, '10', '12', 'la description', 'Un titre', '2002-12-23 23:54:09', 'Invalide', 1);
 
 -- --------------------------------------------------------
 
@@ -194,7 +197,10 @@ CREATE TABLE `utilisateur` (
 
 INSERT INTO `utilisateur` (`id`, `pseudo`, `name`, `password`, `avatar`, `niveauAcces`, `token`, `description`) VALUES
 (1, 'antoine54', 'Antoine CONTOUX', '$2y$12$eKIPYSrDDdmop8a7sOWIAu5EKNJdZLvdKY33kyIQd/QfGCg6l8ZIa', 'antoine.jpg', 1, '1645012186aeb999b417f2802b8341d8df60e6f303daf5b9c875a84b803eb145d8e3d8e2b649e54102141d1c8835bc8a7f0bfa3eb54189a08a4240ca1aaf8e99f9c89d0bce', ''),
-(5, 'anthony', 'Anthony Nigro', 'aakjfskakf', 'avatar.png', 2, '1234', '');
+(5, 'anthony', 'Anthony Nigro', 'aakjfskakf', 'avatar.png', 2, '1234', ''),
+(7, 'azertyuiop', 'azertyuiop', '$2y$12$oSykPSMz83aIlH4V8aGxCe8yRJKRU5rxdXhv14Z3EicqYHirlnW1W', 'avatar.png', 1, '164535247133428dcfeb6da92fe7c92303979fe82f6a6870ba6593fce1ad7dc289dca2aba99bb3d5dd66552ad2cf4223063b84af208eb3423a7090a2517207421d5d9ee66f', ''),
+(8, '150150150', '150150150', '$2y$12$1/S4I10Qte5vSbnWqvt2UOC8B.Rq2LP35cyG7L.NEVi7QZPGIFlXC', 'avatar.png', 1, '1645358530fcef283451e455fd12831692587e42ace8af7699b2f33d429ae7662011737cac6383ae2e4400e7e3ace8846bbad5c93cf5966ce48f3a211573228b4c12b1e238', ''),
+(9, 'jppjppjpp', 'jppjppjpp', '$2y$12$Hnjvul3fJG.07lYARHFn5OqdmBN6dS56.ApPyb2ZW2/zCZpf.P5xu', 'avatar.png', 1, '16453591888c2fa899c96109dd4bbca3ae400411e62c0639476f1a52ce4b2df372c38b9372899d08623df413a68c811a274967b477f23f1b19302174c695a1303e072fa003', '');
 
 --
 -- Index pour les tables déchargées
@@ -265,19 +271,19 @@ ALTER TABLE `listeaffichable`
 -- AUTO_INCREMENT pour la table `photo`
 --
 ALTER TABLE `photo`
-  MODIFY `idPhoto` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `idPhoto` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT pour la table `post`
 --
 ALTER TABLE `post`
-  MODIFY `idPost` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `idPost` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Contraintes pour les tables déchargées
