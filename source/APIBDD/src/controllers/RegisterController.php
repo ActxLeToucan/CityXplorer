@@ -169,6 +169,14 @@ class RegisterController {
             "user" => null
         ];
     }
+
+    /**
+     * Méthode servant à récupérer tout les utilisateurs dont le pseudo ressemble à celui donné
+     * @param Request $rq
+     * @param Response $rs
+     * @param array $args
+     * @return array Contenant toutes les caractéristiques des personnes trouvées
+     */
     public function searchUsers(Request $rq, Response $rs, array $args): array{
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
