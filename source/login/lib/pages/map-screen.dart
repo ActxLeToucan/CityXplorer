@@ -16,15 +16,7 @@ class _GeolocationMapState extends State<GeolocationMap> {
   Location _locationTracker = Location();
   Marker User;
 
-  Marker destination = Marker(
-  markerId: MarkerId("Ici"),
-  position: LatLng(48.692054, 6.184417),
-  draggable: false,
-  zIndex: 2,
-  flat: true,
-  anchor: Offset(0.5, 0.5),
-  icon: BitmapDescriptor.defaultMarker,
-  );
+  Marker destination;
 
   GoogleMapController _controller;
 
@@ -65,11 +57,13 @@ class _GeolocationMapState extends State<GeolocationMap> {
 
       _locationSubscription = _locationTracker.onLocationChanged().listen((newLocalData) {
         if (_controller != null) {
-          _controller.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+         _controller.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
               bearing: 192.8334901395799,
               target: LatLng(newLocalData.latitude, newLocalData.longitude),
               tilt: 0,
               zoom: 18.00)));
+
+
           updateMarkerAndCircle(newLocalData);
         }
       });
@@ -82,10 +76,10 @@ class _GeolocationMapState extends State<GeolocationMap> {
   }
 
   void addMarkerDestination() {
-    LatLng latlng = LatLng(48.681,  6.1754);
+    LatLng latlng = LatLng(48.68572846037453, 6.171208548605282);
     this.setState(() {
       destination = Marker(
-        markerId: MarkerId("Ici"),
+        markerId: MarkerId("maison"),
         position: latlng,
         draggable: false,
         zIndex: 2,
@@ -113,7 +107,7 @@ class _GeolocationMapState extends State<GeolocationMap> {
         initialCameraPosition: initialLocation,
 
 
-        markers: Set.of((User != null) ? [User] : []),
+        markers: Set.of((User != null) ? [User , destination] : []),
 
 
 
