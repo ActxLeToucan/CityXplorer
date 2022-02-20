@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Styles {
   // global
-  static final Color? mainColor = Colors.green[700];
+  static const Color mainColor = Color(0xFF388E3C);
   static const TextStyle textStyleLink = TextStyle(color: Colors.green);
 
   // login

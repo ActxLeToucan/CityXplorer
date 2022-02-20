@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mer. 16 fév. 2022 à 12:52
+-- Généré le : Dim 20 fév. 2022 à 10:17
 -- Version du serveur :  10.3.32-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 7.4.3
 
@@ -105,6 +105,14 @@ CREATE TABLE `partage` (
   `idPost` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Déchargement des données de la table `partage`
+--
+
+INSERT INTO `partage` (`idUtilisateur`, `idPost`) VALUES
+(1, 2),
+(1, 5);
+
 -- --------------------------------------------------------
 
 --
@@ -140,17 +148,28 @@ CREATE TABLE `post` (
   `titre` varchar(100) DEFAULT NULL,
   `datePost` date DEFAULT NULL,
   `etat` varchar(10) DEFAULT NULL,
-  `photo` varchar(500) NOT NULL
+  `photo` varchar(500) NOT NULL,
+  `idUser` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `post`
 --
 
-INSERT INTO `post` (`idPost`, `emplacementX`, `emplacementY`, `description`, `titre`, `datePost`, `etat`, `photo`) VALUES
-(1, '10', '10', 'Photo de la tour de pise', 'Tour de Pise', '2021-12-28', 'Invalide', ''),
-(2, '87', '32', 'Gare MontParnasse', 'Gare MontParnasse', '2021-12-28', 'Valide', ''),
-(5, '10', '10', 'Voici un chateau', 'Le chateau très beau', NULL, 'Invalide', '');
+INSERT INTO `post` (`idPost`, `emplacementX`, `emplacementY`, `description`, `titre`, `datePost`, `etat`, `photo`, `idUser`) VALUES
+(1, '10', '10', 'Photo de la tour de pise', 'Tour de Pise', '2021-12-28', 'Invalide', '', 0),
+(2, '87', '32', 'Gare MontParnasse', 'Gare MontParnasse', '2021-12-28', 'Valide', '', 1),
+(5, '10', '10', 'Voici un chateau', 'Le chateau très beau', NULL, 'Invalide', '', 1),
+(6, NULL, NULL, NULL, 'blabla', NULL, 'Invalide', 'url photo', 5),
+(7, NULL, NULL, NULL, 'blabla', NULL, 'Invalide', 'url photo', 5),
+(8, '11', '11', NULL, 'blabla', NULL, 'Invalide', 'url photo', 5),
+(9, '11', '11', 'blabla', 'blabla', NULL, 'Invalide', 'url photo', 5),
+(10, '11', '11', 'blabla', 'blabla', '0000-00-00', 'Invalide', 'url photo', 5),
+(11, '11', '11', 'blabla', 'blabla', '0000-00-00', 'Invalide', 'url photo', 5),
+(12, '11', '11', 'blabla', 'blabla', '0000-00-00', 'Invalide', 'url photo', 5),
+(13, '11', '11', 'blabla', 'blabla', '0000-00-00', 'Invalide', 'url photo', 5),
+(14, '11', '11', 'blabla', 'blabla', '0000-00-00', 'Invalide', 'url photo', 5),
+(15, '11', '11', 'blabla', 'blabla', '2011-06-10', 'Invalide', 'url photo', 5);
 
 -- --------------------------------------------------------
 
@@ -163,17 +182,19 @@ CREATE TABLE `utilisateur` (
   `pseudo` varchar(50) NOT NULL,
   `name` varchar(256) DEFAULT NULL,
   `password` varchar(256) DEFAULT NULL,
-  `avatar` varchar(250) DEFAULT '',
+  `avatar` varchar(250) NOT NULL DEFAULT 'avatar.png',
   `niveauAcces` int(5) NOT NULL DEFAULT 1,
-  `token` varchar(256) NOT NULL
+  `token` varchar(256) NOT NULL,
+  `description` text NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `utilisateur`
 --
 
-INSERT INTO `utilisateur` (`id`, `pseudo`, `name`, `password`, `avatar`, `niveauAcces`, `token`) VALUES
-(1, 'antoine54', 'Antoine CONTOUX', '$2y$12$eKIPYSrDDdmop8a7sOWIAu5EKNJdZLvdKY33kyIQd/QfGCg6l8ZIa', 'antoine.jpg', 1, '1645012186aeb999b417f2802b8341d8df60e6f303daf5b9c875a84b803eb145d8e3d8e2b649e54102141d1c8835bc8a7f0bfa3eb54189a08a4240ca1aaf8e99f9c89d0bce');
+INSERT INTO `utilisateur` (`id`, `pseudo`, `name`, `password`, `avatar`, `niveauAcces`, `token`, `description`) VALUES
+(1, 'antoine54', 'Antoine CONTOUX', '$2y$12$eKIPYSrDDdmop8a7sOWIAu5EKNJdZLvdKY33kyIQd/QfGCg6l8ZIa', 'antoine.jpg', 1, '1645012186aeb999b417f2802b8341d8df60e6f303daf5b9c875a84b803eb145d8e3d8e2b649e54102141d1c8835bc8a7f0bfa3eb54189a08a4240ca1aaf8e99f9c89d0bce', ''),
+(5, 'anthony', 'Anthony Nigro', 'aakjfskakf', 'avatar.png', 2, '1234', '');
 
 --
 -- Index pour les tables déchargées
@@ -204,13 +225,6 @@ ALTER TABLE `contient`
 --
 ALTER TABLE `listeaffichable`
   ADD PRIMARY KEY (`idliste`);
-
---
--- Index pour la table `listeenregistrées`
---
-ALTER TABLE `listeenregistrées`
-  ADD PRIMARY KEY (`idListe`,`idUtilisateur`),
-  ADD KEY `loginuserListSave_foreign_key` (`idUtilisateur`);
 
 --
 -- Index pour la table `partage`
@@ -257,13 +271,13 @@ ALTER TABLE `photo`
 -- AUTO_INCREMENT pour la table `post`
 --
 ALTER TABLE `post`
-  MODIFY `idPost` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `idPost` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Contraintes pour les tables déchargées
@@ -282,13 +296,6 @@ ALTER TABLE `avotepour`
 ALTER TABLE `contient`
   ADD CONSTRAINT `idListContient_foreign_key` FOREIGN KEY (`idListe`) REFERENCES `listeaffichable` (`idliste`),
   ADD CONSTRAINT `idpostContient_Foreign_key` FOREIGN KEY (`idPost`) REFERENCES `post` (`idPost`);
-
---
--- Contraintes pour la table `listeenregistrées`
---
-ALTER TABLE `listeenregistrées`
-  ADD CONSTRAINT `idListSave_foreign_key` FOREIGN KEY (`idListe`) REFERENCES `listeaffichable` (`idliste`),
-  ADD CONSTRAINT `loginuserListSave_foreign_key` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`);
 
 --
 -- Contraintes pour la table `partage`

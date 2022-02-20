@@ -119,7 +119,8 @@ class RegisterController {
                     "token" => $user->token,
                     "name" => $user->name,
                     "avatar" => $user->avatar,
-                    "niveauAcces" => $user->niveauAcces
+                    "niveauAcces" => $user->niveauAcces,
+                    "description" => $user->description
                 ]
             ];
         }
@@ -157,7 +158,8 @@ class RegisterController {
                         "token" => $user->token,
                         "name" => $user->name,
                         "avatar" => $user->avatar,
-                        "niveauAcces" => $user->niveauAcces
+                        "niveauAcces" => $user->niveauAcces,
+                        "description" => $user->description
                     ]
                 ];
             }
@@ -182,17 +184,23 @@ class RegisterController {
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('users');
         $url = $base . $route_uri;
-        $usernameToSearch='%'.$_GET["pseudo"].'%';
-        $userTest=Authenticate::where("pseudo","like",strtolower($usernameToSearch))->get();
-        $tab=[];
-        foreach ($userTest as $value) {
-            $tabToPush=[
-                "pseudo"=>$value->pseudo,
-                "name"=> $value->name,
-                "avatar"=>$value->avatar,
-                "niveauAcces"=>$value->niveauAcces
-            ];
-            array_push($tab,$tabToPush);
+
+        if (isset($_GET['q']) && $_GET['q'] !== "") {
+            $usernameToSearch = '%'.$_GET["q"].'%';
+            $users = Authenticate::where("pseudo","like",strtolower($usernameToSearch))->get();
+            $tab=[];
+            foreach ($users as $key => $value) {
+                $tabToPush=[
+                    "pseudo"=>$value->pseudo,
+                    "name"=> $value->name,
+                    "avatar"=>$value->avatar,
+                    "niveauAcces"=>$value->niveauAcces,
+                    "description" => $value->description
+                ];
+                $tab[] = $tabToPush;
+            }
+        } else {
+            $tab = [];
         }
         return $tab;
     }

@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:cityxplorer/models/user.dart';
 import 'package:cityxplorer/pages/user_profile.dart';
 import 'package:flutter/material.dart';
-import 'package:cityxplorer/components/menu.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 //contenu de la page d accueil
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -28,13 +28,14 @@ class Home extends StatelessWidget {
               width: 140.0,
               height: 60.0,
               child: TextButton(
-                child: const Text("Profil"),
-                style: TextButton.styleFrom(
-                  primary: Colors.black,
-                  backgroundColor: Colors.greenAccent,
-                ),
+                  child: const Text("Profil"),
+                  style: TextButton.styleFrom(
+                    primary: Colors.black,
+                    backgroundColor: Colors.greenAccent,
+                  ),
                   onPressed: () async {
-                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
                     var userString = prefs.getString('user');
                     User user = User.empty();
                     if (userString != null) {
@@ -44,8 +45,7 @@ class Home extends StatelessWidget {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => UserProfile(user: user)));
                     }
-                  }
-              ),
+                  }),
             ),
             const SizedBox(width: 30),
             SizedBox(
