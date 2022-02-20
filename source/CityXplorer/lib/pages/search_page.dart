@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../models/user.dart';
-import '../styles.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -25,16 +24,15 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Styles.mainColor,
           title: Container(
-            width: double.infinity,
-            height: 40,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(5)),
-            child: Center(
-              child: _renderSearchBar(),
-            ),
-          )),
+        width: double.infinity,
+        height: 40,
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(5)),
+        child: Center(
+          child: _renderSearchBar(),
+        ),
+      )),
       body: _searchListView(),
     );
   }
@@ -67,15 +65,17 @@ class _SearchPageState extends State<SearchPage> {
         String url =
             Conf.bddDomainUrl + Conf.bddPath + "/users?q=${text.toLowerCase()}";
 
+        _list = [];
         try {
           var response = await http.get(Uri.parse(url));
-          final Map<String, dynamic> data = json.decode(response.body);
-          var res = data['result'].length;
+          final List<dynamic> data = json.decode(response.body);
 
-          if (res == 0) {
+          if (data.isEmpty) {
             Fluttertoast.showToast(msg: "Aucun résultat.");
           } else {
-            _list = data['result'];
+            for (var user in data) {
+              _list.add(User.fromJson(user));
+            }
           }
         } catch (e) {
           print(e);
@@ -95,7 +95,7 @@ class _SearchPageState extends State<SearchPage> {
               _controller.text = "";
             },
           ),
-          hintText: 'Rechercher un utilisateur...',
+          hintText: 'Pseudo...',
           border: InputBorder.none),
     );
   }

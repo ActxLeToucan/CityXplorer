@@ -119,7 +119,8 @@ class RegisterController {
                     "token" => $user->token,
                     "name" => $user->name,
                     "avatar" => $user->avatar,
-                    "niveauAcces" => $user->niveauAcces
+                    "niveauAcces" => $user->niveauAcces,
+                    "description" => $user->description
                 ]
             ];
         }
@@ -157,7 +158,8 @@ class RegisterController {
                         "token" => $user->token,
                         "name" => $user->name,
                         "avatar" => $user->avatar,
-                        "niveauAcces" => $user->niveauAcces
+                        "niveauAcces" => $user->niveauAcces,
+                        "description" => $user->description
                     ]
                 ];
             }
@@ -169,15 +171,30 @@ class RegisterController {
             "user" => null
         ];
     }
-    public function getAllUser(Request $rq,Response $rs, array $args): array{
+    public function searchUsers(Request $rq, Response $rs, array $args): array{
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('getPost');
+        $route_uri = $container->router->pathFor('users');
         $url = $base . $route_uri;
 
-        $content = $rq->getParsedBody();
-
-        $usernameToSearch='%'.$content['usernames'].'%';
-        $userTest=Authenticate::where("utilisateur","=",$usernameToSearch);
+        if (isset($_GET['q']) && $_GET['q'] !== "") {
+            $usernameToSearch = '%'.$_GET["q"].'%';
+            $users = Authenticate::where("pseudo","like",strtolower($usernameToSearch))->get();
+            $tab=[];
+            foreach ($users as $key => $value) {
+                $tabToPush=[
+                    "pseudo"=>$value->pseudo,
+                    "name"=> $value->name,
+                    "avatar"=>$value->avatar,
+                    "niveauAcces"=>$value->niveauAcces,
+                    "description" => $value->description
+                ];
+                $tab[] = $tabToPush;
+            }
+        } else {
+            $tab = [];
+        }
+        return $tab;
     }
+
 }

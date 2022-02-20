@@ -4,7 +4,7 @@ import 'package:cityxplorer/components/background_image.dart';
 import 'package:cityxplorer/components/password_input.dart';
 import 'package:cityxplorer/components/text_input_field.dart';
 import 'package:cityxplorer/main.dart';
-import 'package:cityxplorer/models/user.dart';
+import 'package:cityxplorer/models/user_connected.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -144,7 +144,7 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
       var res = data['result'];
 
       if (res == 1) {
-        User user = User.fromJson(data['user']);
+        UserConneted user = UserConneted.fromJson(data['user']);
         connexion(user);
 
         Navigator.of(context)

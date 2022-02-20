@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cityxplorer/models/post.dart';
+import 'package:cityxplorer/pages/user_profile.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
@@ -8,40 +9,65 @@ import '../conf.dart';
 
 class User {
   final String pseudo;
-  final String token;
   final String name;
   final String avatar;
   final int niveauAcces;
+  final String description;
 
   const User(
       {required this.pseudo,
-      required this.token,
       required this.name,
       required this.avatar,
-      required this.niveauAcces});
+      required this.niveauAcces,
+      required this.description});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
         pseudo: json['pseudo'],
-        token: json['token'],
         name: json['name'],
         avatar: json['avatar'],
-        niveauAcces: json['niveauAcces']);
+        niveauAcces: json['niveauAcces'],
+        description: json['description']);
   }
 
   factory User.empty() {
     return const User(
-        pseudo: "", token: "", name: "", avatar: "", niveauAcces: 0);
+        pseudo: "", name: "", avatar: "", niveauAcces: 0, description: "");
+  }
+
+  static fromPseudo(String pseudo) async {
+    User user = User.empty();
+
+    String url = Conf.bddDomainUrl + Conf.bddPath + "/user?pseudo=$pseudo";
+    try {
+      var response = await http.get(Uri.parse(url));
+      final Map<String, dynamic> data = json.decode(response.body);
+      var res = data['result'];
+
+      if (res == 1) {
+        user = User.fromJson(data['user']);
+      }
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
+
+    return user;
   }
 
   Map<String, dynamic> toJson() {
     return {
       "pseudo": this.pseudo,
-      "token": this.token,
       "name": this.name,
       "avatar": this.avatar,
-      "niveauAcces": this.niveauAcces
+      "niveauAcces": this.niveauAcces,
+      "description": this.description
     };
+  }
+
+  @override
+  String toString() {
+    return jsonEncode(this);
   }
 
   bool isEmpty() {
@@ -66,5 +92,9 @@ class User {
     }
 
     return posts;
+  }
+
+  UserProfile profile() {
+    return UserProfile(user: this);
   }
 }

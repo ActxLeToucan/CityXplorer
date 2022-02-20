@@ -2,7 +2,6 @@ import 'package:cityxplorer/components/background_image.dart';
 import 'package:cityxplorer/components/password_input.dart';
 import 'package:cityxplorer/components/text_input_field.dart';
 import 'package:cityxplorer/main.dart';
-import 'package:cityxplorer/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
@@ -10,6 +9,7 @@ import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../conf.dart';
+import '../models/user_connected.dart';
 import '../styles.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -119,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
       var res = data['result'];
 
       if (res == 1) {
-        User user = User.fromJson(data['user']);
+        UserConneted user = UserConneted.fromJson(data['user']);
         connexion(user);
 
         Navigator.of(context)

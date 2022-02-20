@@ -37,7 +37,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: Styles.mainColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -58,17 +57,18 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 child: TextFormField(
                   style: const TextStyle(
                       fontSize: 20, fontWeight: FontWeight.bold),
-                  cursorColor: Styles.mainColor,
                   textAlign: TextAlign.center,
                   controller: controllerTitre,
                   autofocus: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green, width: 2.5),
+                      borderSide:
+                          BorderSide(color: Styles.mainColor, width: 2.5),
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green, width: 1.5),
+                      borderSide:
+                          BorderSide(color: Styles.mainColor, width: 1.5),
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
                     border: OutlineInputBorder(),
@@ -98,18 +98,19 @@ class _NewPostScreenState extends State<NewPostScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
-                  cursorColor: Styles.mainColor,
                   minLines: 2,
                   maxLines: 5,
                   keyboardType: TextInputType.multiline,
                   controller: controllerDescription,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green, width: 2.5),
+                      borderSide:
+                          BorderSide(color: Styles.mainColor, width: 2.5),
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green, width: 1.5),
+                      borderSide:
+                          BorderSide(color: Styles.mainColor, width: 1.5),
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
                     helperText: "Optionnel",
@@ -127,7 +128,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   child: ElevatedButton(
                     style: TextButton.styleFrom(
                       primary: Colors.black,
-                      backgroundColor: Styles.mainColor,
                     ),
                     onPressed: () async {
                       // Validate returns true if the form is valid, or false otherwise.
