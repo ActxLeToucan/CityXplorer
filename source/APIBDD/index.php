@@ -22,6 +22,9 @@ $app->get('/help', function (Request $rq, Response $rs, array $args): Response {
 $app->get('/doc', function (Request $rq, Response $rs, array $args): Response {
     return $rs->withRedirect('https://documenter.getpostman.com/view/18314767/UVkgxyyz');
 });
+/**
+ * Sert à créer le post
+ */
 
 $app->post('/createPost',
     function (Request $rq, Response $rs, array $args): Response {
@@ -35,30 +38,41 @@ $app->get('/getPost',
         //return $controller->getPost($rq,$rs,$args);
         return $rs->withJson($controller->getPost($rq,$rs,$args),200);
     })->setName("getPost");
-
+/**
+ * Sert se connecter
+ */
 $app->post('/login',
     function (Request $rq,Response $rs, array $args):Response{
         $controller=new RegisterController($this);
         return $rs->withJson($controller->login($rq,$rs,$args),200);
 
     })->setName("login");
+/**
+ * Sert à s'inscrire
+ */
 $app->post('/register',
     function (Request $rq,Response $rs, array $args):Response{
         $controller=new RegisterController($this);
         return $rs->withJson($controller->register($rq,$rs,$args),200);
     })->setName("register");
+/**
+ * Sert à récupérer les utilisateurs dont le nom s'approche de ce qui est donné en paramètre de l'URL
+ */
 $app->get('/users',
     function (Request $rq,Response $rs, array $args):Response{
         $controller=new RegisterController($this);
         return $rs->withJson($controller->searchUsers($rq,$rs,$args),200);
     })->setName("users");
+/**
+ * Sert à récupérer les post d'un utilisateurs
+ */
 $app->get('/postUser',
     function (Request $rq,Response $rs, array $args):Response{
         $controller=new PostController($this);
         return $rs->withJson($controller->getUserPost($rq,$rs,$args),200);
     })->setName("postUser");
 
-
+//Test
 $app->get('/hello/{name}', function ($rq,$rs,$args) {
     echo $args['name'] ;
 });

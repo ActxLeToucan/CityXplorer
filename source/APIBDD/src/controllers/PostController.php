@@ -24,6 +24,15 @@ class PostController{
     public function __construct(object $c) {
         $this->c = $c;
     }
+
+    /**
+     * Méthode servant à ajouter des valeurs à la table partage
+     * @param Request $rq Requete
+     * @param Response $rs Reponse
+     * @param array $args Array
+     * @param int $idUser Id de l'utilisateur à associer au post
+     * @param int $idPost Id du post associé à l'utilisateur
+     */
     public function addToPartageById(Request $rq,Response $rs,array $args,int $idUser,int $idPost){
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
@@ -36,7 +45,14 @@ class PostController{
             $PartageToAdd->idPost=$idPost;
             $PartageToAdd->save();
     }
-    
+
+    /**
+     * Méthode servant à ajouter un post
+     * @param Request $rq
+     * @param Response $rs
+     * @param array $args
+     * @return array L'état du post, ajouté ou non
+     */
     public function addPost(Request $rq, Response $rs, array $args): array{
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
@@ -114,6 +130,13 @@ class PostController{
         return $tab;
     }
 
+    /**
+     * Méthode de test pour la bdd
+     * @param Request $rq
+     * @param Response $rs
+     * @param array $args
+     * @return array Contenant le post cherché
+     */
     public function getPost(Request $rq, Response $rs, array $args): array{
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
@@ -137,6 +160,15 @@ class PostController{
 
         return $tab;
     }
+
+    /**
+     * Méthode servant à récupérer l'utilisateur ayant créer un post avec l'id du post
+     * @param Request $rq
+     * @param Response $rs
+     * @param array $args
+     * @param int $id Id du post à chercher
+     * @return mixed
+     */
     public function getUserWhoCreatedPostById(Request $rq, Response $rs, array $args,int $id){
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
@@ -151,6 +183,15 @@ class PostController{
         $Username=$Utilisateur->pseudo;
         return $Username;
     }
+
+    /**
+     * Méthode servant à récupérer un  post avec son id
+     * @param Request $rq
+     * @param Response $rs
+     * @param array $args
+     * @param int $id
+     * @return array Contenant les valeurs d'un post et son créateur
+     */
     public function getPostById(Request $rq, Response $rs, array $args,int $id): array{
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
@@ -182,6 +223,14 @@ class PostController{
 
         return $tab;
     }
+
+    /**
+     * Méthode servant à récupérer les post d'un utilisateur en particulier
+     * @param Request $rq
+     * @param Response $rs
+     * @param array $args
+     * @return array Contenant tous les posts de l'utilisateur
+     */
     public function getUserPost(Request $rq, Response $rs, array $args): array{
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
