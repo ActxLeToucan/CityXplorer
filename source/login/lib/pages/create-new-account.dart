@@ -20,7 +20,7 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
   TextEditingController email = TextEditingController();
 
   Future register() async {
-    var url = "http://10.11.19.40/phpFlutterLogin/register.php";
+    var url = "http://192.168.1.34/phpFlutterLogin/register.php";
     var response = await http.post(Uri.parse(url), body: {
       "username": username.text,
       "password": password.text,

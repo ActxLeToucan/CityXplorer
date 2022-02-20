@@ -17,7 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController password = TextEditingController();
 
   Future login() async {
-    var url = "http://10.11.19.40/phpFlutterLogin/login.php";
+    var url = "http://192.168.1.34/phpFlutterLogin/login.php";
 
     var response = await http.post(Uri.parse(url), body: {
       'username': username.text,
