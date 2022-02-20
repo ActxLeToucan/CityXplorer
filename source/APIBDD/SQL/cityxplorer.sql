@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : sam. 19 fév. 2022 à 19:26
+-- Généré le : Dim 20 fév. 2022 à 10:17
 -- Version du serveur :  10.3.32-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 7.4.3
 
@@ -185,7 +185,7 @@ CREATE TABLE `utilisateur` (
   `avatar` varchar(250) NOT NULL DEFAULT 'avatar.png',
   `niveauAcces` int(5) NOT NULL DEFAULT 1,
   `token` varchar(256) NOT NULL,
-  `description` text NOT NULL
+  `description` text NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -277,7 +277,7 @@ ALTER TABLE `post`
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Contraintes pour les tables déchargées
