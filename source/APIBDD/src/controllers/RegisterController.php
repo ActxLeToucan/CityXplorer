@@ -210,7 +210,7 @@ class RegisterController {
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('user');
         $url = $base . $route_uri;
-        $pseudo=$_GET['username'];
+        $pseudo=$_GET['pseudo'];
 
         $userNameExist = Authenticate::where("pseudo", "=", $pseudo)->count();
 

@@ -26,7 +26,7 @@ $app->get('/doc', function (Request $rq, Response $rs, array $args): Response {
  * Sert à créer le post
  */
 
-$app->post('/createPost',
+$app->post('/posts',
     function (Request $rq, Response $rs, array $args): Response {
     $controller =new PostController($this);
     return $rs->withJson($controller->addPost($rq,$rs,$args),200);
