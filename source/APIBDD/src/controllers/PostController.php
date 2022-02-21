@@ -242,13 +242,20 @@ class PostController{
         $usernameToGetPost=$_GET['pseudo'];
 
         $user=Authenticate::where("pseudo","=",$usernameToGetPost)->first();
-        $id=$user->id;
-        $PostFromUser=Post::where("idUser","=",$id)->get();
-        $tab=[];
-        foreach ($PostFromUser as $value){
-            array_push($tab,$this->getPostById($rq,$rs,$args,$value->idPost));
+        $res=Authenticate::where("pseudo","=",$usernameToGetPost)->count();
+        if($res==0){
+            return[
+                "message"=> "utilisateur inconnu"
+            ];
+        }else{
+            $id=$user->id;
+            $PostFromUser=Post::where("idUser","=",$id)->get();
+            $tab=[];
+            foreach ($PostFromUser as $value){
+                array_push($tab,$this->getPostById($rq,$rs,$args,$value->idPost));
+            }
+            return $tab;
         }
-        return $tab;
     }
 }
 //
