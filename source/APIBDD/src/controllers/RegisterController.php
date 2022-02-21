@@ -205,4 +205,33 @@ class RegisterController {
         return $tab;
     }
 
+    public function user(Request $rq, Response $rs, array $args): array {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('user');
+        $url = $base . $route_uri;
+        $pseudo=$_GET['username'];
+
+        $userNameExist = Authenticate::where("pseudo", "=", $pseudo)->count();
+
+        if ($userNameExist == 1) {
+            $getUser=Authenticate::where("pseudo","=",$pseudo)->first();
+                return [
+                    "result" => 1,
+                    "user" => [
+                        "pseudo" => $getUser->pseudo,
+                        "name" => $getUser->name,
+                        "avatar" => $getUser->avatar,
+                        "niveauAcces" => $getUser->niveauAcces
+                    ]
+                ];
+        }
+
+        return [
+            "result" => 0,
+            "user" => null
+        ];
+
+    }
+
 }

@@ -71,7 +71,15 @@ $app->get('/postUser',
         $controller=new PostController($this);
         return $rs->withJson($controller->getUserPost($rq,$rs,$args),200);
     })->setName("postUser");
+/**
+ * Sert à récupérer un utilisateur en get
+ */
 
+$app->get('/user',
+    function (Request $rq,Response $rs, array $args):Response{
+        $controller=new RegisterController($this);
+        return $rs->withJson($controller->user($rq,$rs,$args),200);
+    })->setName("user");
 //Test
 $app->get('/hello/{name}', function ($rq,$rs,$args) {
     echo $args['name'] ;
