@@ -85,6 +85,7 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                       icon: Icons.lock_rounded,
                       hint: 'Password',
                       inputAction: TextInputAction.next,
+                      onSubmitted: (_) => register(),
                     ),
                     const SizedBox(
                       height: 25,

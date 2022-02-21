@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : Dim 20 fév. 2022 à 15:26
+-- Généré le : lun. 21 fév. 2022 à 23:51
 -- Version du serveur :  10.3.32-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 7.4.3
 
@@ -130,11 +130,44 @@ CREATE TABLE `photo` (
 --
 
 INSERT INTO `photo` (`idPhoto`, `idPost`, `url`) VALUES
-(1, 1, 'Lien image tour de pise'),
-(2, 2, 'Lien imageGare MontParnasse'),
-(3, 1, 'zqg mkjzlkdgjz'),
+(1, 1, '1.jpg'),
+(2, 2, '2.jpg'),
+(3, 1, '3.jpg'),
 (7, 21, '16453704226e4daef1c8c0a9bcf3778b9a2ad750c361bec0ec.png'),
-(8, 22, '164537065693ae3b3951220e4733350eb0d5921e3139230a8b.png');
+(9, 23, '164542972228f2dfcfa06995e3fff25355065d1e93cbd46a26.jpeg'),
+(11, 25, '1645430934f5c3e69013d262277c6f80c4c75416b77074524e.jpeg'),
+(14, 28, '16454618845d8a55f451570498a8cb399a9840fc7ae0899b73.jpg'),
+(15, 29, '16454620838706d2ef030c6970e62ddb76dc8f6a67b00b3ddc.jpg'),
+(16, 30, '164546218771667aaa918e2110530138d234cfe7538c3e548d.jpg'),
+(17, 31, '164546238474dadc4147ea5d1e9324a39418d854c204ec10ea.jpg'),
+(18, 32, '16454624174e7553ce2088d8050f9bcab9c1ad7091cfe6bf95.jpg'),
+(19, 33, '164546266787a2f4461776f12a0b02207b569ee017afdbbee8.jpg'),
+(20, 34, '1645464223b2b8711e011f2b553d5d60b94b3046a53463417e.jpg'),
+(21, 35, '1645464617624efee4e9b3a060aed103927d58ebddb7bb2eae.jpg'),
+(22, 36, '16454666469966461ed8badb968cb29eb1c3acd079a4faf746.jpg'),
+(23, 37, '1645466860d5f06c94b190c83e766ee4d05f636f09bc26d0da.jpg'),
+(24, 38, '1645466932cee1559feebb1fea326f116a9066c0aa1f20a15a.jpg'),
+(25, 39, '16454686166f9011e4b6120efca4ca0699f38ddc1913133427.jpg'),
+(26, 40, '1645469556e2cd6fdf5bedb860c7bf3cbc8e45b3b2cc043855.jpg'),
+(27, 41, '1645469725607f97f58fda261e29fb07b0cc56c6468b2beb32.jpg'),
+(28, 42, '164547426277a50dda47021a153b24912ddc946c57b9aa0c0a.jpg'),
+(29, 43, '1645474301390bf0c1566ff2305a31c0ab665f58c926c91807.jpg'),
+(30, 44, '1645474652e5ad704fcffb84c80a325ab3f06d6c52567f34b5.jpg'),
+(31, 45, '1645474861db4d4b3ded6834623b4f67f75cd672215b1db467.jpg'),
+(32, 46, '164547547313d06b4dfeaf8202eb052680968592c4554d499d.jpg'),
+(33, 47, '1645476017b62ac90fa73ce85bb00cc1524927eb41374c6a58.jpg'),
+(34, 48, '1645476888624a7edd760913c8c23edf0fb8f8db40f2965b1e.jpg'),
+(35, 49, '1645476993e8090586ba41f0d61c8bbe7e6a920f3d15c7c0c5.jpg'),
+(36, 50, '164547715895547d99b972f8458832921a94cdb531bdb8eecc.jpg'),
+(37, 51, '1645477188cc0b47b51ce8998e2db554deeda84230ee3bb9ef.jpg'),
+(38, 52, '16454772225c3cabd7e4fcf3c85afe973caea2ce67fc8e13aa.jpg'),
+(39, 53, '1645477621c0e0b1c3bb63cd6767e9ceabe2862ad1b5616aea.jpg'),
+(40, 54, '1645477676d378ad21e160f90194afe2a50fc4677b47dc355f.jpg'),
+(41, 55, '1645477676c391035904380e6822c3c2e25b6f184f17830e09.jpg'),
+(42, 56, '1645477676e03ee08bc91b359e79f38c8b99f1945e0d4404cd.jpg'),
+(43, 57, '1645478439df11850bb9c9b73d1abf3a16e9a069e3be350cde.jpg'),
+(44, 58, '164547910744e21bd9d9c0819adb1a3e9e86d7816822a0865b.jpg'),
+(45, 59, '16454821593396118c4ccda5a0d80a93e54f4fb21fb7f5749a.png');
 
 -- --------------------------------------------------------
 
@@ -144,8 +177,8 @@ INSERT INTO `photo` (`idPhoto`, `idPost`, `url`) VALUES
 
 CREATE TABLE `post` (
   `idPost` int(5) NOT NULL,
-  `emplacementX` varchar(100) DEFAULT NULL,
-  `emplacementY` varchar(100) DEFAULT NULL,
+  `latitude` varchar(100) DEFAULT NULL,
+  `longitude` varchar(100) DEFAULT NULL,
   `description` varchar(200) DEFAULT NULL,
   `titre` varchar(100) DEFAULT NULL,
   `datePost` datetime DEFAULT current_timestamp(),
@@ -157,7 +190,7 @@ CREATE TABLE `post` (
 -- Déchargement des données de la table `post`
 --
 
-INSERT INTO `post` (`idPost`, `emplacementX`, `emplacementY`, `description`, `titre`, `datePost`, `etat`, `idUser`) VALUES
+INSERT INTO `post` (`idPost`, `latitude`, `longitude`, `description`, `titre`, `datePost`, `etat`, `idUser`) VALUES
 (1, '10', '10', 'Photo de la tour de pise', 'Tour de Pise', '2021-12-28 00:00:00', 'Invalide', 0),
 (2, '87', '32', 'Gare MontParnasse', 'Gare MontParnasse', '2021-12-28 00:00:00', 'Valide', 1),
 (5, '10', '10', 'Voici un chateau', 'Le chateau très beau', NULL, 'Invalide', 1),
@@ -172,7 +205,40 @@ INSERT INTO `post` (`idPost`, `emplacementX`, `emplacementY`, `description`, `ti
 (14, '11', '11', 'blabla', 'blabla', '0000-00-00 00:00:00', 'Invalide', 5),
 (15, '11', '11', 'blabla', 'blabla', '2011-06-10 00:00:00', 'Invalide', 5),
 (21, '10', '12', 'la description', 'Un titre', '2002-12-23 23:54:09', 'Invalide', 1),
-(22, '10', '12', 'la description', 'Un titre', '2002-12-23 23:54:09', 'Invalide', 1);
+(23, '486685508', '61651552', 'ladescription\n', 'letitre', '2022-02-21 08:48:37', 'Invalide', 8),
+(25, '486676775', '61651302', 'si il te plait', 'dieu vas y', '2022-02-21 09:08:49', 'Invalide', 8),
+(28, '486676735', '61652276', 'au test\n', 'test', '2022-02-21 17:44:37', 'Invalide', 8),
+(29, '486676687', '61650795', 'au test\n', 'test2', '2022-02-21 17:47:56', 'Invalide', 8),
+(30, '486685508', '61651552', 'au test\n', 'test3', '2022-02-21 17:49:41', 'Invalide', 8),
+(31, '486676732', '61651093', 'au test\n', 'test4 ou5 jsp', '2022-02-21 17:53:01', 'Invalide', 8),
+(32, '486685508', '61651552', 'au test\n', 'test6', '2022-02-21 17:53:33', 'Invalide', 8),
+(33, '48667687', '61650502', '', 'test sans description', '2022-02-21 17:57:44', 'Invalide', 8),
+(34, '486677', '61650211', '', 'test 8', '2022-02-21 18:23:39', 'Invalide', 8),
+(35, '486677053', '61650137', '', 'test 9', '2022-02-21 18:30:13', 'Invalide', 8),
+(36, '486677132', '61649846', 'codecode', 'code', '2022-02-21 19:04:03', 'Invalide', 8),
+(37, '486677228', '61649686', 'codecode', 'code', '2022-02-21 19:07:36', 'Invalide', 8),
+(38, '486677228', '61649686', 'codecode', 'code', '2022-02-21 19:08:48', 'Invalide', 8),
+(39, '486677165', '61649942', 'codecode', 'genial', '2022-02-21 19:36:52', 'Invalide', 8),
+(40, '486677141', '61649654', '00', '160', '2022-02-21 19:52:33', 'Invalide', 8),
+(41, '486677176', '61649803', 'flute', 'ça avance l interface', '2022-02-21 19:55:22', 'Invalide', 8),
+(42, '486677162', '6164989', 'flute', 'ça avance de fou', '2022-02-21 21:10:59', 'Invalide', 8),
+(43, '486677182', '61649845', 'flute', 'ça avance de fou', '2022-02-21 21:11:37', 'Invalide', 8),
+(44, '486687707', '61610502', 'flute', 'ça avance de fou', '2022-02-21 21:17:28', 'Invalide', 8),
+(45, '486677119', '61650152', 'flute', 'ça avance de fou genre vraiment', '2022-02-21 21:20:59', 'Invalide', 8),
+(46, '486677153', '61649629', 'testetestetste', 'un autre test', '2022-02-21 21:31:08', 'Invalide', 8),
+(47, '486677129', '61649887', '09\n', '000', '2022-02-21 21:40:13', 'Invalide', 8),
+(48, '486677161', '61649808', '09\n', '000', '2022-02-21 21:54:39', 'Invalide', 8),
+(49, '486687707', '61610502', '09\n', '000', '2022-02-21 21:56:16', 'Invalide', 8),
+(50, '486677155', '61649746', '666\n', '777', '2022-02-21 21:59:14', 'Invalide', 8),
+(51, '486687707', '61610502', '666\n', '777', '2022-02-21 21:59:44', 'Invalide', 8),
+(52, '486687707', '61610502', '666\n', '777', '2022-02-21 22:00:18', 'Invalide', 8),
+(53, '486677175', '61649919', '666\n', '777', '2022-02-21 22:06:57', 'Invalide', 8),
+(54, '486687707', '61610502', '666\n', '777', '2022-02-21 22:07:44', 'Invalide', 8),
+(55, '486687707', '61610502', '666\n', '777', '2022-02-21 22:07:44', 'Invalide', 8),
+(56, '486687707', '61610502', '666\n', '777', '2022-02-21 22:07:44', 'Invalide', 8),
+(57, '486677139', '61649798', '99', '888', '2022-02-21 22:20:35', 'Invalide', 8),
+(58, '486677149', '61649778', 'ii', 'test localisation', '2022-02-21 22:31:43', 'Invalide', 8),
+(59, '48.8571506', '2.288133', 'Célèbre tour en fer de Gustave Eiffel (1889), terrasses panoramiques accessibles par escaliers et ascenseurs.', 'Tour Eiffel', '2011-06-10 00:00:00', 'Invalide', 1);
 
 -- --------------------------------------------------------
 
@@ -271,13 +337,13 @@ ALTER TABLE `listeaffichable`
 -- AUTO_INCREMENT pour la table `photo`
 --
 ALTER TABLE `photo`
-  MODIFY `idPhoto` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `idPhoto` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT pour la table `post`
 --
 ALTER TABLE `post`
-  MODIFY `idPost` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `idPost` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`

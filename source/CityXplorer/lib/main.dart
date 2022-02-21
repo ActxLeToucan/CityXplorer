@@ -28,13 +28,12 @@ Future<void> main() async {
 
   HttpOverrides.global = MyHttpOverrides();
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  var token = prefs.getString("token");
-
+  UserConneted user = await getUser();
   runApp(MaterialApp(
     title: 'CityXplorer',
-    theme: ThemeData(colorScheme: ColorScheme.light(primary: Styles.mainColor)),
-    home: (token == null ? const LoginScreen() : const MainInterface()),
+    theme: ThemeData(
+        colorScheme: const ColorScheme.light(primary: Styles.mainColor)),
+    home: (user.isEmpty() ? const LoginScreen() : const MainInterface()),
     routes: {
       'main': (context) => const MainInterface(),
       'searchPage': (context) => const SearchPage(),

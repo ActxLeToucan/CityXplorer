@@ -51,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       icon: Icons.lock_rounded,
                       hint: 'Mot de passe',
                       inputAction: TextInputAction.done,
+                      onSubmitted: (_) => login(),
                     ),
                     const SizedBox(
                       height: 25,

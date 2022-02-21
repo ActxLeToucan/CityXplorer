@@ -2,14 +2,13 @@
 
 namespace cityXplorer\controllers;
 
-use cityXplorer\models\Authenticate;
+use cityXplorer\models\User;
 use cityXplorer\models\Partage;
 use cityXplorer\models\Photo;
 use cityXplorer\models\Post;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Illuminate\Support\Facades\Date;
-use function MongoDB\BSON\toJSON;
 
 class PostController{
     /**
@@ -41,9 +40,9 @@ class PostController{
         $content = $rq->getParsedBody();
 
         $PartageToAdd=new Partage();
-            $PartageToAdd->idUtilisateur=$idUser;
-            $PartageToAdd->idPost=$idPost;
-            $PartageToAdd->save();
+        $PartageToAdd->idUtilisateur=$idUser;
+        $PartageToAdd->idPost=$idPost;
+        $PartageToAdd->save();
     }
 
     /**
@@ -61,8 +60,8 @@ class PostController{
         $content = $rq->getParsedBody();
 
         $startTime = strtotime($content['date']);
-        $posX = filter_var($content['posX'], FILTER_SANITIZE_NUMBER_FLOAT);
-        $posY = filter_var($content['posY'], FILTER_SANITIZE_NUMBER_FLOAT);
+        $latitude = filter_var($content['latitude'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        $longitude = filter_var($content['longitude'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
         $descr = filter_var($content['description'], FILTER_SANITIZE_STRING);
         $titre = filter_var($content['titre'], FILTER_SANITIZE_STRING);
         $datePost = date("Y-m-d H:i:s", $startTime);
@@ -74,7 +73,7 @@ class PostController{
         ];
 
         if (isset($content['token'])) {
-            $user = Authenticate::where("token", "=", $content['token'])->first();
+            $user = User::where("token", "=", $content['token'])->first();
             $tab = [
                 "result" => 0,
                 "message" => "Erreur : token invalide",
@@ -82,16 +81,16 @@ class PostController{
             ];
             if(!is_null($user)){
                 // upload image
-                $extension = $_FILES['photo']['type'];
                 $cheminServeur = $_FILES['photo']['tmp_name'];
-                $fileName = str_replace('image/', time().bin2hex(openssl_random_pseudo_bytes(20)).'.', $extension);
+                $extension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+                $fileName = time().bin2hex(openssl_random_pseudo_bytes(20)).'.'.$extension;
                 $uploadFile = "/var/www/cityxplorer/img/posts/$fileName";
                 move_uploaded_file($cheminServeur, $uploadFile);
 
                 // creation post
                 $newPost = new Post();
-                $newPost->emplacementX=$posX;
-                $newPost->emplacementY=$posY;
+                $newPost->latitude=$latitude;
+                $newPost->longitude=$longitude;
                 $newPost->description=$descr;
                 $newPost->titre=$titre;
                 $newPost->datePost=$datePost;
@@ -105,24 +104,11 @@ class PostController{
                 $newPhoto->url = $fileName;
                 $newPhoto->save();
 
-                // récupérations de toutes les photos
-                $tabPhotos = [];
-                foreach ($newPost->photos as $photo) {
-                    $tabPhotos[] = $photo->url;
-                }
-
                 // résultats
-                $tab =[
+                $tab = [
                     "result" => 1,
                     "message" => "Insertion effectuée",
-                    "post" => [
-                        "titre" => $titre,
-                        "posX"=>$posX,
-                        "posY" => $posY,
-                        "descr" => $descr,
-                        "date" => $datePost,
-                        "photos" => $tabPhotos
-                    ]
+                    "post" => $newPost->toArray()
                 ];
             }
         }
@@ -131,131 +117,57 @@ class PostController{
     }
 
     /**
-     * Méthode de test pour la bdd
+     * Méthode servant à récupérer un post avec son id
      * @param Request $rq
      * @param Response $rs
      * @param array $args
-     * @return array Contenant le post cherché
-     */
-    public function getPost(Request $rq, Response $rs, array $args): array{
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('getPost');
-        $url = $base . $route_uri;
-
-        $content = $rq->getParsedBody();
-
-        $id = 1;
-
-        $postTestBDD=Post::where("idPost","=",$id)->first();
-        $imagesTestBDD=Photo::where("idPost","=",$id)->get();
-        $titre=$postTestBDD->titre;
-        $tab=["titre"=>$postTestBDD->titre,
-            "emplacement-x"=>$postTestBDD->emplacementX,
-            "emplacement-y"=>$postTestBDD->emplacementY,
-            "description"=>$postTestBDD->description,
-            "datePost"=>$postTestBDD->datePost,
-            "etat"=>$postTestBDD->etat,
-        "photos"=>$imagesTestBDD];
-
-        return $tab;
-    }
-
-    /**
-     * Méthode servant à récupérer l'utilisateur ayant créer un post avec l'id du post
-     * @param Request $rq
-     * @param Response $rs
-     * @param array $args
-     * @param int $id Id du post à chercher
-     * @return mixed
-     */
-    public function getUserWhoCreatedPostById(Request $rq, Response $rs, array $args,int $id){
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('getPost');
-        $url = $base . $route_uri;
-
-        $content = $rq->getParsedBody();
-
-        $PostPartage=Partage::where("idPost","=",$id)->first();
-        $Userid=$PostPartage->idUtilisateur;
-        $Utilisateur=Authenticate::where("id","=",$Userid)->first();
-        $Username=$Utilisateur->pseudo;
-        return $Username;
-    }
-
-    /**
-     * Méthode servant à récupérer un  post avec son id
-     * @param Request $rq
-     * @param Response $rs
-     * @param array $args
-     * @param int $id
      * @return array Contenant les valeurs d'un post et son créateur
      */
-    public function getPostById(Request $rq, Response $rs, array $args,int $id): array{
+    public function getPostById(Request $rq, Response $rs, array $args): array{
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('getPost');
+        $route_uri = $container->router->pathFor('postId');
         $url = $base . $route_uri;
 
-        $content = $rq->getParsedBody();
+        $id = $_GET['id'];
 
-
-        $postTestBDD=Post::where("idPost","=",$id)->first();
-        $imagesTestBDD=Photo::where("idPost","=",$id)->get();
-        $tab=[];
-        foreach ($imagesTestBDD as $value){
-            array_push($tab,$value->url);
+        $postExist = Post::where("idPost","=",$id)->count();
+        if ($postExist == 1) {
+            $post = Post::where("idPost","=",$id)->first();
+            return $post->toArray();
+        } else {
+            return [];
         }
-        $titre=$postTestBDD->titre;
-        $tab=[
-            "titre"=>$postTestBDD->titre,
-            "idPost"=>$postTestBDD->idPost,
-            "photos"=>$tab,
-            "datePost"=>$postTestBDD->datePost,
-            "emplacement-x"=>$postTestBDD->emplacementX,
-            "emplacement-y"=>$postTestBDD->emplacementY,
-            "description"=>$postTestBDD->description,
-            "user-pseudo"=>$this->getUserWhoCreatedPostById($rq,$rs,$args,$id),
-            "etat"=>$postTestBDD->etat,
-            "iduser"=>$postTestBDD->idUser
-            ];
-
-        return $tab;
     }
 
     /**
-     * Méthode servant à récupérer les post d'un utilisateur en particulier
+     * Méthode servant à récupérer les posts d'un utilisateur en particulier
      * @param Request $rq
      * @param Response $rs
      * @param array $args
      * @return array Contenant tous les posts de l'utilisateur
      */
-    public function getUserPost(Request $rq, Response $rs, array $args): array{
+    public function getUserPosts(Request $rq, Response $rs, array $args): array{
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('postUser');
+        $route_uri = $container->router->pathFor('postsUser');
         $url = $base . $route_uri;
 
-        $content = $rq->getParsedBody();
+        $pseudo = $_GET['pseudo'];
 
-        $usernameToGetPost=$_GET['pseudo'];
+        $userNameExist = User::where("pseudo", "=", $pseudo)->count();
 
-        $user=Authenticate::where("pseudo","=",$usernameToGetPost)->first();
-        $res=Authenticate::where("pseudo","=",$usernameToGetPost)->count();
-        if($res==0){
-            return[
-                "message"=> "utilisateur inconnu"
-            ];
-        }else{
-            $id=$user->id;
-            $PostFromUser=Post::where("idUser","=",$id)->get();
-            $tab=[];
-            foreach ($PostFromUser as $value){
-                array_push($tab,$this->getPostById($rq,$rs,$args,$value->idPost));
+        if ($userNameExist == 1) {
+            $user = User::where("pseudo","=",$pseudo)->first();
+            $tabPosts = [];
+            foreach ($user->posts as $post) {
+                $tabPosts[] = $post->toArray();
             }
-            return $tab;
+
+            return $tabPosts;
         }
+
+        return [];
     }
 }
 //

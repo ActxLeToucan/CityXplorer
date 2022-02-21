@@ -77,13 +77,12 @@ class User {
   Future<List<Post>> getPosts() async {
     List<Post> posts = [];
 
-    String url = Conf.bddDomainUrl + Conf.bddPath + "/posts?user=$pseudo";
+    String url = Conf.bddDomainUrl + Conf.bddPath + "/posts?pseudo=$pseudo";
     try {
       var response = await http.get(Uri.parse(url));
-      final Map<String, dynamic> data = json.decode(response.body);
+      final List<dynamic> data = json.decode(response.body);
 
-      List dataPosts = data['posts'];
-      for (var post in dataPosts) {
+      for (var post in data) {
         posts.add(Post.fromJson(post));
       }
     } catch (e) {

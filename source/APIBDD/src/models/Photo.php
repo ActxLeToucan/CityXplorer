@@ -4,6 +4,7 @@ namespace cityXplorer\models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Photo extends Model{
     protected $table = 'photo';
@@ -12,5 +13,9 @@ class Photo extends Model{
 
     public function post(): BelongsTo {
         return $this->belongsTo('cityXplorer\models\Post',"idPost");
+    }
+
+    public function user(): BelongsTo {
+        return $this->belongsTo('cityXplorer\models\User', 'idUser');
     }
 }

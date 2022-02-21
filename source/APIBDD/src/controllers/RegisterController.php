@@ -3,7 +3,7 @@
 
 namespace cityXplorer\controllers;
 
-use cityXplorer\models\Authenticate;
+use cityXplorer\models\User;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -49,7 +49,7 @@ class RegisterController {
         $name = $content['name'];
         $options = ['cost' => 12];
 
-        $userNameExist = Authenticate::where("pseudo", "=", $pseudo)->count();
+        $userNameExist = User::where("pseudo", "=", $pseudo)->count();
 
         if (strlen($pseudo) < self::TAILLE_PSEUDO_MIN) {
             return [
@@ -101,7 +101,7 @@ class RegisterController {
             ];
         } else {
             $password = password_hash($password, PASSWORD_DEFAULT, $options);
-            $newUser = new Authenticate();
+            $newUser = new User();
             $newUser->pseudo = $pseudo;
             $newUser->password = $password;
             $newUser->name = $name;
@@ -109,19 +109,12 @@ class RegisterController {
             $newUser->token = time().bin2hex(openssl_random_pseudo_bytes(64));
             $newUser->save();
 
-            $user = Authenticate::where('pseudo', '=', $pseudo)->first();
+            $user = User::where('pseudo', '=', $pseudo)->first();
 
             return [
                 "result" => 1,
                 "message" => "Vous êtes connecté en tant que $user->pseudo.",
-                "user" => [
-                    "pseudo" => $user->pseudo,
-                    "token" => $user->token,
-                    "name" => $user->name,
-                    "avatar" => $user->avatar,
-                    "niveauAcces" => $user->niveauAcces,
-                    "description" => $user->description
-                ]
+                "user" => $user->toArray(true)
             ];
         }
     }
@@ -142,25 +135,18 @@ class RegisterController {
 
         $pseudo = $content['pseudo'];
         $password = $content['password'];
-        $userNameExist = Authenticate::where("pseudo", "=", $pseudo)->count();
+        $userNameExist = User::where("pseudo", "=", $pseudo)->count();
 
         if ($userNameExist == 1) {
-            $getUser=Authenticate::where("pseudo","=",$pseudo)->first();
+            $getUser=User::where("pseudo","=",$pseudo)->first();
             $hashedPassword=$getUser->password;
             if (password_verify($password,$hashedPassword)) {
-                $user = Authenticate::where('pseudo', '=', $pseudo)->first();
+                $user = User::where('pseudo', '=', $pseudo)->first();
 
                 return [
                     "result" => 1,
                     "message" => "Vous êtes connecté en tant que $user->pseudo.",
-                    "user" => [
-                        "pseudo" => $user->pseudo,
-                        "token" => $user->token,
-                        "name" => $user->name,
-                        "avatar" => $user->avatar,
-                        "niveauAcces" => $user->niveauAcces,
-                        "description" => $user->description
-                    ]
+                    "user" => $user->toArray(true)
                 ];
             }
         }
@@ -187,17 +173,10 @@ class RegisterController {
 
         if (isset($_GET['q']) && $_GET['q'] !== "") {
             $usernameToSearch = '%'.$_GET["q"].'%';
-            $users = Authenticate::where("pseudo","like",strtolower($usernameToSearch))->get();
+            $users = User::where("pseudo","like",strtolower($usernameToSearch))->get();
             $tab=[];
-            foreach ($users as $key => $value) {
-                $tabToPush=[
-                    "pseudo"=>$value->pseudo,
-                    "name"=> $value->name,
-                    "avatar"=>$value->avatar,
-                    "niveauAcces"=>$value->niveauAcces,
-                    "description" => $value->description
-                ];
-                $tab[] = $tabToPush;
+            foreach ($users as $user) {
+                $tab[] = $user->toArray();
             }
         } else {
             $tab = [];
@@ -212,18 +191,13 @@ class RegisterController {
         $url = $base . $route_uri;
         $pseudo=$_GET['pseudo'];
 
-        $userNameExist = Authenticate::where("pseudo", "=", $pseudo)->count();
+        $userNameExist = User::where("pseudo", "=", $pseudo)->count();
 
         if ($userNameExist == 1) {
-            $getUser=Authenticate::where("pseudo","=",$pseudo)->first();
+            $user = User::where("pseudo","=",$pseudo)->first();
                 return [
                     "result" => 1,
-                    "user" => [
-                        "pseudo" => $getUser->pseudo,
-                        "name" => $getUser->name,
-                        "avatar" => $getUser->avatar,
-                        "niveauAcces" => $getUser->niveauAcces
-                    ]
+                    "user" => $user->toArray()
                 ];
         }
 

@@ -10,6 +10,7 @@ class PasswordInput extends StatelessWidget {
     required this.hint,
     this.inputType,
     this.inputAction,
+    this.onSubmitted,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -17,6 +18,7 @@ class PasswordInput extends StatelessWidget {
   final String hint;
   final TextInputType? inputType;
   final TextInputAction? inputAction;
+  final void Function(String)? onSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +52,7 @@ class PasswordInput extends StatelessWidget {
             style: Styles.textStyleInput,
             keyboardType: inputType,
             textInputAction: inputAction,
+            onSubmitted: onSubmitted,
           ),
         ),
       ),
