@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : lun. 21 fév. 2022 à 23:51
+-- Généré le : mar. 22 fév. 2022 à 19:28
 -- Version du serveur :  10.3.32-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 7.4.3
 
@@ -130,44 +130,43 @@ CREATE TABLE `photo` (
 --
 
 INSERT INTO `photo` (`idPhoto`, `idPost`, `url`) VALUES
-(1, 1, '1.jpg'),
+(1, 2, '1.jpg'),
 (2, 2, '2.jpg'),
 (3, 1, '3.jpg'),
 (7, 21, '16453704226e4daef1c8c0a9bcf3778b9a2ad750c361bec0ec.png'),
-(9, 23, '164542972228f2dfcfa06995e3fff25355065d1e93cbd46a26.jpeg'),
-(11, 25, '1645430934f5c3e69013d262277c6f80c4c75416b77074524e.jpeg'),
-(14, 28, '16454618845d8a55f451570498a8cb399a9840fc7ae0899b73.jpg'),
-(15, 29, '16454620838706d2ef030c6970e62ddb76dc8f6a67b00b3ddc.jpg'),
-(16, 30, '164546218771667aaa918e2110530138d234cfe7538c3e548d.jpg'),
-(17, 31, '164546238474dadc4147ea5d1e9324a39418d854c204ec10ea.jpg'),
-(18, 32, '16454624174e7553ce2088d8050f9bcab9c1ad7091cfe6bf95.jpg'),
-(19, 33, '164546266787a2f4461776f12a0b02207b569ee017afdbbee8.jpg'),
-(20, 34, '1645464223b2b8711e011f2b553d5d60b94b3046a53463417e.jpg'),
-(21, 35, '1645464617624efee4e9b3a060aed103927d58ebddb7bb2eae.jpg'),
-(22, 36, '16454666469966461ed8badb968cb29eb1c3acd079a4faf746.jpg'),
-(23, 37, '1645466860d5f06c94b190c83e766ee4d05f636f09bc26d0da.jpg'),
-(24, 38, '1645466932cee1559feebb1fea326f116a9066c0aa1f20a15a.jpg'),
-(25, 39, '16454686166f9011e4b6120efca4ca0699f38ddc1913133427.jpg'),
-(26, 40, '1645469556e2cd6fdf5bedb860c7bf3cbc8e45b3b2cc043855.jpg'),
-(27, 41, '1645469725607f97f58fda261e29fb07b0cc56c6468b2beb32.jpg'),
-(28, 42, '164547426277a50dda47021a153b24912ddc946c57b9aa0c0a.jpg'),
-(29, 43, '1645474301390bf0c1566ff2305a31c0ab665f58c926c91807.jpg'),
-(30, 44, '1645474652e5ad704fcffb84c80a325ab3f06d6c52567f34b5.jpg'),
-(31, 45, '1645474861db4d4b3ded6834623b4f67f75cd672215b1db467.jpg'),
-(32, 46, '164547547313d06b4dfeaf8202eb052680968592c4554d499d.jpg'),
-(33, 47, '1645476017b62ac90fa73ce85bb00cc1524927eb41374c6a58.jpg'),
-(34, 48, '1645476888624a7edd760913c8c23edf0fb8f8db40f2965b1e.jpg'),
-(35, 49, '1645476993e8090586ba41f0d61c8bbe7e6a920f3d15c7c0c5.jpg'),
-(36, 50, '164547715895547d99b972f8458832921a94cdb531bdb8eecc.jpg'),
-(37, 51, '1645477188cc0b47b51ce8998e2db554deeda84230ee3bb9ef.jpg'),
-(38, 52, '16454772225c3cabd7e4fcf3c85afe973caea2ce67fc8e13aa.jpg'),
-(39, 53, '1645477621c0e0b1c3bb63cd6767e9ceabe2862ad1b5616aea.jpg'),
-(40, 54, '1645477676d378ad21e160f90194afe2a50fc4677b47dc355f.jpg'),
-(41, 55, '1645477676c391035904380e6822c3c2e25b6f184f17830e09.jpg'),
-(42, 56, '1645477676e03ee08bc91b359e79f38c8b99f1945e0d4404cd.jpg'),
-(43, 57, '1645478439df11850bb9c9b73d1abf3a16e9a069e3be350cde.jpg'),
-(44, 58, '164547910744e21bd9d9c0819adb1a3e9e86d7816822a0865b.jpg'),
-(45, 59, '16454821593396118c4ccda5a0d80a93e54f4fb21fb7f5749a.png');
+(80, 94, '16455466221bba4f05cc37d76d5b456e8ac0248c0a7fe4cc49.jpg'),
+(81, 95, '16455466244474480d63ba77c6ac13e0b0bc4af3e884d879ba.jpg'),
+(82, 96, '164554662690d88fdac4e176b6c938ae88ee5bd660f8c4f2cf.jpg'),
+(83, 97, '1645546627925964503e31709e63a3a8c816261d79a52f7d43.jpg'),
+(84, 98, '164554662711d1d46905b2b9a14c91c47570e76ca105f779b0.jpg'),
+(85, 99, '16455466290ca812ff83d12fc8d02f3c46c4ba5308d7464daa.jpg'),
+(86, 100, '1645546633ebfea7e3ddc46e0ae8e72401778a79978552ed70.jpg'),
+(87, 101, '16455466394fb6d847c7764e0446efb8a628ee90a19b3d638c.jpg'),
+(88, 102, '16455466446f9b0c7260e06b3bab40299a809d440bf052a033.jpg'),
+(89, 103, '16455466456f1aa251e6b16582bfe3226af9a689627d437fc3.jpg'),
+(90, 104, '1645546646244ec3fa5dc283b62030240ec7288dcab813de53.jpg'),
+(91, 105, '1645546647e7fee1a252580fe32b441b050c8d78f7df0d5bbc.jpg'),
+(92, 106, '1645546648e4a4aab810d9d710efb297b0da12bcf066b36575.jpg'),
+(93, 107, '1645546648bf069e49b1c4303a4afc9b8cae99b9064289da29.jpg'),
+(94, 108, '164554664920b24736d6885e62abc101570670b56c6b841a04.jpg'),
+(95, 109, '164554665085f7b03b15b04f66e710fb8ea7e7c407ced06429.jpg'),
+(96, 110, '1645546650d0da3843ef06e3023720eebe51068fc4f436fa8f.jpg'),
+(97, 111, '1645546650b772a779a65eb185711a08b0b6e1f906b8257025.jpg'),
+(98, 112, '16455466505681941fb2b466cf6127c238f2c1bb6707fc9a92.jpg'),
+(99, 113, '1645546650145b09edda822a22c4485d3645000718e0ae0df9.jpg'),
+(100, 114, '1645546652eeb6da246507a26f4475c8143bee7e5f10f428bc.jpg'),
+(101, 115, '16455466531685197f7c284fd6f60079af2b6dd63178b450e1.jpg'),
+(102, 116, '1645546654b297002f7c15f72f628740a594ac16f4a0f9dfde.jpg'),
+(103, 117, '1645546654537d6f6434e605580bfd6befb8852e6619d53ac9.jpg'),
+(104, 118, '16455466557f926103b5313a5389a6c9dbe889bc5f3f75c3b6.jpg'),
+(105, 119, '1645546655635522777d8aadfc1a373380879c7f311eb98086.jpg'),
+(106, 120, '16455466553a67011e8b72363a321a26e9be5cb6abdf1c1c7f.jpg'),
+(107, 121, '16455466554526fe942a8f3cb9ed6b6e6b688f3312019afa51.jpg'),
+(108, 122, '1645547668e1abb2cf6ea84889b07cc216fada04799ceb73a1.jpg'),
+(109, 123, '1645547932bf04cee783e935c315ca9e26a614562c1a470ef1.jpg'),
+(110, 124, '16455480979da3bf560881b01c712f4b2a666d6a9a031e9242.jpg'),
+(111, 125, '16455482044049655e19e8d38788364e2722a5a13989520878.jpg'),
+(112, 126, '164555755374f2157588de57cbe63eba95cd60b2ae54dfd286.jpg');
 
 -- --------------------------------------------------------
 
@@ -177,12 +176,12 @@ INSERT INTO `photo` (`idPhoto`, `idPost`, `url`) VALUES
 
 CREATE TABLE `post` (
   `idPost` int(5) NOT NULL,
-  `latitude` varchar(100) DEFAULT NULL,
-  `longitude` varchar(100) DEFAULT NULL,
-  `description` varchar(200) DEFAULT NULL,
-  `titre` varchar(100) DEFAULT NULL,
-  `datePost` datetime DEFAULT current_timestamp(),
-  `etat` varchar(10) DEFAULT NULL,
+  `latitude` double NOT NULL DEFAULT 0,
+  `longitude` double NOT NULL DEFAULT 0,
+  `description` varchar(200) NOT NULL DEFAULT '',
+  `titre` varchar(100) NOT NULL DEFAULT '',
+  `datePost` datetime NOT NULL DEFAULT current_timestamp(),
+  `etat` varchar(10) NOT NULL DEFAULT '',
   `idUser` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -191,54 +190,13 @@ CREATE TABLE `post` (
 --
 
 INSERT INTO `post` (`idPost`, `latitude`, `longitude`, `description`, `titre`, `datePost`, `etat`, `idUser`) VALUES
-(1, '10', '10', 'Photo de la tour de pise', 'Tour de Pise', '2021-12-28 00:00:00', 'Invalide', 0),
-(2, '87', '32', 'Gare MontParnasse', 'Gare MontParnasse', '2021-12-28 00:00:00', 'Valide', 1),
-(5, '10', '10', 'Voici un chateau', 'Le chateau très beau', NULL, 'Invalide', 1),
-(6, NULL, NULL, NULL, 'blabla', NULL, 'Invalide', 5),
-(7, NULL, NULL, NULL, 'blabla', NULL, 'Invalide', 5),
-(8, '11', '11', NULL, 'blabla', NULL, 'Invalide', 5),
-(9, '11', '11', 'blabla', 'blabla', NULL, 'Invalide', 5),
-(10, '11', '11', 'blabla', 'blabla', '0000-00-00 00:00:00', 'Invalide', 5),
-(11, '11', '11', 'blabla', 'blabla', '0000-00-00 00:00:00', 'Invalide', 5),
-(12, '11', '11', 'blabla', 'blabla', '0000-00-00 00:00:00', 'Invalide', 5),
-(13, '11', '11', 'blabla', 'blabla', '0000-00-00 00:00:00', 'Invalide', 5),
-(14, '11', '11', 'blabla', 'blabla', '0000-00-00 00:00:00', 'Invalide', 5),
-(15, '11', '11', 'blabla', 'blabla', '2011-06-10 00:00:00', 'Invalide', 5),
-(21, '10', '12', 'la description', 'Un titre', '2002-12-23 23:54:09', 'Invalide', 1),
-(23, '486685508', '61651552', 'ladescription\n', 'letitre', '2022-02-21 08:48:37', 'Invalide', 8),
-(25, '486676775', '61651302', 'si il te plait', 'dieu vas y', '2022-02-21 09:08:49', 'Invalide', 8),
-(28, '486676735', '61652276', 'au test\n', 'test', '2022-02-21 17:44:37', 'Invalide', 8),
-(29, '486676687', '61650795', 'au test\n', 'test2', '2022-02-21 17:47:56', 'Invalide', 8),
-(30, '486685508', '61651552', 'au test\n', 'test3', '2022-02-21 17:49:41', 'Invalide', 8),
-(31, '486676732', '61651093', 'au test\n', 'test4 ou5 jsp', '2022-02-21 17:53:01', 'Invalide', 8),
-(32, '486685508', '61651552', 'au test\n', 'test6', '2022-02-21 17:53:33', 'Invalide', 8),
-(33, '48667687', '61650502', '', 'test sans description', '2022-02-21 17:57:44', 'Invalide', 8),
-(34, '486677', '61650211', '', 'test 8', '2022-02-21 18:23:39', 'Invalide', 8),
-(35, '486677053', '61650137', '', 'test 9', '2022-02-21 18:30:13', 'Invalide', 8),
-(36, '486677132', '61649846', 'codecode', 'code', '2022-02-21 19:04:03', 'Invalide', 8),
-(37, '486677228', '61649686', 'codecode', 'code', '2022-02-21 19:07:36', 'Invalide', 8),
-(38, '486677228', '61649686', 'codecode', 'code', '2022-02-21 19:08:48', 'Invalide', 8),
-(39, '486677165', '61649942', 'codecode', 'genial', '2022-02-21 19:36:52', 'Invalide', 8),
-(40, '486677141', '61649654', '00', '160', '2022-02-21 19:52:33', 'Invalide', 8),
-(41, '486677176', '61649803', 'flute', 'ça avance l interface', '2022-02-21 19:55:22', 'Invalide', 8),
-(42, '486677162', '6164989', 'flute', 'ça avance de fou', '2022-02-21 21:10:59', 'Invalide', 8),
-(43, '486677182', '61649845', 'flute', 'ça avance de fou', '2022-02-21 21:11:37', 'Invalide', 8),
-(44, '486687707', '61610502', 'flute', 'ça avance de fou', '2022-02-21 21:17:28', 'Invalide', 8),
-(45, '486677119', '61650152', 'flute', 'ça avance de fou genre vraiment', '2022-02-21 21:20:59', 'Invalide', 8),
-(46, '486677153', '61649629', 'testetestetste', 'un autre test', '2022-02-21 21:31:08', 'Invalide', 8),
-(47, '486677129', '61649887', '09\n', '000', '2022-02-21 21:40:13', 'Invalide', 8),
-(48, '486677161', '61649808', '09\n', '000', '2022-02-21 21:54:39', 'Invalide', 8),
-(49, '486687707', '61610502', '09\n', '000', '2022-02-21 21:56:16', 'Invalide', 8),
-(50, '486677155', '61649746', '666\n', '777', '2022-02-21 21:59:14', 'Invalide', 8),
-(51, '486687707', '61610502', '666\n', '777', '2022-02-21 21:59:44', 'Invalide', 8),
-(52, '486687707', '61610502', '666\n', '777', '2022-02-21 22:00:18', 'Invalide', 8),
-(53, '486677175', '61649919', '666\n', '777', '2022-02-21 22:06:57', 'Invalide', 8),
-(54, '486687707', '61610502', '666\n', '777', '2022-02-21 22:07:44', 'Invalide', 8),
-(55, '486687707', '61610502', '666\n', '777', '2022-02-21 22:07:44', 'Invalide', 8),
-(56, '486687707', '61610502', '666\n', '777', '2022-02-21 22:07:44', 'Invalide', 8),
-(57, '486677139', '61649798', '99', '888', '2022-02-21 22:20:35', 'Invalide', 8),
-(58, '486677149', '61649778', 'ii', 'test localisation', '2022-02-21 22:31:43', 'Invalide', 8),
-(59, '48.8571506', '2.288133', 'Célèbre tour en fer de Gustave Eiffel (1889), terrasses panoramiques accessibles par escaliers et ascenseurs.', 'Tour Eiffel', '2011-06-10 00:00:00', 'Invalide', 1);
+(1, 10, 10, 'Photo de la tour de pise', 'Tour de Pise', '2021-12-28 00:00:00', 'Invalide', 0),
+(2, 87, 32, 'Gare MontParnasse', 'Gare MontParnasse', '2021-12-28 00:00:00', 'Valide', 1),
+(5, 10, 10, 'Voici un chateau', 'Le chateau très beau', '2011-06-10 00:00:00', 'Invalide', 1),
+(15, 11, 11, 'blabla', 'blabla', '2011-06-10 00:00:00', 'Invalide', 5),
+(21, 10, 12, 'la description', 'Un titre', '2002-12-23 23:54:09', 'Invalide', 1),
+(59, 48.85715103149414, 2.288132905960083, 'Célèbre tour en fer de Gustave Eiffel (1889), terrasses panoramiques accessibles par escaliers et ascenseurs.', 'Tour Eiffel', '2011-06-10 00:00:00', 'Invalide', 1),
+(126, 48.6842585, 6.1743528, 'Cette app finalement... ', 'flutter', '2022-02-22 20:19:13', 'Invalide', 1);
 
 -- --------------------------------------------------------
 
@@ -249,9 +207,9 @@ INSERT INTO `post` (`idPost`, `latitude`, `longitude`, `description`, `titre`, `
 CREATE TABLE `utilisateur` (
   `id` int(11) NOT NULL,
   `pseudo` varchar(50) NOT NULL,
-  `name` varchar(256) DEFAULT NULL,
-  `password` varchar(256) DEFAULT NULL,
-  `avatar` varchar(250) NOT NULL DEFAULT 'avatar.png',
+  `name` varchar(256) NOT NULL DEFAULT '',
+  `password` varchar(256) NOT NULL DEFAULT '',
+  `avatar` varchar(250) DEFAULT 'avatar.png',
   `niveauAcces` int(5) NOT NULL DEFAULT 1,
   `token` varchar(256) NOT NULL,
   `description` text NOT NULL DEFAULT ''
@@ -262,11 +220,9 @@ CREATE TABLE `utilisateur` (
 --
 
 INSERT INTO `utilisateur` (`id`, `pseudo`, `name`, `password`, `avatar`, `niveauAcces`, `token`, `description`) VALUES
-(1, 'antoine54', 'Antoine CONTOUX', '$2y$12$eKIPYSrDDdmop8a7sOWIAu5EKNJdZLvdKY33kyIQd/QfGCg6l8ZIa', 'antoine.jpg', 1, '1645012186aeb999b417f2802b8341d8df60e6f303daf5b9c875a84b803eb145d8e3d8e2b649e54102141d1c8835bc8a7f0bfa3eb54189a08a4240ca1aaf8e99f9c89d0bce', ''),
+(1, 'antoine54', 'Antoine CONTOUX', '$2y$12$eKIPYSrDDdmop8a7sOWIAu5EKNJdZLvdKY33kyIQd/QfGCg6l8ZIa', 'antoine.jpg', 1, '1645012186aeb999b417f2802b8341d8df60e6f303daf5b9c875a84b803eb145d8e3d8e2b649e54102141d1c8835bc8a7f0bfa3eb54189a08a4240ca1aaf8e99f9c89d0bce', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur nisi odio, ullamcorper ac metus vel, hendrerit varius dolor. Nullam lacinia eleifend sapien, quis dignissim leo tempor eu. Integer egestas ipsum eu dolor rhoncus, sit amet dapibus enim consectetur. Nam scelerisque a tortor sodales iaculis. Nulla ut quam in augue iaculis laoreet eget vehicula justo. In augue arcu, dapibus quis magna sed, faucibus scelerisque nibh. Etiam accumsan id libero facilisis accumsan. Nam malesuada at nisl nec convallis. Nunc maximus dui ut justo sodales malesuada. '),
 (5, 'anthony', 'Anthony Nigro', 'aakjfskakf', 'avatar.png', 2, '1234', ''),
-(7, 'azertyuiop', 'azertyuiop', '$2y$12$oSykPSMz83aIlH4V8aGxCe8yRJKRU5rxdXhv14Z3EicqYHirlnW1W', 'avatar.png', 1, '164535247133428dcfeb6da92fe7c92303979fe82f6a6870ba6593fce1ad7dc289dca2aba99bb3d5dd66552ad2cf4223063b84af208eb3423a7090a2517207421d5d9ee66f', ''),
-(8, '150150150', '150150150', '$2y$12$1/S4I10Qte5vSbnWqvt2UOC8B.Rq2LP35cyG7L.NEVi7QZPGIFlXC', 'avatar.png', 1, '1645358530fcef283451e455fd12831692587e42ace8af7699b2f33d429ae7662011737cac6383ae2e4400e7e3ace8846bbad5c93cf5966ce48f3a211573228b4c12b1e238', ''),
-(9, 'jppjppjpp', 'jppjppjpp', '$2y$12$Hnjvul3fJG.07lYARHFn5OqdmBN6dS56.ApPyb2ZW2/zCZpf.P5xu', 'avatar.png', 1, '16453591888c2fa899c96109dd4bbca3ae400411e62c0639476f1a52ce4b2df372c38b9372899d08623df413a68c811a274967b477f23f1b19302174c695a1303e072fa003', '');
+(7, 'azertyuiop', 'azertyuiop', '$2y$12$oSykPSMz83aIlH4V8aGxCe8yRJKRU5rxdXhv14Z3EicqYHirlnW1W', 'avatar.png', 1, '164535247133428dcfeb6da92fe7c92303979fe82f6a6870ba6593fce1ad7dc289dca2aba99bb3d5dd66552ad2cf4223063b84af208eb3423a7090a2517207421d5d9ee66f', '');
 
 --
 -- Index pour les tables déchargées
@@ -337,19 +293,19 @@ ALTER TABLE `listeaffichable`
 -- AUTO_INCREMENT pour la table `photo`
 --
 ALTER TABLE `photo`
-  MODIFY `idPhoto` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `idPhoto` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
 
 --
 -- AUTO_INCREMENT pour la table `post`
 --
 ALTER TABLE `post`
-  MODIFY `idPost` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `idPost` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Contraintes pour les tables déchargées

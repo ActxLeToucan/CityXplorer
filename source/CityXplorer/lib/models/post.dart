@@ -107,7 +107,7 @@ class Post {
             maxLines: 1,
           )),
           Text(
-            "le ${date.day}/${date.month}/${date.year}",
+            "le ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}",
             style: const TextStyle(color: Colors.black45),
           )
         ])
