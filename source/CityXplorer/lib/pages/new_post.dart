@@ -1,19 +1,23 @@
 import 'dart:convert';
 
-import 'package:cityxplorer/models/user.dart';
+import 'package:cityxplorer/models/user_connected.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:location/location.dart';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../main.dart';
 import '../styles.dart';
 
 import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 
+import 'package:http_parser/http_parser.dart';
+import 'package:cityxplorer/components/AdvanceCustomAlert.dart';
+
+/// formulaire de creation d'un post avec gestion de la requete envoyee et de son resultat
 class NewPostScreen extends StatefulWidget {
   final String imagePath;
 
@@ -30,6 +34,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   String latitude = '0';
   String longitude = '0';
   DateTime now = DateTime.now();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -63,12 +68,12 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderSide:
-                          BorderSide(color: Styles.mainColor, width: 2.5),
+                        BorderSide(color: Styles.mainColor, width: 2.5),
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderSide:
-                          BorderSide(color: Styles.mainColor, width: 1.5),
+                        BorderSide(color: Styles.mainColor, width: 1.5),
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
                     border: OutlineInputBorder(),
@@ -105,12 +110,12 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderSide:
-                          BorderSide(color: Styles.mainColor, width: 2.5),
+                        BorderSide(color: Styles.mainColor, width: 2.5),
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderSide:
-                          BorderSide(color: Styles.mainColor, width: 1.5),
+                        BorderSide(color: Styles.mainColor, width: 1.5),
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
                     helperText: "Optionnel",
@@ -119,42 +124,38 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   ),
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: SizedBox(
                   width: double.infinity,
                   height: 60.0,
-                  child: ElevatedButton(
-                    style: TextButton.styleFrom(
-                      primary: Colors.black,
-                    ),
-                    onPressed: () async {
-                      // Validate returns true if the form is valid, or false otherwise.
-                      if (_formKey.currentState!.validate()) {
-                        try{
-                          // on recupere la longitude et la latitude (dans les attributs)
-                          await _getLocation();
-                          Fluttertoast.showToast(msg: '$longitude' ' et ' '$latitude');
-
-                          //on recupere le token de l user
-                          SharedPreferences prefs = await SharedPreferences.getInstance();
-                          var userString = prefs.getString('user');
-                          User user = User.empty();
-                          if (userString != null) {
-                            user = User.fromJson(jsonDecode(userString));
-                            // user controllerTitre.text imagePath controllerDescri.text longitude latitude getCurrentDate()
-                            //Fluttertoast.showToast(msg: await postLePost(user));
+                  child: IgnorePointer(
+                    ignoring: isLoading ? true : false, /// rend le bouton non cliquable si il est en train d envoyer la requete
+                    child: ElevatedButton(
+                      style: TextButton.styleFrom(
+                        primary: Colors.black,
+                      ),
+                      onPressed: () async {
+                        // Validate returns true if the form is valid, or false otherwise.
+                        if (_formKey.currentState!.validate()) {
+                          try{
+                            setState(() {isLoading = true;}); /// lance le chargement du bouton
+                            await _getLocation(); /// on recupere la longitude et la latitude (dans les attributs)
+                            await postLePost();
+                          }catch(e){
+                            setState(() {isLoading = false;});
+                            Fluttertoast.showToast(msg: '$e');
                           }
-
-                        }catch(e){
-                          Fluttertoast.showToast(msg: '$e');
                         }
-                      }
-                    },
-                    child: const Text(
-                      'Valider',
-                      style: TextStyle(fontSize: 20),
+                      },
+                      child: (isLoading) ?const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1.5,
+                            color: Colors.white,
+                          ))
+                          : const Text('Valider', style: TextStyle(fontSize: 20) ),
                     ),
                   ),
                 ),
@@ -165,7 +166,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
       ),
     );
   }
-  // met a jour les attributs longitutide et latitude avec les coordonnees actuelles de l utilisateur
+  /// met a jour les attributs longitutide et latitude avec les coordonnees actuelles de l utilisateur
   Future<void> _getLocation() async {
     Location location = new Location();
     bool _serviceEnabled;
@@ -189,7 +190,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
     longitude = _locationData.longitude.toString() ;
     latitude = _locationData.latitude.toString() ;
   }
-  //renvoie la date du jour au format JJ/MM/AAAA
+  /// renvoie la date du jour au format JJ/MM/AAAA -- affichage utilisateur
   String getCurrentDate() {
     var date = DateTime.now().toString();
 
@@ -198,19 +199,63 @@ class _NewPostScreenState extends State<NewPostScreen> {
     var formattedDate = "${dateParse.day}-${dateParse.month}-${dateParse.year}";
     return formattedDate.toString();
   }
-  // methode appelee lors de la creation du post dans la BDD
-  // TODO
-  Future<String> postLePost(Future<String> user) async {
-    String message = 'rien';
+  /// renvoie la date du jour au format YYY/MM/DD hh/mm/ss -- pour la BDD
+  String getCurrentDateBDD() {
+    var date = DateTime.now().toString();
+
+    var dateParse = DateTime.parse(date);
+
+    var formattedDate = "${dateParse.day}-${dateParse.month}-${dateParse.year} ${dateParse.hour}:${dateParse.minute}:${dateParse.second}";
+    return formattedDate.toString();
+  }
+
+  /// methode appelee lors de la creation du post dans la BDD
+  Future postLePost() async {
 
     String url = Conf.bddDomainUrl + Conf.bddPath + "/post";
+    UserConneted user = await getUser();
+    var request = http.MultipartRequest("POST", Uri.parse(url));
     try {
-      var msg = await http.get(Uri.parse(url));
+      request.fields['titre']= controllerTitre.text;              /// titre du post
+      request.fields['description']= controllerDescription.text;  /// description du post (possible null ou chaine vide jsp)
+      request.fields['latitude'] = latitude;                      /// latitude du post
+      request.fields['longitude'] = longitude;                    /// longitude du post
+      request.fields['date'] = getCurrentDateBDD();               /// date courante au format adapte a la bdd
+      if(!user.isEmpty()) {
+        request.fields['token'] = user.token;                     /// token d authentification de l utilsateur
+      }else{
+        throw Exception('Erreur : session !');
+      }
+      request.files.add( await
+      http.MultipartFile.fromPath(                            ///ajout de la photo a la requete
+          "photo", widget.imagePath,contentType: MediaType("image", "jpeg")
+      )
+      );
+      /// on envoie la requete
+      request.send().then((response) async {
+        http.Response.fromStream(response) /// je crois que ca caste la response en un truc qui me permet de recuperer le body
+            .then((response) {
+          //print(response.statusCode);
+          final Map<String, dynamic> data = json.decode(response.body);
+          String res = data['message'];
+          //print (res);
+          if (response.statusCode == 200) {
+            Navigator.of(context).pop();  /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
+             /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul
+          } else {
+            throw Exception('Erreur : ${response.statusCode} !');
+          }
+          setState(() {isLoading = false;}); /// termine le chargement du bouton
+          showDialog(context: context,
+              builder: (BuildContext context) {
+                return AdvanceCustomAlert(message: res, statusCode: response.statusCode, );
+              });
+        });
+      });
     } catch (e) {
       print(e);
-      message = "Impossible d'accéder à la base de données.";
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      setState(() {isLoading = false;}); /// termine le chargement du bouton
     }
-
-    return message;
   }
 }
