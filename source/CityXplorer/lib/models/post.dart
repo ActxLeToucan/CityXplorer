@@ -10,39 +10,44 @@ import '../conf.dart';
 import '../styles.dart';
 
 class Post {
-  final List<String> photos;
-  final DateTime date;
-  final double positionX;
-  final double positionY;
-  final String
-      userPseudo; // dépendra de l'api, est ce qu'on travaille avec juste le pseudo ou directement avec l'objet User ?
+  final int id;
   final String titre;
+  final double latitude;
+  final double longitude;
   final String description;
-  final String ville;
+  final DateTime date;
   final String etat;
+  final List<String?> photos;
+  final String userPseudo;
 
   const Post(
-      {required this.photos,
-      required this.date,
-      required this.positionX,
-      required this.positionY,
-      required this.userPseudo,
+      {required this.id,
       required this.titre,
+      required this.latitude,
+      required this.longitude,
       required this.description,
-      required this.ville,
-      required this.etat});
+      required this.date,
+      required this.etat,
+      required this.photos,
+      required this.userPseudo});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
-        photos: json['photos'],
-        date: json['date'],
-        positionX: json['positionX'],
-        positionY: json['positionY'],
-        userPseudo: json['user-pseudo'],
+        id: json['id'],
         titre: json['titre'],
+        latitude: (json['latitude'] is int
+            ? (json['latitude'] as int).toDouble()
+            : json['latitude']),
+        longitude: (json['longitude'] is int
+            ? (json['longitude'] as int).toDouble()
+            : json['longitude']),
         description: json['description'],
-        ville: json['ville'],
-        etat: (json['etat'] as String).toLowerCase());
+        date: (json['date'] != null
+            ? DateTime.parse(json['date'])
+            : DateTime.now()),
+        etat: (json['etat'] as String).toLowerCase(),
+        photos: List<String>.from(json['photos']),
+        userPseudo: json['user-pseudo']);
   }
 
   bool isValid() {
@@ -96,7 +101,7 @@ class Post {
         Row(children: [
           Expanded(
               child: Text(
-            ville,
+            "ville", //TODO ville
             style: const TextStyle(color: Colors.black45),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
@@ -122,16 +127,18 @@ class Post {
               child: Container(
                 margin: const EdgeInsets.only(top: 12),
                 constraints: const BoxConstraints.expand(height: 300),
-                child: Image.network(
-                  "${Conf.bddDomainUrl}/img/posts/${photos[0]}",
-                  fit: BoxFit.cover,
-                ),
+                child: (photos.isEmpty
+                    ? Image.asset("assets/default.jpg", fit: BoxFit.cover)
+                    : Image.network(
+                        "${Conf.bddDomainUrl}/img/posts/${photos[0]}",
+                        fit: BoxFit.cover,
+                      )),
               ),
             ),
             Positioned(
               top: 20,
               right: 5,
-              child: (photos.length != 1
+              child: (photos.length > 1
                   ? Container(
                       child: Text("1/${photos.length}"),
                       padding: const EdgeInsets.all(4),
@@ -208,7 +215,8 @@ class Post {
               const IconMenuPost(),
             ]),
         Text(
-          "$ville, le ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} à ${date.hour}:${date.minute.toString().padLeft(2, '0')}.",
+          // TODO ville
+          "ville, le ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} à ${date.hour}:${date.minute.toString().padLeft(2, '0')}.",
           style: const TextStyle(color: Colors.black45),
         ),
         Padding(

@@ -48,4 +48,14 @@ class UserConneted extends User {
       "description": this.description
     };
   }
+
+  updateWith(User user) {
+    return UserConneted(
+        token: this.token,
+        pseudo: user.pseudo,
+        name: user.name,
+        avatar: user.avatar,
+        niveauAcces: user.niveauAcces,
+        description: user.description);
+  }
 }

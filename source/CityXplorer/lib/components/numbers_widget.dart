@@ -1,24 +1,45 @@
+import 'package:cityxplorer/models/user.dart';
 import 'package:flutter/material.dart';
 
-class NumbersWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          buildButton(context, '4.8', 'Posts'),
-          buildDivider(),
-          buildButton(context, '35', 'Likes'),
-        ],
-      );
+class NumbersWidget extends StatefulWidget {
+  final User user;
 
-  Widget buildDivider() => Container(
+  const NumbersWidget({Key? key, required this.user}) : super(key: key);
+
+  @override
+  State<NumbersWidget> createState() => _NumbersWidgetState();
+}
+
+class _NumbersWidgetState extends State<NumbersWidget> {
+  int nbPosts = 0;
+  int likes = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        buildButton(context, nbPosts.toString(), 'Posts'),
+        buildDivider(),
+        buildButton(context, likes.toString(), 'Likes'),
+      ],
+    );
+  }
+
+  Widget buildDivider() => const SizedBox(
         height: 24,
         child: VerticalDivider(),
       );
 
   Widget buildButton(BuildContext context, String value, String text) =>
       MaterialButton(
-        padding: EdgeInsets.symmetric(vertical: 4),
+        padding: const EdgeInsets.symmetric(vertical: 4),
         onPressed: () {},
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         child: Column(
@@ -27,14 +48,19 @@ class NumbersWidget extends StatelessWidget {
           children: <Widget>[
             Text(
               value,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
             ),
-            SizedBox(height: 2),
+            const SizedBox(height: 2),
             Text(
               text,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
       );
+
+  void _load() async {
+    nbPosts = (await widget.user.getPosts()).length;
+    setState(() {});
+  }
 }

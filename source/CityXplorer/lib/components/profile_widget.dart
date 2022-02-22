@@ -23,16 +23,20 @@ class ProfileWidget extends StatelessWidget {
       child: Stack(
         children: [
           buildImage(),
-          FutureBuilder<Widget>(
-            future: _icon(context),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return snapshot.requireData;
-              } else {
-                return Container();
-              }
-            },
-          ),
+          Positioned(
+            bottom: 0,
+            right: 4,
+            child: FutureBuilder<Widget>(
+              future: _icon(context),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return snapshot.requireData;
+                } else {
+                  return Container();
+                }
+              },
+            ),
+          )
         ],
       ),
     );
@@ -61,17 +65,9 @@ class ProfileWidget extends StatelessWidget {
 
     Widget icon = Container();
     if (user is UserConneted || await isCurrentUser(user.pseudo)) {
-      icon = Positioned(
-        bottom: 0,
-        right: 4,
-        child: buildIcon(color, isEdit ? Icons.add_a_photo : Icons.edit),
-      );
+      icon = buildIcon(color, isEdit ? Icons.add_a_photo : Icons.edit);
     } else if (user.niveauAcces >= 2) {
-      icon = Positioned(
-        bottom: 0,
-        right: 4,
-        child: buildIcon(color, Icons.shield),
-      );
+      icon = buildIcon(color, Icons.shield);
     }
 
     return icon;

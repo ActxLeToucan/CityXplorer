@@ -77,14 +77,12 @@ class User {
   Future<List<Post>> getPosts() async {
     List<Post> posts = [];
 
-    String url = Conf.bddDomainUrl + Conf.bddPath + "/posts?pseudo=$pseudo";
+    String url = Conf.bddDomainUrl + Conf.bddPath + "/postsUser?pseudo=$pseudo";
     try {
       var response = await http.get(Uri.parse(url));
       final List<dynamic> data = json.decode(response.body);
 
-      for (var post in data) {
-        posts.add(Post.fromJson(post));
-      }
+      posts = List<Post>.from(data.map((model) => Post.fromJson(model)));
     } catch (e) {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");

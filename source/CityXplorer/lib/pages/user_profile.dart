@@ -15,13 +15,16 @@ class UserProfile extends StatefulWidget {
   UserProfile({Key? key, required this.user}) : super(key: key);
 
   @override
-  State<UserProfile> createState() => _UserProfileState();
+  State<UserProfile> createState() => _UserProfileState(user);
 }
 
 class _UserProfileState extends State<UserProfile> {
+  User user;
   bool loading = false;
   Widget postsLoaded = Container();
   Widget userInfos = Container();
+
+  _UserProfileState(this.user);
 
   @override
   void initState() {
@@ -31,6 +34,7 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
+    _updateUser();
     return Scaffold(
         appBar: buildDefaultAppBar(context),
         body: RefreshIndicator(
@@ -44,32 +48,6 @@ class _UserProfileState extends State<UserProfile> {
                   child: _userInfos(),
                 ),
                 postsLoaded,
-                Post(
-                        date: DateTime.parse("2020-12-24"),
-                        photos: ["1.jpg", "2.jpg"],
-                        positionX: 10.0,
-                        positionY: 10.0,
-                        userPseudo: "antoine54",
-                        titre: "Le titre :)",
-                        description:
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac ex ullamcorper, iaculis nisl id, maximus augue. Morbi condimentum dui tellus, quis fermentum ante interdum eget. Proin et turpis leo. Praesent ac quam malesuada, sollicitudin eros vulputate, pharetra ligula. Vestibulum pellentesque ligula euismod nulla elementum lobortis. Suspendisse eget dictum nibh.",
-                        ville: "Nancy",
-                        etat: "Valide")
-                    .toWidget(context),
-                Post(
-                        date: DateTime.parse("2020-12-24 16:24"),
-                        photos: ["2.jpg", "1.jpg", "3.jpg"],
-                        positionX: 10.0,
-                        positionY: 10.0,
-                        userPseudo: "antoine54",
-                        titre:
-                            "Le titre giga long long long long long long, Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
-                        description:
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac ex ullamcorper, iaculis nisl id, maximus augue. Morbi condimentum dui tellus, quis fermentum ante interdum eget. Proin et turpis leo. Praesent ac quam malesuada, sollicitudin eros vulputate, pharetra ligula. Vestibulum pellentesque ligula euismod nulla elementum lobortis. Suspendisse eget dictum nibh.",
-                        ville:
-                            "Nancy a a a a  a a a a a aaaaaa a a aaaaaaaaaaaaa, Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
-                        etat: "Invalide")
-                    .toWidget(context)
               ]),
         ));
   }
@@ -93,16 +71,15 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Widget _userInfos() {
-    /*return Text("@${widget.user.pseudo}", style: Styles.textStyleLink));*/
     return Column(
       children: [
         ProfileWidget(
-            user: widget.user,
+            user: user,
             onClicked: () async {
               UserConneted userConneted = UserConneted.empty();
-              if (widget.user is UserConneted) {
-                userConneted = (widget.user as UserConneted);
-              } else if (await isCurrentUser(widget.user.pseudo)) {
+              if (user is UserConneted) {
+                userConneted = (user as UserConneted);
+              } else if (await isCurrentUser(user.pseudo)) {
                 userConneted = await getUser();
               }
               if (!userConneted.isEmpty()) {
@@ -111,11 +88,11 @@ class _UserProfileState extends State<UserProfile> {
               }
             }),
         const SizedBox(height: 24),
-        buildName(widget.user),
+        buildName(user),
         const SizedBox(height: 24),
-        NumbersWidget(),
+        NumbersWidget(user: user),
         const SizedBox(height: 48),
-        buildAbout(widget.user),
+        buildAbout(user),
       ],
     );
   }
@@ -162,8 +139,8 @@ class _UserProfileState extends State<UserProfile> {
       );
 
   Future<Widget> _renderPosts(BuildContext context) async {
-    List<Post> posts = await widget.user.getPosts();
-    bool isCurrent = await isCurrentUser(widget.user.pseudo);
+    List<Post> posts = await user.getPosts();
+    bool isCurrent = await isCurrentUser(user.pseudo);
     if (posts.isEmpty) {
       return const Center(
         child: Text("Aucun post n'a été publié par cet utilisateur."),
@@ -171,11 +148,22 @@ class _UserProfileState extends State<UserProfile> {
     } else {
       List<Widget> list = [];
       for (Post post in posts) {
-        if (post.isValid() || widget.user.niveauAcces >= 2 || isCurrent) {
+        if (post.isValid() || user.niveauAcces >= 2 || isCurrent) {
           list.add(post.toWidget(context));
         }
       }
       return Column(children: list);
+    }
+  }
+
+  void _updateUser() async {
+    if ((!user.isEmpty() && user is UserConneted) ||
+        await isCurrentUser(user.pseudo)) {
+      UserConneted userConneted = await getUser();
+      User newUser = await User.fromPseudo(user.pseudo);
+      UserConneted userUpdated = userConneted.updateWith(newUser);
+      user = userUpdated;
+      connexion(userUpdated);
     }
   }
 }
