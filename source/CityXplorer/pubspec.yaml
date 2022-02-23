@@ -44,6 +44,7 @@ dependencies:
   location: ^4.3.0
   shared_preferences: ^2.0.12
   carousel_slider: ^4.0.0
+  html_unescape: ^2.0.0
 
 dev_dependencies:
   flutter_test:

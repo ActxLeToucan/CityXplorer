@@ -64,6 +64,8 @@ class PostController{
         $longitude = filter_var($content['longitude'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
         $descr = filter_var($content['description'], FILTER_SANITIZE_STRING);
         $titre = filter_var($content['titre'], FILTER_SANITIZE_STRING);
+        $adresse_courte = filter_var($content['adresse-courte'], FILTER_SANITIZE_STRING);
+        $adresse_longue = filter_var($content['adresse-longue'], FILTER_SANITIZE_STRING);
         $datePost = date("Y-m-d H:i:s", $startTime);
 
         $tab = [
@@ -96,6 +98,8 @@ class PostController{
                 $newPost->datePost=$datePost;
                 $newPost->etat='Invalide';
                 $newPost->idUser=$user->id;
+                $newPost->adresse_courte=$adresse_courte;
+                $newPost->adresse_longue=$adresse_longue;
                 $newPost->save();
 
                 // creation photo

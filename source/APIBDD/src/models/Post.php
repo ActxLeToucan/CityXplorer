@@ -34,7 +34,9 @@ class Post extends Model{
             "date" => $this->datePost,
             "etat" => $this->etat,
             "photos" => $tabPhotos,
-            "user-pseudo" => $this->user->pseudo
+            "user-pseudo" => $this->user->pseudo,
+            "adresse_courte" => $this->adresse_courte,
+            "adresse_longue" => $this->adresse_longue
         ];
     }
 }

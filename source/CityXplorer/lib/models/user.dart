@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cityxplorer/models/post.dart';
 import 'package:cityxplorer/pages/user_profile.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 
 import '../conf.dart';
@@ -22,12 +23,13 @@ class User {
       required this.description});
 
   factory User.fromJson(Map<String, dynamic> json) {
+    var unescape = HtmlUnescape();
     return User(
-        pseudo: json['pseudo'],
-        name: json['name'],
+        pseudo: unescape.convert(json['pseudo']),
+        name: unescape.convert(json['name']),
         avatar: json['avatar'],
         niveauAcces: json['niveauAcces'],
-        description: json['description']);
+        description: unescape.convert(json['description']));
   }
 
   factory User.empty() {

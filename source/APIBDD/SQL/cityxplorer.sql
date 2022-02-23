@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mar. 22 fév. 2022 à 19:28
+-- Généré le : mer. 23 fév. 2022 à 17:11
 -- Version du serveur :  10.3.32-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 7.4.3
 
@@ -166,7 +166,16 @@ INSERT INTO `photo` (`idPhoto`, `idPost`, `url`) VALUES
 (109, 123, '1645547932bf04cee783e935c315ca9e26a614562c1a470ef1.jpg'),
 (110, 124, '16455480979da3bf560881b01c712f4b2a666d6a9a031e9242.jpg'),
 (111, 125, '16455482044049655e19e8d38788364e2722a5a13989520878.jpg'),
-(112, 126, '164555755374f2157588de57cbe63eba95cd60b2ae54dfd286.jpg');
+(112, 126, '164555755374f2157588de57cbe63eba95cd60b2ae54dfd286.jpg'),
+(113, 127, '1645616846aca97796f1b5b8025ee24b9e0d7310201c4b422c.jpg'),
+(114, 128, '1645617289d568cbc2fd2ea29576251f8499c6cb21adb03be4.jpg'),
+(115, 129, '164561738201a0ed095f9a2aac88ee85cfa72c60be1e4e1318.jpg'),
+(116, 130, '1645617965f21a56f14f1d88d3f2f107c17a6d8d0287560d34.jpg'),
+(117, 131, '164561839292a36701f6356212a34443e9d56616df30f994ef.jpg'),
+(119, 133, '1645631940ed09b22fd1f8627ce8a87ae950e401e076056e08.png'),
+(120, 134, '1645633001910060f4dc3073a0e8aaaa8c995820b44f2598d1.jpg'),
+(123, 137, '164563607293285e00e94da5df7d6076878da8cb28c69e2543.jpg'),
+(124, 138, '16456361146baf6b6205775f610bab56e7e6d1cf636c9eedcb.jpg');
 
 -- --------------------------------------------------------
 
@@ -182,21 +191,32 @@ CREATE TABLE `post` (
   `titre` varchar(100) NOT NULL DEFAULT '',
   `datePost` datetime NOT NULL DEFAULT current_timestamp(),
   `etat` varchar(10) NOT NULL DEFAULT '',
-  `idUser` int(5) NOT NULL
+  `idUser` int(5) NOT NULL,
+  `adresse_courte` text DEFAULT '',
+  `adresse_longue` text DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `post`
 --
 
-INSERT INTO `post` (`idPost`, `latitude`, `longitude`, `description`, `titre`, `datePost`, `etat`, `idUser`) VALUES
-(1, 10, 10, 'Photo de la tour de pise', 'Tour de Pise', '2021-12-28 00:00:00', 'Invalide', 0),
-(2, 87, 32, 'Gare MontParnasse', 'Gare MontParnasse', '2021-12-28 00:00:00', 'Valide', 1),
-(5, 10, 10, 'Voici un chateau', 'Le chateau très beau', '2011-06-10 00:00:00', 'Invalide', 1),
-(15, 11, 11, 'blabla', 'blabla', '2011-06-10 00:00:00', 'Invalide', 5),
-(21, 10, 12, 'la description', 'Un titre', '2002-12-23 23:54:09', 'Invalide', 1),
-(59, 48.85715103149414, 2.288132905960083, 'Célèbre tour en fer de Gustave Eiffel (1889), terrasses panoramiques accessibles par escaliers et ascenseurs.', 'Tour Eiffel', '2011-06-10 00:00:00', 'Invalide', 1),
-(126, 48.6842585, 6.1743528, 'Cette app finalement... ', 'flutter', '2022-02-22 20:19:13', 'Invalide', 1);
+INSERT INTO `post` (`idPost`, `latitude`, `longitude`, `description`, `titre`, `datePost`, `etat`, `idUser`, `adresse_courte`, `adresse_longue`) VALUES
+(1, 10, 10, 'Photo de la tour de pise', 'Tour de Pise', '2021-12-28 00:00:00', 'Invalide', 0, '', ''),
+(2, 87, 32, 'Gare MontParnasse', 'Gare MontParnasse', '2021-12-28 00:00:00', 'Valide', 1, '', ''),
+(5, 10, 10, 'Voici un chateau', 'Le chateau très beau', '2011-06-10 00:00:00', 'Invalide', 1, '', ''),
+(15, 11, 11, 'blabla', 'blabla', '2011-06-10 00:00:00', 'Invalide', 5, '', ''),
+(21, 10, 12, 'la description', 'Un titre', '2002-12-23 23:54:09', 'Invalide', 1, '', ''),
+(59, 48.85715103149414, 2.288132905960083, 'Célèbre tour en fer de Gustave Eiffel (1889), terrasses panoramiques accessibles par escaliers et ascenseurs.', 'Tour Eiffel', '2011-06-10 00:00:00', 'Invalide', 1, '', ''),
+(126, 48.6842585, 6.1743528, 'Cette app finalement... ', 'flutter', '2022-02-22 20:19:13', 'Invalide', 1, '', ''),
+(127, 37.4219616, -122.0839903, 'En faite j&#39;ai coincé l&#39;appareil photo de mon émulateur Android dans un mur et je sais pas comment le reset ...', 'Le vide ', '2022-02-23 11:47:25', 'Invalide', 12, '', ''),
+(128, 37.4219616, -122.0839903, '@#$_&-+()/?!;:&#39;&#34;*', 'Toujours coincé &#39;&#34;é&@$+()/?!;:', '2022-02-23 11:54:48', 'Invalide', 12, '', ''),
+(129, 37.4219616, -122.0839903, 'test : &#39;\ntest : &#34;', 'J&#39;ai l&#39;impression que c&#39;est les apostrophes le problème', '2022-02-23 11:56:21', 'Invalide', 12, '', ''),
+(130, 37.4216572, -122.0842089, 'bien joué  moi', 'j ai reset la cam du coup', '2022-02-23 12:06:04', 'Invalide', 12, '', ''),
+(131, 37.4216572, -122.0842089, 'en fait c un chat heu voilà', 'un chat', '2022-02-23 12:13:11', 'Invalide', 12, '', ''),
+(133, 10, 12, 'la description &#39; et &#34; passent pas ?', 'Un titre l&#39;arbre', '2002-12-23 23:54:09', 'Invalide', 1, '', ''),
+(134, 37.421998333333335, -122.084, 'dans le meilleur des mondes esperons\n', 'test pour voir si tout va bien', '2022-02-23 16:16:40', 'Invalide', 13, '', ''),
+(137, 37.421998333333335, -122.084, '', 'test adresse ', '2022-02-23 17:07:49', 'Invalide', 13, '', ''),
+(138, 37.421998333333335, -122.084, '', 'dcdcsqvdsq', '2022-02-23 17:08:32', 'Invalide', 13, '', '');
 
 -- --------------------------------------------------------
 
@@ -222,7 +242,10 @@ CREATE TABLE `utilisateur` (
 INSERT INTO `utilisateur` (`id`, `pseudo`, `name`, `password`, `avatar`, `niveauAcces`, `token`, `description`) VALUES
 (1, 'antoine54', 'Antoine CONTOUX', '$2y$12$eKIPYSrDDdmop8a7sOWIAu5EKNJdZLvdKY33kyIQd/QfGCg6l8ZIa', 'antoine.jpg', 1, '1645012186aeb999b417f2802b8341d8df60e6f303daf5b9c875a84b803eb145d8e3d8e2b649e54102141d1c8835bc8a7f0bfa3eb54189a08a4240ca1aaf8e99f9c89d0bce', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur nisi odio, ullamcorper ac metus vel, hendrerit varius dolor. Nullam lacinia eleifend sapien, quis dignissim leo tempor eu. Integer egestas ipsum eu dolor rhoncus, sit amet dapibus enim consectetur. Nam scelerisque a tortor sodales iaculis. Nulla ut quam in augue iaculis laoreet eget vehicula justo. In augue arcu, dapibus quis magna sed, faucibus scelerisque nibh. Etiam accumsan id libero facilisis accumsan. Nam malesuada at nisl nec convallis. Nunc maximus dui ut justo sodales malesuada. '),
 (5, 'anthony', 'Anthony Nigro', 'aakjfskakf', 'avatar.png', 2, '1234', ''),
-(7, 'azertyuiop', 'azertyuiop', '$2y$12$oSykPSMz83aIlH4V8aGxCe8yRJKRU5rxdXhv14Z3EicqYHirlnW1W', 'avatar.png', 1, '164535247133428dcfeb6da92fe7c92303979fe82f6a6870ba6593fce1ad7dc289dca2aba99bb3d5dd66552ad2cf4223063b84af208eb3423a7090a2517207421d5d9ee66f', '');
+(7, 'azertyuiop', 'azertyuiop', '$2y$12$oSykPSMz83aIlH4V8aGxCe8yRJKRU5rxdXhv14Z3EicqYHirlnW1W', 'avatar.png', 1, '164535247133428dcfeb6da92fe7c92303979fe82f6a6870ba6593fce1ad7dc289dca2aba99bb3d5dd66552ad2cf4223063b84af208eb3423a7090a2517207421d5d9ee66f', ''),
+(11, 'essai', 'prprprooo', '$2y$12$.NdMa.g/0ISnLzuBiio/ZeALPEfulqJMhblNlx6HP9OQbkwLdSW9O', 'avatar.png', 1, '1645564136fc7d54b920507794720c9ba89e1938684cdb704e17c63998d08e9face33a96b156b347711897d1a4767e7928bb9b55dff68cc3fa719e4ddfeff2f361874cc690', ''),
+(12, 'Alexis_0202', '120120120', '$2y$12$oRF5FlCSBKX3T4zUUkhYY.E6mv4xCiE35etT3pb/0bckh2FA9mNTq', 'avatar.png', 1, '1645616773ff10d9bdd9c721cb545105ed565685b0209887fa429c3da55eadb22ac0c1a595181d532d539b4b9d245c8582306bbd215b01ace1bdd7d0d8b96acb782301928c', ''),
+(13, 'nepasoublier', 'nepasoublier', '$2y$12$Xg9i6xUb0FFrA5gz7vQjreRHxf7E7/aMLAzixNVhx9U4i6uZAYyBu', 'avatar.png', 1, '164563295959782181fc07c2fdc56301e1d87134edd4d80614b32b8ad6572f7f486d3118e6474b8d4549b8c8bd6db6ffe60f7c1c680bdf82cb0ebd37c1bc642130b8955a16', '');
 
 --
 -- Index pour les tables déchargées
@@ -293,19 +316,19 @@ ALTER TABLE `listeaffichable`
 -- AUTO_INCREMENT pour la table `photo`
 --
 ALTER TABLE `photo`
-  MODIFY `idPhoto` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
+  MODIFY `idPhoto` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
 
 --
 -- AUTO_INCREMENT pour la table `post`
 --
 ALTER TABLE `post`
-  MODIFY `idPost` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
+  MODIFY `idPost` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=139;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Contraintes pour les tables déchargées

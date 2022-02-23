@@ -4,6 +4,7 @@ import 'package:cityxplorer/models/user.dart';
 import 'package:flutter/material.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:html_unescape/html_unescape.dart';
 
 import '../components/appbar_default.dart';
 import '../conf.dart';
@@ -19,6 +20,8 @@ class Post {
   final String etat;
   final List<String?> photos;
   final String userPseudo;
+  final String adresseCourte;
+  final String adresseLongue;
 
   const Post(
       {required this.id,
@@ -29,25 +32,30 @@ class Post {
       required this.date,
       required this.etat,
       required this.photos,
-      required this.userPseudo});
+      required this.userPseudo,
+      required this.adresseCourte,
+      required this.adresseLongue});
 
   factory Post.fromJson(Map<String, dynamic> json) {
+    var unescape = HtmlUnescape();
     return Post(
         id: json['id'],
-        titre: json['titre'],
+        titre: unescape.convert(json['titre']),
         latitude: (json['latitude'] is int
             ? (json['latitude'] as int).toDouble()
             : json['latitude']),
         longitude: (json['longitude'] is int
             ? (json['longitude'] as int).toDouble()
             : json['longitude']),
-        description: json['description'],
+        description: unescape.convert(json['description']),
         date: (json['date'] != null
             ? DateTime.parse(json['date'])
             : DateTime.now()),
         etat: (json['etat'] as String).toLowerCase(),
         photos: List<String>.from(json['photos']),
-        userPseudo: json['user-pseudo']);
+        userPseudo: unescape.convert(json['user-pseudo']),
+        adresseCourte: unescape.convert(json['adresse_courte']),
+        adresseLongue: unescape.convert(json['adresse_longue']));
   }
 
   bool isValid() {
@@ -101,7 +109,7 @@ class Post {
         Row(children: [
           Expanded(
               child: Text(
-            "ville", //TODO ville
+            adresseCourte,
             style: const TextStyle(color: Colors.black45),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
@@ -215,8 +223,7 @@ class Post {
               const IconMenuPost(),
             ]),
         Text(
-          // TODO ville
-          "ville, le ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} à ${date.hour}:${date.minute.toString().padLeft(2, '0')}.",
+          "$adresseLongue\nle ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} à ${date.hour}:${date.minute.toString().padLeft(2, '0')}.",
           style: const TextStyle(color: Colors.black45),
         ),
         Padding(
