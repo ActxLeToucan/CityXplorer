@@ -229,7 +229,9 @@ class Post {
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 4, 0, 10),
           child: Text(
-              photos.length != 1 ? "${photos.length} photos" : "1 photo",
+              photos.length > 1
+                  ? "${photos.length} photos"
+                  : "${photos.length} photo",
               style: const TextStyle(color: Colors.black45)),
         ),
       ],
