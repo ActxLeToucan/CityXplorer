@@ -213,7 +213,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   Future postLePost() async {
 
     String url = Conf.bddDomainUrl + Conf.bddPath + "/post";
-    UserConneted user = await getUser();
+
     var request = http.MultipartRequest("POST", Uri.parse(url));
     try {
       request.fields['titre']= controllerTitre.text;              /// titre du post
@@ -221,10 +221,19 @@ class _NewPostScreenState extends State<NewPostScreen> {
       request.fields['latitude'] = latitude;                      /// latitude du post
       request.fields['longitude'] = longitude;                    /// longitude du post
       request.fields['date'] = getCurrentDateBDD();               /// date courante au format adapte a la bdd
+
+      UserConneted user = await getUser();
       if(!user.isEmpty()) {
         request.fields['token'] = user.token;                     /// token d authentification de l utilsateur
       }else{
         throw Exception('Erreur : session !');
+      }
+      List? adresses = await getAdresse();
+      if (adresses != null){
+        print(adresses[0]);
+        print(adresses[1]);
+      } else{
+        print("raté");
       }
       request.files.add( await
       http.MultipartFile.fromPath(                            ///ajout de la photo a la requete
@@ -256,6 +265,32 @@ class _NewPostScreenState extends State<NewPostScreen> {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
       setState(() {isLoading = false;}); /// termine le chargement du bouton
+    }
+  }
+
+  Future <List?> getAdresse() async{
+    String url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=AIzaSyCoZ5pkSaTZk3rpiGrm3yuTIj48y7NdncU&result_type=street_address|locality';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+      print(response.statusCode);
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      if(data["status"] == "OK"){ //if status is "OK" returned from REST API
+        if(data["results"].length > 0) { //if there is atleast one address
+          Map firstresult = data["results"][0]; //select the first address
+
+          var address = firstresult["formatted_address"]; //get the address
+          print(address);
+        }
+      }
+      return null;
+      //return List<String>.filled(adresse_courte, adresse_longue);
+
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      return null;
     }
   }
 }
