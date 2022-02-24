@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:cityxplorer/components/appbar_default.dart';
+import 'package:cityxplorer/components/appbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
@@ -13,7 +13,7 @@ class DisplayPictureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildDefaultAppBar(context),
+      appBar: defaultAppBar(context),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
       body: SingleChildScrollView(

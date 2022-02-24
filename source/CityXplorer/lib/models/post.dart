@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:html_unescape/html_unescape.dart';
 
-import '../components/appbar_default.dart';
+import '../components/appbar.dart';
 import '../conf.dart';
 import '../styles.dart';
 
@@ -184,8 +184,9 @@ class Post {
 
   Scaffold toPage(BuildContext context) {
     return Scaffold(
-      appBar: buildDefaultAppBar(context),
+      appBar: defaultAppBar(context),
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -223,7 +224,7 @@ class Post {
               const IconMenuPost(),
             ]),
         Text(
-          "$adresseLongue\nle ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} à ${date.hour}:${date.minute.toString().padLeft(2, '0')}.",
+          "$adresseLongue\nle ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} à ${date.hour}:${date.minute.toString().padLeft(2, '0')}",
           style: const TextStyle(color: Colors.black45),
         ),
         Padding(

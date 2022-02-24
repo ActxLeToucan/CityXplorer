@@ -1,4 +1,4 @@
-import 'package:cityxplorer/components/appbar_default.dart';
+import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +7,7 @@ import '../components/numbers_widget.dart';
 import '../components/profile_widget.dart';
 import '../models/post.dart';
 import '../models/user.dart';
+import '../styles.dart';
 import 'edit_profile.dart';
 
 class UserProfile extends StatefulWidget {
@@ -36,38 +37,28 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     _updateUser();
     return Scaffold(
-        appBar: buildDefaultAppBar(context),
+        extendBodyBehindAppBar: true,
+        appBar: transparentAppBar(context),
         body: RefreshIndicator(
           onRefresh: _load,
-          child: ListView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              children: [
-                _renderProgressBar(context),
-                Padding(
-                  padding: const EdgeInsets.all(25.0),
-                  child: _userInfos(),
-                ),
-                postsLoaded,
-              ]),
+          child: ListView(physics: const BouncingScrollPhysics(), children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 15, 0, 35),
+              child: _userInfos(),
+            ),
+            postsLoaded,
+          ]),
         ));
   }
 
   Future<void> _load() async {
     setState(() => loading = true);
     Widget posts = await _renderPosts(context);
+    //await Future.delayed(const Duration(seconds: 2), () {});
     setState(() {
       postsLoaded = posts;
       loading = false;
     });
-  }
-
-  Widget _renderProgressBar(BuildContext context) {
-    return (loading
-        ? const LinearProgressIndicator(
-            value: null,
-            backgroundColor: Colors.white,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.grey))
-        : Container());
   }
 
   Widget _userInfos() {
@@ -152,7 +143,7 @@ class _UserProfileState extends State<UserProfile> {
           list.add(post.toWidget(context));
         }
       }
-      return Column(children: list);
+      return Column(children: list.reversed.toList());
     }
   }
 

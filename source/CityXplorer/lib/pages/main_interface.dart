@@ -1,4 +1,4 @@
-import 'package:cityxplorer/components/appbar_default.dart';
+import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/vues/take_photo_screen.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +46,7 @@ class _MainInterfaceState extends State<MainInterface> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildDefaultAppBar(context),
+      appBar: defaultAppBar(context),
       body: pages[_selectedIndex],
       drawer: const Menu(),
       bottomNavigationBar: BottomNavigationBar(

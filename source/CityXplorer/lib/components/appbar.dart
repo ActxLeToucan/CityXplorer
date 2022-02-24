@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../styles.dart';
 
-buildDefaultAppBar(BuildContext context) {
+defaultAppBar(BuildContext context) {
   return AppBar(
     title: const Text("CityXplorer"),
     centerTitle: true,
@@ -11,5 +10,13 @@ buildDefaultAppBar(BuildContext context) {
           onPressed: () => Navigator.pushNamed(context, "searchPage"),
           icon: const Icon(Icons.search))
     ],
+  );
+}
+
+transparentAppBar(BuildContext context) {
+  return AppBar(
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    foregroundColor: Colors.black,
   );
 }

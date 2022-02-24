@@ -1,4 +1,4 @@
-import 'package:cityxplorer/components/appbar_default.dart';
+import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 
@@ -13,36 +13,39 @@ class EditProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildDefaultAppBar(context),
-      body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 32),
-        physics: BouncingScrollPhysics(),
-        children: [
-          ProfileWidget(
-            user: user,
-            isEdit: true,
-            onClicked: () async {},
-          ),
-          const SizedBox(height: 24),
-          TextFieldWidget(
-            label: 'Nom',
-            text: user.name,
-            onChanged: (name) {},
-          ),
-          const SizedBox(height: 24),
-          TextFieldWidget(
-            label: 'Pseudo',
-            text: user.pseudo,
-            onChanged: (email) {},
-          ),
-          const SizedBox(height: 24),
-          TextFieldWidget(
-            label: 'Description',
-            text: user.description,
-            maxLines: 5,
-            onChanged: (about) {},
-          ),
-        ],
+      extendBodyBehindAppBar: true,
+      appBar: transparentAppBar(context),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(32, 15, 32, 0),
+        child: ListView(
+          physics: const BouncingScrollPhysics(),
+          children: [
+            ProfileWidget(
+              user: user,
+              isEdit: true,
+              onClicked: () async {},
+            ),
+            const SizedBox(height: 24),
+            TextFieldWidget(
+              label: 'Nom',
+              text: user.name,
+              onChanged: (name) {},
+            ),
+            const SizedBox(height: 24),
+            TextFieldWidget(
+              label: 'Pseudo',
+              text: user.pseudo,
+              onChanged: (email) {},
+            ),
+            const SizedBox(height: 24),
+            TextFieldWidget(
+              label: 'Description',
+              text: user.description,
+              maxLines: 5,
+              onChanged: (about) {},
+            ),
+          ],
+        ),
       ),
     );
   }
