@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'my_http_overrides.dart';
+import 'pages/map-screen.dart';
 
 List<CameraDescription> cameras = [];
 
@@ -27,6 +28,7 @@ Future<void> main() async {
 
   HttpOverrides.global = MyHttpOverrides();
 
+
   UserConneted user = await getUser();
   runApp(MaterialApp(
     title: 'CityXplorer',
@@ -37,7 +39,7 @@ Future<void> main() async {
       'main': (context) => const MainInterface(),
       'searchPage': (context) => const SearchPage(),
       'login': (context) => const LoginScreen(),
-      'newAccount': (context) => const CreateNewAccount()
+      'newAccount': (context) => const CreateNewAccount(),
     },
   ));
 }
@@ -70,3 +72,4 @@ Future<bool> isCurrentUser(String pseudo) async {
   UserConneted user = await getUser();
   return user.pseudo.compareTo(pseudo) == 0;
 }
+

@@ -21,8 +21,6 @@ class _GeolocationMapState extends State<GeolocationMap> {
   Directions _data;
   String distance = "";
   String temps = "";
-
-
   GoogleMapController _controller;
 
   static final CameraPosition initialLocation = CameraPosition(
@@ -31,7 +29,8 @@ class _GeolocationMapState extends State<GeolocationMap> {
   );
 
 
-  void updateMarkerAndCircle(LocationData newLocalData) async {
+
+  void updateMarker(LocationData newLocalData) async {
     LatLng latlng = LatLng(newLocalData.latitude, newLocalData.longitude);
     this.setState(() {
       this._User = Marker(
@@ -62,7 +61,7 @@ class _GeolocationMapState extends State<GeolocationMap> {
       //Uint8List imageData = await getMarker();
       var location = await _locationTracker.getLocation();
 
-      updateMarkerAndCircle(location);
+      updateMarker(location);
 
       if (_locationSubscription != null) {
         _locationSubscription.cancel();
@@ -71,16 +70,19 @@ class _GeolocationMapState extends State<GeolocationMap> {
 
       _locationSubscription = _locationTracker.onLocationChanged().listen((newLocalData) {
         if (_controller != null) {
-         /*_controller.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+          /*
+         _controller.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
               bearing: 192.8334901395799,
               target: LatLng(newLocalData.latitude, newLocalData.longitude),
               tilt: 0,
               zoom: 18.00)));
 
-          */
 
 
-          updateMarkerAndCircle(newLocalData);
+
+           */
+
+          updateMarker(newLocalData);
         }
       });
 
@@ -91,8 +93,8 @@ class _GeolocationMapState extends State<GeolocationMap> {
     }
   }
 
-  void addMarkerDestination() async {
-    LatLng latlng = LatLng(48.68572846037453, 6.171208548605282);
+  void addMarkerDestination(lat, lng) async {
+    LatLng latlng = LatLng(48.45976105901722, 6.91832901446849);
     this.setState(() {
       this._destination = Marker(
         markerId: MarkerId("maison"),
@@ -118,6 +120,15 @@ class _GeolocationMapState extends State<GeolocationMap> {
 
   @override
   Widget build(BuildContext context) {
+    /*
+    BitmapDescriptor customIcon;
+    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(12, 12)),
+        'assets/images/car-icon.png')
+        .then((d) {
+      customIcon = d;
+    });
+
+     */
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -140,7 +151,7 @@ class _GeolocationMapState extends State<GeolocationMap> {
 
             onMapCreated: (GoogleMapController controller) {
               _controller = controller;
-              addMarkerDestination();
+              addMarkerDestination(?,?); /** --------------------------------------------------- **/
               getCurrentLocation();
             },
 

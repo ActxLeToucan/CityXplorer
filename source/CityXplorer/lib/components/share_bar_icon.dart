@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../models/post.dart';
+
 class ShareBar extends StatefulWidget {
-  const ShareBar({Key? key}) : super(key: key);
+  final Post post;
+  const ShareBar({Key? key, required this.post}) : super(key: key);
 
   @override
   State<ShareBar> createState() => _ShareBarState();
@@ -26,7 +29,9 @@ class _ShareBarState extends State<ShareBar> {
           icon: const Icon(Icons.map),
           iconSize: 28,
           color: Colors.black,
-          onPressed: () {},
+          onPressed: () {
+            widget.post.navigateToMap(context);
+          },
         ),
         IconButton(
           icon: Icon(_isFavorited ? Icons.favorite : Icons.favorite_border),

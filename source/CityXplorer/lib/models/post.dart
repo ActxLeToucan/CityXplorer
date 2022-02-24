@@ -8,6 +8,7 @@ import 'package:html_unescape/html_unescape.dart';
 
 import '../components/appbar.dart';
 import '../conf.dart';
+import '../pages/map-screen.dart';
 import '../styles.dart';
 
 class Post {
@@ -170,7 +171,7 @@ class Post {
         Center(
           child: Container(
             constraints: const BoxConstraints(maxWidth: 500),
-            child: const ShareBar(),
+            child: ShareBar(post: this),
           ),
         ),
         Text(
@@ -271,7 +272,7 @@ class Post {
         Center(
           child: Container(
             constraints: const BoxConstraints(maxWidth: 500),
-            child: const ShareBar(),
+            child: ShareBar(post: this),
           ),
         ),
         GestureDetector(
@@ -292,5 +293,9 @@ class Post {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => user.profile()));
     }
+  }
+
+  void navigateToMap(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) =>GeolocationMap(post :this)));
   }
 }

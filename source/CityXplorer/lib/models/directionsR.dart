@@ -1,33 +1,31 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:login_tutorial/services/directionsM.dart';
+import '../../conf.dart';
+import './directionsM.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class DirectionsRepository {
   static const String _baseUrl = 'https://maps.googleapis.com/maps/api/directions/json?';
 
   final Dio _dio;
 
-  DirectionsRepository({Dio dio}) : _dio = dio ?? Dio();
+  DirectionsRepository({dio}) : _dio = dio ?? Dio();
 
-  Future<Directions> getDirections({
-    @required LatLng origin,
-    @required LatLng destination,
+  Future<Directions?> getDirections({
+    required LatLng origin,
+    required LatLng destination,
   }) async {
-    final response = await _dio.get(
-      _baseUrl,
-      queryParameters: {
-        'origin': '${origin.latitude},${origin.longitude}',
-        'destination': '${destination.latitude},${destination.longitude}',
-        'key': 'AIzaSyCoZ5pkSaTZk3rpiGrm3yuTIj48y7NdncU',
-      },
-    );
+    final response = await http.get(Uri.parse('${_baseUrl}origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${Conf.googleApiKey}'));
+
+    final Map<String,dynamic> data = jsonDecode(response.body);
+
 
     // Check if response is successful
     if (response.statusCode == 200) {
-      return Directions.fromMap(response.data);
+      return Directions.fromMap(data);
     }
-    print("HEEERE");
     return null;
   }
 }
