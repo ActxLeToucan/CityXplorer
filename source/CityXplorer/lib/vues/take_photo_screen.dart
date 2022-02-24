@@ -1,7 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import '../pages/display_picture_screen.dart';
 import 'package:cityxplorer/pages/new_post.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:location/location.dart';
 
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -18,6 +19,7 @@ class TakePictureScreen extends StatefulWidget {
 class TakePictureScreenState extends State<TakePictureScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+  bool isLoading = false;
 
   double _sliderValue = 1.0;
   double _zoomMax = 1.01;
@@ -59,9 +61,13 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                 children: [CameraPreview(_controller)],
                 physics: const NeverScrollableScrollPhysics(),
               ),
-              Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: _renderButtons())
+              IgnorePointer(
+                /// rend le bouton non cliquable si il est en train d envoyer la requete
+                ignoring: isLoading ? true : false,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: _renderButtons()),
+              )
             ]);
           } else {
             // Otherwise, display a loading indicator.
@@ -76,35 +82,53 @@ class TakePictureScreenState extends State<TakePictureScreen> {
           decoration: const BoxDecoration(
               boxShadow: [BoxShadow(color: Colors.black54, spreadRadius: 10)]),
           child: Column(children: [
-            IconButton(
-                icon: const Icon(Icons.camera_alt),
-                color: Colors.white,
-                onPressed: () async {
-                  // Take the Picture in a try / catch block. If anything goes wrong,
-                  // catch the error.
-                  try {
-                    // Ensure that the camera is initialized.
-                    await _initializeControllerFuture;
+            TextButton(
+              onPressed: () async {
+                setState(() {
+                  isLoading = true;
+                });
 
-                    // Attempt to take a picture and get the file `image`
-                    // where it was saved.
-                    final image = await _controller.takePicture();
+                // Take the Picture in a try / catch block. If anything goes wrong,
+                // catch the error.
+                try {
+                  // Ensure that the camera is initialized.
+                  await _initializeControllerFuture;
 
-                    // If the picture was taken, display it on a new screen.
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        //builder: (context) => DisplayPictureScreen(
-                        builder: (context) => NewPostScreen(
+                  // Attempt to take a picture and get the file `image`
+                  // where it was saved.
+                  final image = await _controller.takePicture();
+                  final location = await _getLocation();
+
+                  // If the picture was taken, display it on a new screen.
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      //builder: (context) => DisplayPictureScreen(
+                      builder: (context) => NewPostScreen(
                           // Pass the automatically generated path to
                           // the DisplayPictureScreen widget.
                           imagePath: image.path,
-                        ),
-                      ),
-                    );
-                  } catch (e) {
-                    print(e);
-                  }
-                }),
+                          latitude: location[0] ?? 0,
+                          longitude: location[1] ?? 0),
+                    ),
+                  );
+                } catch (e) {
+                  print(e);
+                }
+
+                setState(() {
+                  isLoading = false;
+                });
+              },
+              child: (isLoading)
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 1.5,
+                        color: Colors.white,
+                      ))
+                  : const Icon(Icons.camera_alt, color: Colors.white),
+            ),
             Slider(
                 value: _sliderValue,
                 onChanged: (dynamic newValue) {
@@ -117,5 +141,38 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                 max: _zoomMax)
           ]))
     ];
+  }
+
+  Future<List<double?>> _getLocation() async {
+    Location location = Location();
+
+    List<double?> res = [0, 0];
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        Fluttertoast.showToast(msg: 'Erreur : service désactivé !');
+        return res;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        Fluttertoast.showToast(msg: 'Erreur : permission manquante');
+        return res;
+      }
+    }
+
+    _locationData = await location.getLocation();
+    res = [_locationData.latitude, _locationData.longitude];
+
+    return res;
   }
 }

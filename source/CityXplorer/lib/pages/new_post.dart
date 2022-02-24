@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:location/location.dart';
 
 import '../conf.dart';
 import '../main.dart';
@@ -17,8 +16,15 @@ import '../styles.dart';
 /// formulaire de creation d'un post avec gestion de la requete envoyee et de son resultat
 class NewPostScreen extends StatefulWidget {
   final String imagePath;
+  final double latitude;
+  final double longitude;
 
-  const NewPostScreen({Key? key, required this.imagePath}) : super(key: key);
+  const NewPostScreen(
+      {Key? key,
+      required this.imagePath,
+      required this.latitude,
+      required this.longitude})
+      : super(key: key);
 
   @override
   State<NewPostScreen> createState() => _NewPostScreenState();
@@ -28,8 +34,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
   final _formKey = GlobalKey<FormState>();
   final controllerTitre = TextEditingController();
   final controllerDescription = TextEditingController();
-  String latitude = '0';
-  String longitude = '0';
   DateTime now = DateTime.now();
   bool isLoading = false;
 
@@ -61,8 +65,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
                       fontSize: 20, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                   controller: controllerTitre,
+                  textInputAction: TextInputAction.next,
                   autofocus: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderSide:
                           BorderSide(color: Styles.mainColor, width: 2.5),
@@ -103,7 +108,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   maxLines: 5,
                   keyboardType: TextInputType.multiline,
                   controller: controllerDescription,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderSide:
                           BorderSide(color: Styles.mainColor, width: 2.5),
@@ -133,24 +138,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         primary: Colors.black,
                       ),
                       onPressed: () async {
-                        // Validate returns true if the form is valid, or false otherwise.
-                        if (_formKey.currentState!.validate()) {
-                          try {
-                            /// lance le chargement du bouton
-                            setState(() {
-                              isLoading = true;
-                            });
-
-                            /// on recupere la longitude et la latitude (dans les attributs)
-                            await _getLocation();
-                            await postLePost();
-                          } catch (e) {
-                            setState(() {
-                              isLoading = false;
-                            });
-                            Fluttertoast.showToast(msg: '$e');
-                          }
-                        }
+                        _send();
                       },
                       child: (isLoading)
                           ? const SizedBox(
@@ -173,29 +161,22 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
-  /// met a jour les attributs longitutide et latitude avec les coordonnees actuelles de l utilisateur
-  Future<void> _getLocation() async {
-    Location location = new Location();
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-    LocationData _locationData;
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        throw Exception('Erreur : service désactivé !');
+  void _send() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+
+      try {
+        await postLePost();
+      } catch (e) {
+        Fluttertoast.showToast(msg: '$e');
       }
+
+      setState(() {
+        isLoading = false;
+      });
     }
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        throw Exception('Erreur : permission manquante');
-      }
-    }
-    _locationData = await location.getLocation();
-    longitude = _locationData.longitude.toString();
-    latitude = _locationData.latitude.toString();
   }
 
   /// renvoie la date du jour au format JJ/MM/AAAA -- affichage utilisateur
@@ -203,17 +184,18 @@ class _NewPostScreenState extends State<NewPostScreen> {
     var date = DateTime.now().toString();
     var dateParse = DateTime.parse(date);
 
-    var formattedDate = "${dateParse.day}-${dateParse.month}-${dateParse.year}";
+    var formattedDate =
+        "${dateParse.day.toString().padLeft(2, '0')}/${dateParse.month.toString().padLeft(2, '0')}/${dateParse.year}";
     return formattedDate.toString();
   }
 
-  /// renvoie la date du jour au format YYY/MM/DD hh/mm/ss -- pour la BDD
+  /// renvoie la date du jour au format YYY-MM-DD hh:mm:ss -- pour la BDD
   String getCurrentDateBDD() {
     var date = DateTime.now().toString();
     var dateParse = DateTime.parse(date);
 
     var formattedDate =
-        "${dateParse.day}-${dateParse.month}-${dateParse.year} ${dateParse.hour}:${dateParse.minute}:${dateParse.second}";
+        "${dateParse.year}-${dateParse.month.toString().padLeft(2, '0')}-${dateParse.day.toString().padLeft(2, '0')} ${dateParse.hour.toString().padLeft(2, '0')}:${dateParse.minute.toString().padLeft(2, '0')}:${dateParse.second.toString().padLeft(2, '0')}";
     return formattedDate.toString();
   }
 
@@ -230,10 +212,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
       request.fields['description'] = controllerDescription.text;
 
       /// latitude du post
-      request.fields['latitude'] = latitude;
+      request.fields['latitude'] = widget.latitude.toString();
 
       /// longitude du post
-      request.fields['longitude'] = longitude;
+      request.fields['longitude'] = widget.longitude.toString();
 
       /// date courante au format adapte a la bdd
       request.fields['date'] = getCurrentDateBDD();
@@ -305,7 +287,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   Future<List> getAdresse() async {
     String url =
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=${Conf.googleApiKey}&result_type=street_address|locality';
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${widget.latitude},${widget.longitude}&key=${Conf.googleApiKey}&result_type=street_address|locality';
 
     List<String> adresses = [];
 

@@ -12,6 +12,7 @@ class NumbersWidget extends StatefulWidget {
 
 class _NumbersWidgetState extends State<NumbersWidget> {
   int nbPosts = 0;
+  int nbListes = 0;
   int likes = 0;
 
   @override
@@ -25,9 +26,13 @@ class _NumbersWidgetState extends State<NumbersWidget> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        buildButton(context, nbPosts.toString(), 'Posts'),
+        buildButton(
+            context, nbPosts.toString(), 'Post${nbPosts > 1 ? 's' : ''}'),
         buildDivider(),
-        buildButton(context, likes.toString(), 'Likes'),
+        buildButton(
+            context, nbListes.toString(), 'Liste${nbListes > 1 ? 's' : ''}'),
+        buildDivider(),
+        buildButton(context, likes.toString(), 'Like${likes > 1 ? 's' : ''}'),
       ],
     );
   }
