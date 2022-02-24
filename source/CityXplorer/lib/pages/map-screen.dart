@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cityxplorer/models/post.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import '../models/directionsM.dart';
@@ -15,41 +14,38 @@ class GeolocationMap extends StatefulWidget {
   _GeolocationMapState createState() => _GeolocationMapState();
 }
 
-
 class _GeolocationMapState extends State<GeolocationMap> {
-
   late StreamSubscription _locationSubscription;
   Location _locationTracker = Location();
 
-
-  late Marker _User;
+  Marker? _User;
   late Marker _destination;
   Directions? _data;
   String distance = "";
   String temps = "";
   late GoogleMapController _controller;
 
-  static final CameraPosition initialLocation = CameraPosition(
-    target: LatLng(48.692054, 6.184417),
-    zoom: 14.4746,
-  );
-
-
+  CameraPosition initialLocation() {
+    return CameraPosition(
+      target: LatLng(widget.post.latitude, widget.post.longitude),
+      zoom: 14.4746,
+    );
+  }
 
   void updateMarker(LocationData newLocalData) async {
-
-      LatLng latlng = LatLng(newLocalData.latitude??0, newLocalData.longitude??0);
+    LatLng latlng =
+        LatLng(newLocalData.latitude ?? 0, newLocalData.longitude ?? 0);
 
     setState(() {
       _User = Marker(
-          markerId: const MarkerId("Ici"),
-          position: latlng,
-          //rotation: newLocalData.heading,
-          draggable: false,
-          zIndex: 2,
-          flat: true,
-          anchor: const Offset(0.5, 0.5),
-          icon: BitmapDescriptor.defaultMarker,
+        markerId: const MarkerId("Ici"),
+        position: latlng,
+        //rotation: newLocalData.heading,
+        draggable: false,
+        zIndex: 2,
+        flat: true,
+        anchor: const Offset(0.5, 0.5),
+        icon: BitmapDescriptor.defaultMarker,
       );
     });
     final directions = await DirectionsRepository()
@@ -60,27 +56,22 @@ class _GeolocationMapState extends State<GeolocationMap> {
       distance = _data!.totalDistance;
       temps = _data!.totalDuration;
     }
-
   }
 
-
-
   void getCurrentLocation() async {
+    //Uint8List imageData = await getMarker();
+    var location = await _locationTracker.getLocation();
 
+    updateMarker(location);
 
-      //Uint8List imageData = await getMarker();
-      var location = await _locationTracker.getLocation();
+    if (_locationSubscription != null) {
+      _locationSubscription.cancel();
+    }
 
-      updateMarker(location);
-
-      if (_locationSubscription != null) {
-        _locationSubscription.cancel();
-      }
-
-
-      _locationSubscription = _locationTracker.onLocationChanged.listen((newLocalData) {
-        if (_controller != null) {
-          /*
+    _locationSubscription =
+        _locationTracker.onLocationChanged.listen((newLocalData) {
+      if (_controller != null) {
+        /*
          _controller.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
               bearing: 192.8334901395799,
               target: LatLng(newLocalData.latitude, newLocalData.longitude),
@@ -89,15 +80,13 @@ class _GeolocationMapState extends State<GeolocationMap> {
 
            */
 
-          updateMarker(newLocalData);
-        }
-      });
-
-
+        updateMarker(newLocalData);
+      }
+    });
   }
 
   void addMarkerDestination(lat, lng) async {
-    LatLng latlng = LatLng(48.45976105901722, 6.91832901446849);
+    LatLng latlng = LatLng(lat, lng);
     setState(() {
       _destination = Marker(
         markerId: MarkerId("maison"),
@@ -109,7 +98,6 @@ class _GeolocationMapState extends State<GeolocationMap> {
         icon: BitmapDescriptor.defaultMarker,
       );
     });
-
   }
 
   @override
@@ -119,7 +107,6 @@ class _GeolocationMapState extends State<GeolocationMap> {
     }
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -142,22 +129,19 @@ class _GeolocationMapState extends State<GeolocationMap> {
           ),
         ),
       ),
-      body:  Stack(
+      body: Stack(
         alignment: Alignment.center,
         children: [
           GoogleMap(
             mapType: MapType.hybrid,
-            initialCameraPosition: initialLocation,
-
-
-            markers: Set.of((_User != null) ? [_User , _destination] : []),
-
+            initialCameraPosition: initialLocation(),
+            markers: Set.of((_User != null) ? [_User!, _destination] : []),
             onMapCreated: (GoogleMapController controller) {
               _controller = controller;
-              addMarkerDestination(widget.post.latitude,widget.post.longitude); /** --------------------------------------------------- **/
+              addMarkerDestination(widget.post.latitude, widget.post.longitude);
+              /** --------------------------------------------------- **/
               getCurrentLocation();
             },
-
             polylines: {
               if (_data != null)
                 Polyline(
@@ -169,14 +153,9 @@ class _GeolocationMapState extends State<GeolocationMap> {
                       .toList(),
                 ),
             },
-
           ),
         ],
       ),
-
     );
   }
-
 }
-
-
