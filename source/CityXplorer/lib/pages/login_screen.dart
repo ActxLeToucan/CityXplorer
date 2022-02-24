@@ -1,12 +1,13 @@
+import 'dart:convert';
+
 import 'package:cityxplorer/components/background_image.dart';
 import 'package:cityxplorer/components/password_input.dart';
 import 'package:cityxplorer/components/text_input_field.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../conf.dart';
 import '../models/user_connected.dart';
@@ -22,6 +23,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController pseudo = TextEditingController();
   TextEditingController password = TextEditingController();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -56,16 +58,37 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(
                       height: 25,
                     ),
-                    MaterialButton(
-                      height: size.height * Styles.heightElementLogin,
-                      minWidth: size.width * Styles.widthElementLogin,
-                      color: HexColor("22402F"),
-                      onPressed: () async {
-                        login();
-                      },
-                      child: const Text(
-                        'Se connecter',
-                        style: Styles.textStyleLoginButton,
+                    IgnorePointer(
+                      /// rend le bouton non cliquable si il est en train d envoyer la requete
+                      ignoring: isLoading ? true : false,
+                      child: MaterialButton(
+                        height: size.height * Styles.heightElementLogin,
+                        minWidth: size.width * Styles.widthElementLogin,
+                        color: HexColor("22402F"),
+                        onPressed: () async {
+                          try {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            login();
+                          } catch (e) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
+                        },
+                        child: (isLoading)
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 1.5,
+                                  color: Colors.white,
+                                ))
+                            : const Text(
+                                'Se connecter',
+                                style: Styles.textStyleLoginButton,
+                              ),
                       ),
                     ),
                     const SizedBox(
@@ -127,9 +150,15 @@ class _LoginScreenState extends State<LoginScreen> {
             .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
       }
       Fluttertoast.showToast(msg: data['message']);
+      setState(() {
+        isLoading = false;
+      });
     } catch (e) {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 }

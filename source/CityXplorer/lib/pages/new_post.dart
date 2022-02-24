@@ -1,21 +1,18 @@
 import 'dart:convert';
-
-import 'package:cityxplorer/models/user_connected.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:location/location.dart';
 import 'dart:io';
 
+import 'package:cityxplorer/components/AdvanceCustomAlert.dart';
+import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../main.dart';
-import '../styles.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:location/location.dart';
 
 import '../conf.dart';
-
-import 'package:http_parser/http_parser.dart';
-import 'package:cityxplorer/components/AdvanceCustomAlert.dart';
+import '../main.dart';
+import '../styles.dart';
 
 /// formulaire de creation d'un post avec gestion de la requete envoyee et de son resultat
 class NewPostScreen extends StatefulWidget {
@@ -129,9 +126,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   width: double.infinity,
                   height: 60.0,
                   child: IgnorePointer(
-                    ignoring: isLoading ? true : false,
-
                     /// rend le bouton non cliquable si il est en train d envoyer la requete
+                    ignoring: isLoading ? true : false,
                     child: ElevatedButton(
                       style: TextButton.styleFrom(
                         primary: Colors.black,
@@ -140,14 +136,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         // Validate returns true if the form is valid, or false otherwise.
                         if (_formKey.currentState!.validate()) {
                           try {
+                            /// lance le chargement du bouton
                             setState(() {
                               isLoading = true;
                             });
 
-                            /// lance le chargement du bouton
-                            await _getLocation();
-
                             /// on recupere la longitude et la latitude (dans les attributs)
+                            await _getLocation();
                             await postLePost();
                           } catch (e) {
                             setState(() {
@@ -206,7 +201,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
   /// renvoie la date du jour au format JJ/MM/AAAA -- affichage utilisateur
   String getCurrentDate() {
     var date = DateTime.now().toString();
-
     var dateParse = DateTime.parse(date);
 
     var formattedDate = "${dateParse.day}-${dateParse.month}-${dateParse.year}";
@@ -216,7 +210,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
   /// renvoie la date du jour au format YYY/MM/DD hh/mm/ss -- pour la BDD
   String getCurrentDateBDD() {
     var date = DateTime.now().toString();
-
     var dateParse = DateTime.parse(date);
 
     var formattedDate =
@@ -230,77 +223,71 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
     var request = http.MultipartRequest("POST", Uri.parse(url));
     try {
+      /// titre du post
       request.fields['titre'] = controllerTitre.text;
 
-      /// titre du post
+      /// description du post (possiblement vide)
       request.fields['description'] = controllerDescription.text;
 
-      /// description du post (possible null ou chaine vide jsp)
+      /// latitude du post
       request.fields['latitude'] = latitude;
 
-      /// latitude du post
+      /// longitude du post
       request.fields['longitude'] = longitude;
 
-      /// longitude du post
-      request.fields['date'] = getCurrentDateBDD();
-
       /// date courante au format adapte a la bdd
+      request.fields['date'] = getCurrentDateBDD();
 
       UserConneted user = await getUser();
       if (!user.isEmpty()) {
-        request.fields['token'] = user.token;
-
         /// token d authentification de l utilsateur
+        request.fields['token'] = user.token;
       } else {
         throw Exception('Erreur : session !');
       }
+
+      /// adresses au format court et long
       List adresses = await getAdresse();
       if (adresses.isNotEmpty) {
         request.fields['adresse-longue'] = adresses[0];
         request.fields['adresse-courte'] = adresses[1];
-        print(adresses[0]);
-        print(adresses[1]);
       } else {
         request.fields['adresse-longue'] = "";
         request.fields['adresse-courte'] = "";
-        print("raté");
       }
-      request.files.add(await http.MultipartFile.fromPath(
 
-          ///ajout de la photo a la requete
-          "photo",
-          widget.imagePath,
+      ///ajout de la photo a la requete
+      request.files.add(await http.MultipartFile.fromPath(
+          "photo", widget.imagePath,
           contentType: MediaType("image", "jpeg")));
 
       /// on envoie la requete
       request.send().then((response) async {
-        http.Response.fromStream(response)
-
-            /// je crois que ca caste la response en un truc qui me permet de recuperer le body
-            .then((response) {
+        http.Response.fromStream(response).then((response) {
           //print(response.statusCode);
           final Map<String, dynamic> data = json.decode(response.body);
           String res = data['message'];
+          int code = data['result'];
           //print (res);
-          if (response.statusCode == 200) {
+          /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
+          /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul
+          if (code == 1) {
             Navigator.of(context).pop();
-
-            /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
-            /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul
           } else {
             throw Exception('Erreur : ${response.statusCode} !');
           }
+
+          /// termine le chargement du bouton
           setState(() {
             isLoading = false;
           });
 
-          /// termine le chargement du bouton
           showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AdvanceCustomAlert(
                   message: res,
-                  statusCode: response.statusCode,
+                  code: code,
                 );
               });
         });
@@ -308,11 +295,11 @@ class _NewPostScreenState extends State<NewPostScreen> {
     } catch (e) {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+
+      /// termine le chargement du bouton
       setState(() {
         isLoading = false;
       });
-
-      /// termine le chargement du bouton
     }
   }
 
@@ -328,9 +315,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
       final Map<String, dynamic> data = json.decode(response.body);
 
       if (data["status"] == "OK") {
-        //if status is "OK" returned from REST API
         if (data["results"].length > 0) {
-          //if there is atleast one address
           Map firstResult = data["results"][0];
           Map secondResult = data["results"][1];
           String streetAddress = firstResult["formatted_address"];

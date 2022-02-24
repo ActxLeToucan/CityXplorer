@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:cityxplorer/components/background_image.dart';
@@ -5,12 +6,10 @@ import 'package:cityxplorer/components/password_input.dart';
 import 'package:cityxplorer/components/text_input_field.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:fluttertoast/fluttertoast.dart';
-
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../styles.dart';
@@ -26,6 +25,7 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
   TextEditingController pseudo = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController name = TextEditingController();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -90,16 +90,37 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                     const SizedBox(
                       height: 25,
                     ),
-                    MaterialButton(
-                      height: size.height * Styles.heightElementLogin,
-                      minWidth: size.width * Styles.widthElementLogin,
-                      color: HexColor("22402F"),
-                      onPressed: () async {
-                        register();
-                      },
-                      child: const Text(
-                        "S'inscrire",
-                        style: Styles.textStyleLoginButton,
+                    IgnorePointer(
+                      ignoring: isLoading ? true : false,
+                      child: MaterialButton(
+                        height: size.height * Styles.heightElementLogin,
+                        minWidth: size.width * Styles.widthElementLogin,
+                        color: HexColor("22402F"),
+                        onPressed: () async {
+                          try {
+                            /// lance le chargement du bouton
+                            setState(() {
+                              isLoading = true;
+                            });
+                            register();
+                          } catch (e) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
+                        },
+                        child: (isLoading)
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 1.5,
+                                  color: Colors.white,
+                                ))
+                            : const Text(
+                                "S'inscrire",
+                                style: Styles.textStyleLoginButton,
+                              ),
                       ),
                     ),
                     const SizedBox(
@@ -152,9 +173,15 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
             .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
       }
       Fluttertoast.showToast(msg: data['message']);
+      setState(() {
+        isLoading = false;
+      });
     } catch (e) {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 }
