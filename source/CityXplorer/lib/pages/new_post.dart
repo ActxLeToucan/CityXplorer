@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cityxplorer/components/AdvanceCustomAlert.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/foundation.dart';
@@ -32,7 +33,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   String longitude = '0';
   DateTime now = DateTime.now();
   bool isLoading = false;
-
+  List photos = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,6 +166,11 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     ),
                   ),
                 ),
+              ),
+              carouselBuild(),
+              ElevatedButton(
+                onPressed: () {},
+                child: Text('NOUVELLE PHOTO', style: TextStyle(fontSize: 20)),
               ),
             ],
           ),
@@ -331,5 +337,31 @@ class _NewPostScreenState extends State<NewPostScreen> {
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
       return adresses;
     }
+  }
+
+  Widget carouselBuild() {
+    photos.add(widget.imagePath);
+    return CarouselSlider(
+      items: photos.map((i) {
+        return Builder(
+          builder: (BuildContext context) {
+            return SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Image.network(photos[i]));
+          },
+        );
+      }).toList(),
+      options: CarouselOptions(
+        height: 400,
+        aspectRatio: 16 / 9,
+        viewportFraction: 0.8,
+        initialPage: 0,
+        enableInfiniteScroll: false,
+        reverse: false,
+        autoPlay: false,
+        enlargeCenterPage: true,
+        scrollDirection: Axis.horizontal,
+      ),
+    );
   }
 }
