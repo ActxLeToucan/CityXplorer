@@ -296,6 +296,7 @@ class Post {
   }
 
   void navigateToMap(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) =>GeolocationMap(post :this)));
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => GeolocationMap(post: this)));
   }
 }
