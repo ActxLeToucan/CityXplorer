@@ -138,7 +138,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         primary: Colors.black,
                       ),
                       onPressed: () async {
-                        _send();
+                        // Validate returns true if the form is valid, or false otherwise.
+                        if (_formKey.currentState!.validate()) {
+                          try {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            await postLePost();
+                          } catch (e) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            Fluttertoast.showToast(msg: '$e');
+                          }
+                        }
                       },
                       child: (isLoading)
                           ? const SizedBox(
@@ -159,24 +172,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
         ),
       ),
     );
-  }
-
-  void _send() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        isLoading = true;
-      });
-
-      try {
-        await postLePost();
-      } catch (e) {
-        Fluttertoast.showToast(msg: '$e');
-      }
-
-      setState(() {
-        isLoading = false;
-      });
-    }
   }
 
   /// renvoie la date du jour au format JJ/MM/AAAA -- affichage utilisateur

@@ -39,7 +39,8 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _searchListView() {
     return ListView.builder(
-        physics: const BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
         itemCount: _list.length,
         itemBuilder: (context, index) {
           return Card(
