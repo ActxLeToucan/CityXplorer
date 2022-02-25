@@ -66,16 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         minWidth: size.width * Styles.widthElementLogin,
                         color: HexColor("22402F"),
                         onPressed: () async {
-                          try {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            login();
-                          } catch (e) {
-                            setState(() {
-                              isLoading = false;
-                            });
-                          }
+                          login();
                         },
                         child: (isLoading)
                             ? const SizedBox(
@@ -132,6 +123,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future login() async {
+    setState(() {
+      isLoading = true;
+    });
+
     String url = Conf.bddDomainUrl + Conf.bddPath + "/login";
 
     try {
@@ -150,15 +145,13 @@ class _LoginScreenState extends State<LoginScreen> {
             .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
       }
       Fluttertoast.showToast(msg: data['message']);
-      setState(() {
-        isLoading = false;
-      });
     } catch (e) {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
-      setState(() {
-        isLoading = false;
-      });
     }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 }

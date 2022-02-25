@@ -11,9 +11,9 @@ import '../styles.dart';
 import 'edit_profile.dart';
 
 class UserProfile extends StatefulWidget {
-  User user;
+  final User user;
 
-  UserProfile({Key? key, required this.user}) : super(key: key);
+  const UserProfile({Key? key, required this.user}) : super(key: key);
 
   @override
   State<UserProfile> createState() => _UserProfileState(user);
