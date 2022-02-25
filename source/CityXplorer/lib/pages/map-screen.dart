@@ -15,15 +15,17 @@ class GeolocationMap extends StatefulWidget {
 }
 
 class _GeolocationMapState extends State<GeolocationMap> {
-  late StreamSubscription _locationSubscription;
-  Location _locationTracker = Location();
+  GoogleMapController? _controller;
+  final Location _locationTracker = Location();
 
-  Marker? _User;
-  late Marker _destination;
+  StreamSubscription? _locationSubscription;
+
+  Marker? _user;
+  Marker? _destination;
+
   Directions? _data;
   String distance = "";
   String temps = "";
-  late GoogleMapController _controller;
 
   CameraPosition initialLocation() {
     return CameraPosition(
@@ -37,19 +39,19 @@ class _GeolocationMapState extends State<GeolocationMap> {
         LatLng(newLocalData.latitude ?? 0, newLocalData.longitude ?? 0);
 
     setState(() {
-      _User = Marker(
-        markerId: const MarkerId("Ici"),
+      _user = Marker(
+        markerId: const MarkerId("moi"),
         position: latlng,
         //rotation: newLocalData.heading,
         draggable: false,
         zIndex: 2,
         flat: true,
         anchor: const Offset(0.5, 0.5),
-        icon: BitmapDescriptor.defaultMarker,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
       );
     });
     final directions = await DirectionsRepository()
-        .getDirections(origin: latlng, destination: _destination.position);
+        .getDirections(origin: latlng, destination: _destination!.position);
     setState(() => _data = directions);
 
     if (_data != null) {
@@ -59,13 +61,12 @@ class _GeolocationMapState extends State<GeolocationMap> {
   }
 
   void getCurrentLocation() async {
-    //Uint8List imageData = await getMarker();
     var location = await _locationTracker.getLocation();
 
     updateMarker(location);
 
     if (_locationSubscription != null) {
-      _locationSubscription.cancel();
+      _locationSubscription?.cancel();
     }
 
     _locationSubscription =
@@ -89,12 +90,12 @@ class _GeolocationMapState extends State<GeolocationMap> {
     LatLng latlng = LatLng(lat, lng);
     setState(() {
       _destination = Marker(
-        markerId: MarkerId("maison"),
+        markerId: const MarkerId("lieuPost"),
         position: latlng,
         draggable: false,
         zIndex: 2,
         flat: true,
-        anchor: Offset(0.5, 0.5),
+        anchor: const Offset(0.5, 0.5),
         icon: BitmapDescriptor.defaultMarker,
       );
     });
@@ -103,7 +104,7 @@ class _GeolocationMapState extends State<GeolocationMap> {
   @override
   void dispose() {
     if (_locationSubscription != null) {
-      _locationSubscription.cancel();
+      _locationSubscription?.cancel();
     }
     super.dispose();
   }
@@ -122,7 +123,7 @@ class _GeolocationMapState extends State<GeolocationMap> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Il vous reste ${distance}, ${temps}',
+          'Il vous reste $distance, $temps',
           style: const TextStyle(
             fontSize: 18.0,
             fontWeight: FontWeight.w600,
@@ -135,7 +136,7 @@ class _GeolocationMapState extends State<GeolocationMap> {
           GoogleMap(
             mapType: MapType.hybrid,
             initialCameraPosition: initialLocation(),
-            markers: Set.of((_User != null) ? [_User!, _destination] : []),
+            markers: Set.of((_user != null) ? [_user!, _destination!] : []),
             onMapCreated: (GoogleMapController controller) {
               _controller = controller;
               addMarkerDestination(widget.post.latitude, widget.post.longitude);

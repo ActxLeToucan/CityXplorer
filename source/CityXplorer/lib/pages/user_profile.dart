@@ -41,13 +41,16 @@ class _UserProfileState extends State<UserProfile> {
         appBar: transparentAppBar(context),
         body: RefreshIndicator(
           onRefresh: _load,
-          child: ListView(physics: const BouncingScrollPhysics(), children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 15, 0, 35),
-              child: _userInfos(),
-            ),
-            postsLoaded,
-          ]),
+          child: ListView(
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 15, 0, 35),
+                  child: _userInfos(),
+                ),
+                postsLoaded,
+              ]),
         ));
   }
 
@@ -92,7 +95,7 @@ class _UserProfileState extends State<UserProfile> {
         children: [
           Text(
             user.name,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
           const SizedBox(height: 4),
           Text(
@@ -103,11 +106,11 @@ class _UserProfileState extends State<UserProfile> {
       );
 
   Widget buildAbout(User user) => Container(
-        padding: EdgeInsets.symmetric(horizontal: 48),
+        padding: const EdgeInsets.symmetric(horizontal: 48),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Description',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
