@@ -155,11 +155,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   ),
                 ),
               ),
+              /**
               carouselBuild(),
               ElevatedButton(
                 onPressed: () {},
                 child: Text('NOUVELLE PHOTO', style: TextStyle(fontSize: 20)),
-              ),
+
+              ),**/
             ],
           ),
         ),
