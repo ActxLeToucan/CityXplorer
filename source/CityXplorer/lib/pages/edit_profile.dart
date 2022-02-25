@@ -18,7 +18,8 @@ class EditProfilePage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.fromLTRB(32, 15, 32, 0),
         child: ListView(
-          physics: const BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
           children: [
             ProfileWidget(
               user: user,

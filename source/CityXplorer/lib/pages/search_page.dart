@@ -50,7 +50,7 @@ class _SearchPageState extends State<SearchPage> {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => UserProfile(user: _list[index]),
+                  builder: (context) => _list[index].profile(),
                 ),
               );
             },
