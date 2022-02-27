@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cityxplorer/components/AdvanceCustomAlert.dart';
+import 'package:cityxplorer/components/custom_alert_post.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
