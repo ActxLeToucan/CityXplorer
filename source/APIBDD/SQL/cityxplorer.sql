@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mer. 23 fév. 2022 à 17:11
+-- Généré le : ven. 25 fév. 2022 à 22:20
 -- Version du serveur :  10.3.32-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 7.4.3
 
@@ -56,14 +56,6 @@ CREATE TABLE `contient` (
   `idPost` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Déchargement des données de la table `contient`
---
-
-INSERT INTO `contient` (`idListe`, `idPost`) VALUES
-(1, 1),
-(1, 2);
-
 -- --------------------------------------------------------
 
 --
@@ -75,13 +67,6 @@ CREATE TABLE `listeaffichable` (
   `nomListe` varchar(50) DEFAULT NULL,
   `descriptionListe` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Déchargement des données de la table `listeaffichable`
---
-
-INSERT INTO `listeaffichable` (`idliste`, `nomListe`, `descriptionListe`) VALUES
-(1, 'Les beaux monuments', 'Liste contenant de beaux monuments');
 
 -- --------------------------------------------------------
 
@@ -105,14 +90,6 @@ CREATE TABLE `partage` (
   `idPost` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Déchargement des données de la table `partage`
---
-
-INSERT INTO `partage` (`idUtilisateur`, `idPost`) VALUES
-(1, 2),
-(1, 5);
-
 -- --------------------------------------------------------
 
 --
@@ -130,52 +107,13 @@ CREATE TABLE `photo` (
 --
 
 INSERT INTO `photo` (`idPhoto`, `idPost`, `url`) VALUES
-(1, 2, '1.jpg'),
-(2, 2, '2.jpg'),
-(3, 1, '3.jpg'),
-(7, 21, '16453704226e4daef1c8c0a9bcf3778b9a2ad750c361bec0ec.png'),
-(80, 94, '16455466221bba4f05cc37d76d5b456e8ac0248c0a7fe4cc49.jpg'),
-(81, 95, '16455466244474480d63ba77c6ac13e0b0bc4af3e884d879ba.jpg'),
-(82, 96, '164554662690d88fdac4e176b6c938ae88ee5bd660f8c4f2cf.jpg'),
-(83, 97, '1645546627925964503e31709e63a3a8c816261d79a52f7d43.jpg'),
-(84, 98, '164554662711d1d46905b2b9a14c91c47570e76ca105f779b0.jpg'),
-(85, 99, '16455466290ca812ff83d12fc8d02f3c46c4ba5308d7464daa.jpg'),
-(86, 100, '1645546633ebfea7e3ddc46e0ae8e72401778a79978552ed70.jpg'),
-(87, 101, '16455466394fb6d847c7764e0446efb8a628ee90a19b3d638c.jpg'),
-(88, 102, '16455466446f9b0c7260e06b3bab40299a809d440bf052a033.jpg'),
-(89, 103, '16455466456f1aa251e6b16582bfe3226af9a689627d437fc3.jpg'),
-(90, 104, '1645546646244ec3fa5dc283b62030240ec7288dcab813de53.jpg'),
-(91, 105, '1645546647e7fee1a252580fe32b441b050c8d78f7df0d5bbc.jpg'),
-(92, 106, '1645546648e4a4aab810d9d710efb297b0da12bcf066b36575.jpg'),
-(93, 107, '1645546648bf069e49b1c4303a4afc9b8cae99b9064289da29.jpg'),
-(94, 108, '164554664920b24736d6885e62abc101570670b56c6b841a04.jpg'),
-(95, 109, '164554665085f7b03b15b04f66e710fb8ea7e7c407ced06429.jpg'),
-(96, 110, '1645546650d0da3843ef06e3023720eebe51068fc4f436fa8f.jpg'),
-(97, 111, '1645546650b772a779a65eb185711a08b0b6e1f906b8257025.jpg'),
-(98, 112, '16455466505681941fb2b466cf6127c238f2c1bb6707fc9a92.jpg'),
-(99, 113, '1645546650145b09edda822a22c4485d3645000718e0ae0df9.jpg'),
-(100, 114, '1645546652eeb6da246507a26f4475c8143bee7e5f10f428bc.jpg'),
-(101, 115, '16455466531685197f7c284fd6f60079af2b6dd63178b450e1.jpg'),
-(102, 116, '1645546654b297002f7c15f72f628740a594ac16f4a0f9dfde.jpg'),
-(103, 117, '1645546654537d6f6434e605580bfd6befb8852e6619d53ac9.jpg'),
-(104, 118, '16455466557f926103b5313a5389a6c9dbe889bc5f3f75c3b6.jpg'),
-(105, 119, '1645546655635522777d8aadfc1a373380879c7f311eb98086.jpg'),
-(106, 120, '16455466553a67011e8b72363a321a26e9be5cb6abdf1c1c7f.jpg'),
-(107, 121, '16455466554526fe942a8f3cb9ed6b6e6b688f3312019afa51.jpg'),
-(108, 122, '1645547668e1abb2cf6ea84889b07cc216fada04799ceb73a1.jpg'),
-(109, 123, '1645547932bf04cee783e935c315ca9e26a614562c1a470ef1.jpg'),
-(110, 124, '16455480979da3bf560881b01c712f4b2a666d6a9a031e9242.jpg'),
-(111, 125, '16455482044049655e19e8d38788364e2722a5a13989520878.jpg'),
-(112, 126, '164555755374f2157588de57cbe63eba95cd60b2ae54dfd286.jpg'),
-(113, 127, '1645616846aca97796f1b5b8025ee24b9e0d7310201c4b422c.jpg'),
-(114, 128, '1645617289d568cbc2fd2ea29576251f8499c6cb21adb03be4.jpg'),
-(115, 129, '164561738201a0ed095f9a2aac88ee85cfa72c60be1e4e1318.jpg'),
-(116, 130, '1645617965f21a56f14f1d88d3f2f107c17a6d8d0287560d34.jpg'),
-(117, 131, '164561839292a36701f6356212a34443e9d56616df30f994ef.jpg'),
-(119, 133, '1645631940ed09b22fd1f8627ce8a87ae950e401e076056e08.png'),
-(120, 134, '1645633001910060f4dc3073a0e8aaaa8c995820b44f2598d1.jpg'),
-(123, 137, '164563607293285e00e94da5df7d6076878da8cb28c69e2543.jpg'),
-(124, 138, '16456361146baf6b6205775f610bab56e7e6d1cf636c9eedcb.jpg');
+(1, 1, 'exemples/stan1.jpg'),
+(2, 1, 'exemples/stan2.jpg'),
+(3, 2, 'exemples/musee-ecole.jpg'),
+(4, 3, 'exemples/pep.jpg'),
+(5, 4, 'exemples/craffe.jpg'),
+(6, 5, 'exemples/eiffel.jpg'),
+(7, 6, 'exemples/resto.jpg');
 
 -- --------------------------------------------------------
 
@@ -187,7 +125,7 @@ CREATE TABLE `post` (
   `idPost` int(5) NOT NULL,
   `latitude` double NOT NULL DEFAULT 0,
   `longitude` double NOT NULL DEFAULT 0,
-  `description` varchar(200) NOT NULL DEFAULT '',
+  `description` text NOT NULL DEFAULT '',
   `titre` varchar(100) NOT NULL DEFAULT '',
   `datePost` datetime NOT NULL DEFAULT current_timestamp(),
   `etat` varchar(10) NOT NULL DEFAULT '',
@@ -201,22 +139,12 @@ CREATE TABLE `post` (
 --
 
 INSERT INTO `post` (`idPost`, `latitude`, `longitude`, `description`, `titre`, `datePost`, `etat`, `idUser`, `adresse_courte`, `adresse_longue`) VALUES
-(1, 10, 10, 'Photo de la tour de pise', 'Tour de Pise', '2021-12-28 00:00:00', 'Invalide', 0, '', ''),
-(2, 87, 32, 'Gare MontParnasse', 'Gare MontParnasse', '2021-12-28 00:00:00', 'Valide', 1, '', ''),
-(5, 10, 10, 'Voici un chateau', 'Le chateau très beau', '2011-06-10 00:00:00', 'Invalide', 1, '', ''),
-(15, 11, 11, 'blabla', 'blabla', '2011-06-10 00:00:00', 'Invalide', 5, '', ''),
-(21, 10, 12, 'la description', 'Un titre', '2002-12-23 23:54:09', 'Invalide', 1, '', ''),
-(59, 48.85715103149414, 2.288132905960083, 'Célèbre tour en fer de Gustave Eiffel (1889), terrasses panoramiques accessibles par escaliers et ascenseurs.', 'Tour Eiffel', '2011-06-10 00:00:00', 'Invalide', 1, '', ''),
-(126, 48.6842585, 6.1743528, 'Cette app finalement... ', 'flutter', '2022-02-22 20:19:13', 'Invalide', 1, '', ''),
-(127, 37.4219616, -122.0839903, 'En faite j&#39;ai coincé l&#39;appareil photo de mon émulateur Android dans un mur et je sais pas comment le reset ...', 'Le vide ', '2022-02-23 11:47:25', 'Invalide', 12, '', ''),
-(128, 37.4219616, -122.0839903, '@#$_&-+()/?!;:&#39;&#34;*', 'Toujours coincé &#39;&#34;é&@$+()/?!;:', '2022-02-23 11:54:48', 'Invalide', 12, '', ''),
-(129, 37.4219616, -122.0839903, 'test : &#39;\ntest : &#34;', 'J&#39;ai l&#39;impression que c&#39;est les apostrophes le problème', '2022-02-23 11:56:21', 'Invalide', 12, '', ''),
-(130, 37.4216572, -122.0842089, 'bien joué  moi', 'j ai reset la cam du coup', '2022-02-23 12:06:04', 'Invalide', 12, '', ''),
-(131, 37.4216572, -122.0842089, 'en fait c un chat heu voilà', 'un chat', '2022-02-23 12:13:11', 'Invalide', 12, '', ''),
-(133, 10, 12, 'la description &#39; et &#34; passent pas ?', 'Un titre l&#39;arbre', '2002-12-23 23:54:09', 'Invalide', 1, '', ''),
-(134, 37.421998333333335, -122.084, 'dans le meilleur des mondes esperons\n', 'test pour voir si tout va bien', '2022-02-23 16:16:40', 'Invalide', 13, '', ''),
-(137, 37.421998333333335, -122.084, '', 'test adresse ', '2022-02-23 17:07:49', 'Invalide', 13, '', ''),
-(138, 37.421998333333335, -122.084, '', 'dcdcsqvdsq', '2022-02-23 17:08:32', 'Invalide', 13, '', '');
+(1, 48.693618, 6.183241, 'La place Stanislas est une place appartenant à un ensemble urbain classique situé à Nancy, dans la région historique de la Lorraine, en France, qui est inscrit au patrimoine mondial de l\'UNESCO. Voulue par le duc de Lorraine Stanislas Leszczyński.', 'Place Stan', '2021-07-15 22:30:22', 'Valide', 1, 'Nancy, France', 'Pl. Stanislas, 54000 Nancy, France'),
+(2, 48.68053, 6.166169, 'Le musée de l\'École de Nancy est un musée situé à Nancy et consacré au courant artistique de l\'Art nouveau nancéien connu sous le nom d\'École de Nancy. Aménagé dans l\'ancienne propriété d\'Eugène Corbin, grand mécène du mouvement, il a été officiellement ouvert au public, sous sa forme actuelle en 1964. Dans le jardin du musée se trouve un aquarium, classé monument historique, une porte réalisée pour les usines d\'Émile Gallé ainsi qu\'un monument funéraire.', 'Musée de l\'École de Nancy', '2022-02-25 11:39:18', 'Valide', 1, 'Nancy, France', '38 Rue Sergent Blandan, 54000 Nancy, France'),
+(3, 48.697786, 6.18461, 'Le parc de la Pépinière est un jardin public de Nancy.', 'Parc de la Pépinière', '2022-02-26 07:44:40', 'Valide', 1, 'Nancy, France', 'Parc de la Pépinière, Parc de la pepinière, 54000 Nancy, France'),
+(4, 48.698872, 6.177816, 'La porte de la Craffe est une porte de Nancy, imposant vestige des fortifications médiévales, érigée au XIVe siècle au nord de la ville-vieille.', 'Porte de la Craffe', '2022-02-08 13:53:14', 'Valide', 2, 'Nancy, France', '54000 Nancy, France'),
+(5, 48.85837, 2.294481, 'La tour Eiffel est une tour de fer puddlé de 324 mètres de hauteur (avec antennes)o 1 située à Paris, à l’extrémité nord-ouest du parc du Champ-de-Mars en bordure de la Seine dans le 7e arrondissement. Son adresse officielle est 5, avenue Anatole-France. ', 'Tour Eiffel', '2022-02-26 08:57:37', 'Valide', 2, 'Paris, France', 'Champ de Mars, 5 Av. Anatole France, 75007 Paris, France'),
+(6, 48.696938, 6.179149, 'Super restaurant à Nancy', 'Resto', '2022-02-26 09:03:09', 'Valide', 1, 'Nancy, France', '2 rue Saint Michel, 54000 Nancy France');
 
 -- --------------------------------------------------------
 
@@ -241,11 +169,7 @@ CREATE TABLE `utilisateur` (
 
 INSERT INTO `utilisateur` (`id`, `pseudo`, `name`, `password`, `avatar`, `niveauAcces`, `token`, `description`) VALUES
 (1, 'antoine54', 'Antoine CONTOUX', '$2y$12$eKIPYSrDDdmop8a7sOWIAu5EKNJdZLvdKY33kyIQd/QfGCg6l8ZIa', 'antoine.jpg', 1, '1645012186aeb999b417f2802b8341d8df60e6f303daf5b9c875a84b803eb145d8e3d8e2b649e54102141d1c8835bc8a7f0bfa3eb54189a08a4240ca1aaf8e99f9c89d0bce', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur nisi odio, ullamcorper ac metus vel, hendrerit varius dolor. Nullam lacinia eleifend sapien, quis dignissim leo tempor eu. Integer egestas ipsum eu dolor rhoncus, sit amet dapibus enim consectetur. Nam scelerisque a tortor sodales iaculis. Nulla ut quam in augue iaculis laoreet eget vehicula justo. In augue arcu, dapibus quis magna sed, faucibus scelerisque nibh. Etiam accumsan id libero facilisis accumsan. Nam malesuada at nisl nec convallis. Nunc maximus dui ut justo sodales malesuada. '),
-(5, 'anthony', 'Anthony Nigro', 'aakjfskakf', 'avatar.png', 2, '1234', ''),
-(7, 'azertyuiop', 'azertyuiop', '$2y$12$oSykPSMz83aIlH4V8aGxCe8yRJKRU5rxdXhv14Z3EicqYHirlnW1W', 'avatar.png', 1, '164535247133428dcfeb6da92fe7c92303979fe82f6a6870ba6593fce1ad7dc289dca2aba99bb3d5dd66552ad2cf4223063b84af208eb3423a7090a2517207421d5d9ee66f', ''),
-(11, 'essai', 'prprprooo', '$2y$12$.NdMa.g/0ISnLzuBiio/ZeALPEfulqJMhblNlx6HP9OQbkwLdSW9O', 'avatar.png', 1, '1645564136fc7d54b920507794720c9ba89e1938684cdb704e17c63998d08e9face33a96b156b347711897d1a4767e7928bb9b55dff68cc3fa719e4ddfeff2f361874cc690', ''),
-(12, 'Alexis_0202', '120120120', '$2y$12$oRF5FlCSBKX3T4zUUkhYY.E6mv4xCiE35etT3pb/0bckh2FA9mNTq', 'avatar.png', 1, '1645616773ff10d9bdd9c721cb545105ed565685b0209887fa429c3da55eadb22ac0c1a595181d532d539b4b9d245c8582306bbd215b01ace1bdd7d0d8b96acb782301928c', ''),
-(13, 'nepasoublier', 'nepasoublier', '$2y$12$Xg9i6xUb0FFrA5gz7vQjreRHxf7E7/aMLAzixNVhx9U4i6uZAYyBu', 'avatar.png', 1, '164563295959782181fc07c2fdc56301e1d87134edd4d80614b32b8ad6572f7f486d3118e6474b8d4549b8c8bd6db6ffe60f7c1c680bdf82cb0ebd37c1bc642130b8955a16', '');
+(2, 'L_ipsum', 'L. Ipsum', '$2y$12$Va1y9BKWkoj3nbUxFUCituJe/I1eZQ2hjj50Qcf1wjBfJgKheksHm', 'avatar.png', 2, '164582581805eab74e442667887a95dc9bb23b8a549f4a8fa78dd45e4df7154f9e9ed6d388d9486f14d3277ed08523ca90987047db53ef4ce28ce17be535506395a04b4133', '');
 
 --
 -- Index pour les tables déchargées
@@ -268,8 +192,7 @@ ALTER TABLE `avotepour`
 -- Index pour la table `contient`
 --
 ALTER TABLE `contient`
-  ADD PRIMARY KEY (`idListe`,`idPost`),
-  ADD KEY `idpostContient_Foreign_key` (`idPost`);
+  ADD PRIMARY KEY (`idListe`,`idPost`);
 
 --
 -- Index pour la table `listeaffichable`
@@ -310,25 +233,25 @@ ALTER TABLE `utilisateur`
 -- AUTO_INCREMENT pour la table `listeaffichable`
 --
 ALTER TABLE `listeaffichable`
-  MODIFY `idliste` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idliste` int(5) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `photo`
 --
 ALTER TABLE `photo`
-  MODIFY `idPhoto` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
+  MODIFY `idPhoto` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT pour la table `post`
 --
 ALTER TABLE `post`
-  MODIFY `idPost` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=139;
+  MODIFY `idPost` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Contraintes pour les tables déchargées
@@ -340,13 +263,6 @@ ALTER TABLE `utilisateur`
 ALTER TABLE `avotepour`
   ADD CONSTRAINT `idpostvote_Foreign_key` FOREIGN KEY (`idPost`) REFERENCES `post` (`idPost`),
   ADD CONSTRAINT `loginuser_vote_foreign_key` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`);
-
---
--- Contraintes pour la table `contient`
---
-ALTER TABLE `contient`
-  ADD CONSTRAINT `idListContient_foreign_key` FOREIGN KEY (`idListe`) REFERENCES `listeaffichable` (`idliste`),
-  ADD CONSTRAINT `idpostContient_Foreign_key` FOREIGN KEY (`idPost`) REFERENCES `post` (`idPost`);
 
 --
 -- Contraintes pour la table `partage`
