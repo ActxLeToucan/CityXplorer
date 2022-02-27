@@ -1,6 +1,6 @@
 import 'package:camera/camera.dart';
-import 'package:flutter/material.dart';
 import 'package:cityxplorer/pages/new_post.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:location/location.dart';
 
