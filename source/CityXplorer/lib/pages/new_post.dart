@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cityxplorer/components/AdvanceCustomAlert.dart';
+import 'package:cityxplorer/components/custom_alert_post.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -253,13 +253,11 @@ class _NewPostScreenState extends State<NewPostScreen> {
           final Map<String, dynamic> data = json.decode(response.body);
           String res = data['message'];
           int code = data['result'];
-          //print (res);
+
           /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
           /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul
           if (code == 1) {
             Navigator.of(context).pop();
-          } else {
-            throw Exception('Erreur : ${response.statusCode} !');
           }
 
           /// termine le chargement du bouton
@@ -318,6 +316,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
     }
   }
 
+  /// inutilisee pour le moment
   Widget carouselBuild() {
     photos.add(widget.imagePath);
     return CarouselSlider(
