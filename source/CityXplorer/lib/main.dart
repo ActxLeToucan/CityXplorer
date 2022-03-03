@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'my_http_overrides.dart';
-import 'pages/map-screen.dart';
 
 List<CameraDescription> cameras = [];
 
