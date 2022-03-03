@@ -2,6 +2,7 @@
 
 namespace cityXplorer\controllers;
 
+use cityXplorer\models\Like;
 use cityXplorer\models\User;
 use cityXplorer\models\Partage;
 use cityXplorer\models\Photo;
@@ -172,5 +173,59 @@ class PostController{
         }
 
         return [];
+    }
+    public function delete(Request $rq, Response $rs, array $args): array {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('likeUser');
+        $url = $base . $route_uri;
+
+        $token = $rq->getQueryParams('token');
+        $idPost = $rq->getQueryParams('id');
+        $user = User::where("token", "=", $token)->first();
+        $post = Post::where("id", "=", $idPost)->first();
+
+        if (!isset($rq->getQueryParams()['token']) || is_null($post) || !isset($rq->getQueryParams()['id']) || is_null($user)) {
+
+            return [
+                "result" => 0,
+                "message" => "Erreur : id ou token invalide",
+            ];
+        } else {
+            $photos = Photo::where("idPost","=",$idPost)->get();
+            foreach ($photos as $image) {
+                is_null($image) || $image == "" ? : unlink("/var/www/cityxplorer/img/posts/$image");
+            }
+            $post->delete();
+            return [ "result" => 1,
+                "message" => "Post Supprimé",];
+        }
+    }
+
+    public function like(Request $rq, Response $rs, array $args): array {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('likeUser');
+        $url = $base . $route_uri;
+
+        $token = $rq->getQueryParams('token');
+        $idPost = $rq->getQueryParams('id');
+        $user = User::where("token", "=", $token)->first();
+        $post = Post::where("id", "=", $idPost)->first();
+
+        if (!isset($rq->getQueryParams()['token']) || is_null($post) || !isset($rq->getQueryParams()['id']) || is_null($user)) {
+            return [
+                "result" => 0,
+                "message" => "Erreur: Id ou token invalide",
+            ];
+        }else{
+            $like =new Like();
+            $userId=$user->id;
+            $postId=$post->idPost;
+
+            return [
+                "result" => 1,
+                "message" => "Post liké !",];
+        }
     }
 }

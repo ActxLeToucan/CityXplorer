@@ -71,14 +71,24 @@ $app->get('/post',
         $controller=new PostController($this);
         return $rs->withJson($controller->getPostById($rq,$rs,$args),200);
     })->setName("postId");
+$app->delete('/post',
+    //Suppression d'un post
+    function (Request $rq, Response $rs,array $args):Response{
+        $controller=new PostController($this);
+        return $rs->withJson($controller->delete($rq,$rs,$args),200);
+    });
 // obtention de tous les posts d'un user
 $app->get('/postsUser',
     function (Request $rq, Response $rs, array $args): Response{
         $controller=new PostController($this);
         return $rs->withJson($controller->getUserPosts($rq,$rs,$args),200);
     })->setName("postsUser");
-
-
+//Like d'un post
+$app->post('/like',
+    function (Request $rq, Response $rs, array $args): Response{
+        $controller=new PostController($this);
+        return $rs->withJson($controller->like($rq,$rs,$args),200);
+    });
 
 //Test
 $app->get('/hello/{name}', function ($rq,$rs,$args) {
