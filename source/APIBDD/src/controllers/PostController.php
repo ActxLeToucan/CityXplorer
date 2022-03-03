@@ -7,6 +7,7 @@ use cityXplorer\models\User;
 use cityXplorer\models\Partage;
 use cityXplorer\models\Photo;
 use cityXplorer\models\Post;
+use Conf;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Illuminate\Support\Facades\Date;
@@ -87,7 +88,7 @@ class PostController{
                 $cheminServeur = $_FILES['photo']['tmp_name'];
                 $extension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
                 $fileName = time().bin2hex(openssl_random_pseudo_bytes(20)).'.'.$extension;
-                $uploadFile = "/var/www/cityxplorer/img/posts/$fileName";
+                $uploadFile = Conf::PATH_IMAGE_POSTS . "/$fileName";
                 move_uploaded_file($cheminServeur, $uploadFile);
 
                 // creation post
@@ -194,7 +195,7 @@ class PostController{
         } else {
             $photos = Photo::where("idPost","=",$idPost)->get();
             foreach ($photos as $image) {
-                is_null($image) || $image == "" ? : unlink("/var/www/cityxplorer/img/posts/$image");
+                is_null($image) || $image == "" ? : unlink(Conf::PATH_IMAGE_POSTS . "/$image");
             }
             $post->delete();
             return [ "result" => 1,
