@@ -68,7 +68,25 @@ class UniLinks {
       switch (list[0]) {
         case 'user':
           {
-            _openUser(list, context);
+            _openUser(list,
+                context); // c'est quoi cette gestion des exceptions ?????!!!!!   (╯°□°）╯︵ ┻━┻
+            /*
+            if (list.length < 2) {
+              throw PlatformException(
+                  code: '111',
+                  message: 'Le lien est invalie.',
+                  details: 'Un argument est attendu.');
+            }
+            User user = await User.fromPseudo(list[1]);
+            if (user.isEmpty()) {
+              throw PlatformException(
+                  code: '112',
+                  message: 'Aucun utilisateur correspondant.',
+                  details:
+                      'Aucun utilisateur correspondant n\'existe pour ce pseudo. Impossible d\'ouvrir le lien');
+            }
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => UserProfile(user: user)));*/
             break;
           }
         case 'post':
@@ -96,9 +114,16 @@ class UniLinks {
       throw PlatformException(
           code: '111',
           message: 'Le lien est invalie.',
-          details: 'Le lien utilisé pour ouvrir cette application est null.');
+          details: 'Un argument est attendu.');
     }
-    User user = await User.fromPseudo(list[1]); // TODO si user existe pas
+    User user = await User.fromPseudo(list[1]);
+    if (user.isEmpty()) {
+      throw PlatformException(
+          code: '112',
+          message: 'Aucun utilisateur correspondant.',
+          details:
+              'Aucun utilisateur correspondant n\'existe pour ce pseudo. Impossible d\'ouvrir le lien');
+    }
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => UserProfile(user: user)));
   }
