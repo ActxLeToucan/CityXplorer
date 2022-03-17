@@ -40,7 +40,7 @@ class User {
   static fromPseudo(String pseudo) async {
     User user = User.empty();
 
-    String url = Conf.bddDomainUrl + Conf.bddPath + "/user?pseudo=$pseudo";
+    String url = Conf.domainServer + Conf.apiPath + "/user?pseudo=$pseudo";
     try {
       var response = await http.get(Uri.parse(url));
       final Map<String, dynamic> data = json.decode(response.body);
@@ -79,7 +79,7 @@ class User {
   Future<List<Post>> getPosts() async {
     List<Post> posts = [];
 
-    String url = Conf.bddDomainUrl + Conf.bddPath + "/postsUser?pseudo=$pseudo";
+    String url = Conf.domainServer + Conf.apiPath + "/postsUser?pseudo=$pseudo";
     try {
       var response = await http.get(Uri.parse(url));
       final List<dynamic> data = json.decode(response.body);

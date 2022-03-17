@@ -100,7 +100,7 @@ class _UserProfileState extends State<UserProfile> {
           const SizedBox(height: 4),
           Text(
             "@${user.pseudo}",
-            style: TextStyle(color: Colors.grey),
+            style: const TextStyle(color: Colors.grey),
           )
         ],
       );

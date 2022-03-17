@@ -84,7 +84,7 @@ class Menu extends StatelessWidget {
     if (photo == "") {
       return "";
     } else {
-      return "${Conf.bddDomainUrl}/img/avatar/$photo";
+      return "${Conf.domainServer}/img/avatar/$photo";
     }
   }
 }

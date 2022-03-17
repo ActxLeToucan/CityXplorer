@@ -148,7 +148,7 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
       isLoading = true;
     });
 
-    String url = Conf.bddDomainUrl + Conf.bddPath + "/register";
+    String url = Conf.domainServer + Conf.apiPath + "/register";
 
     try {
       var response = await http.post(Uri.parse(url), body: {

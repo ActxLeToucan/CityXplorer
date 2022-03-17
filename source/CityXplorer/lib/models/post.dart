@@ -139,7 +139,7 @@ class Post {
                 child: (photos.isEmpty
                     ? Image.asset("assets/default.jpg", fit: BoxFit.cover)
                     : Image.network(
-                        "${Conf.bddDomainUrl}/img/posts/${photos[0]}",
+                        "${Conf.domainServer}/img/posts/${photos[0]}",
                         fit: BoxFit.cover,
                       )),
               ),
@@ -248,7 +248,7 @@ class Post {
           builder: (BuildContext context) {
             return SizedBox(
                 width: MediaQuery.of(context).size.width,
-                child: Image.network("${Conf.bddDomainUrl}/img/posts/$i"));
+                child: Image.network("${Conf.domainServer}/img/posts/$i"));
           },
         );
       }).toList(),

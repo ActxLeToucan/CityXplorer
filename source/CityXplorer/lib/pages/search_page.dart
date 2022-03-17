@@ -65,7 +65,7 @@ class _SearchPageState extends State<SearchPage> {
       controller: _controller,
       onSubmitted: (String text) async {
         String url =
-            Conf.bddDomainUrl + Conf.bddPath + "/users?q=${text.toLowerCase()}";
+            Conf.domainServer + Conf.apiPath + "/users?q=${text.toLowerCase()}";
 
         _list = [];
         try {

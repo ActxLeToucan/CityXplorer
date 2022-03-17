@@ -204,7 +204,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   /// methode appelee lors de la creation du post dans la BDD
   Future postLePost() async {
-    String url = Conf.bddDomainUrl + Conf.bddPath + "/post";
+    String url = Conf.domainServer + Conf.apiPath + "/post";
 
     var request = http.MultipartRequest("POST", Uri.parse(url));
     try {

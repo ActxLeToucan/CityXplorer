@@ -27,8 +27,8 @@ Future<void> main() async {
 
   HttpOverrides.global = MyHttpOverrides();
 
-
   UserConneted user = await getUser();
+
   runApp(MaterialApp(
     title: 'CityXplorer',
     theme: ThemeData(
@@ -71,4 +71,3 @@ Future<bool> isCurrentUser(String pseudo) async {
   UserConneted user = await getUser();
   return user.pseudo.compareTo(pseudo) == 0;
 }
-

@@ -4,6 +4,7 @@ import 'package:cityxplorer/vues/take_photo_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../components/menu.dart';
+import '../uni_links.dart';
 import '../vues/dashboard_card.dart';
 import '../vues/home_card.dart';
 
@@ -16,6 +17,12 @@ class MainInterface extends StatefulWidget {
 
 class _MainInterfaceState extends State<MainInterface> {
   int _selectedIndex = 0;
+
+  @override
+  initState() {
+    super.initState();
+    UniLinks.initUniLinks(context);
+  }
 
   static List<Widget> pages = <Widget>[
     const SingleChildScrollView(child: Home()),

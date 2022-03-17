@@ -127,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
       isLoading = true;
     });
 
-    String url = Conf.bddDomainUrl + Conf.bddPath + "/login";
+    String url = Conf.domainServer + Conf.apiPath + "/login";
 
     try {
       var response = await http.post(Uri.parse(url), body: {
