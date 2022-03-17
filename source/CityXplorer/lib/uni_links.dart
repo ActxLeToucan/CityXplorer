@@ -18,7 +18,7 @@ class UniLinks {
       _openLink(link, context);
     }, onError: (err) {
       // Handle exception by warning the user their action did not succeed
-      Fluttertoast.showToast(msg: err.toString());
+      _catchException(err);
     });
     // NOTE: Don't forget to call _sub.cancel() in dispose()
 
@@ -30,12 +30,19 @@ class UniLinks {
       if (initialLink == null) return;
 
       _openLink(initialLink, context);
-    } on PlatformException catch (e) {
-      // Handle exception by warning the user their action did not succeed
-      // return?
-      Fluttertoast.showToast(msg: "${e.message} (erreur ${e.code})");
     } catch (e) {
+      _catchException(e);
+    }
+  }
+
+  static void _catchException(e) {
+    if (kDebugMode) {
       print(e);
+    }
+    if (e is PlatformException) {
+      Fluttertoast.showToast(msg: "${e.message} (erreur ${e.code})");
+    } else {
+      Fluttertoast.showToast(msg: e.toString());
     }
   }
 
@@ -68,25 +75,7 @@ class UniLinks {
       switch (list[0]) {
         case 'user':
           {
-            _openUser(list,
-                context); // c'est quoi cette gestion des exceptions ?????!!!!!   (╯°□°）╯︵ ┻━┻
-            /*
-            if (list.length < 2) {
-              throw PlatformException(
-                  code: '111',
-                  message: 'Le lien est invalie.',
-                  details: 'Un argument est attendu.');
-            }
-            User user = await User.fromPseudo(list[1]);
-            if (user.isEmpty()) {
-              throw PlatformException(
-                  code: '112',
-                  message: 'Aucun utilisateur correspondant.',
-                  details:
-                      'Aucun utilisateur correspondant n\'existe pour ce pseudo. Impossible d\'ouvrir le lien');
-            }
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => UserProfile(user: user)));*/
+            _openUser(list, context);
             break;
           }
         case 'post':
@@ -102,34 +91,39 @@ class UniLinks {
                   'Le lien utilisé pour ouvrir cette application ne correspond à aucun schéma connu.');
       }
     } on PlatformException catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-      Fluttertoast.showToast(msg: "${e.message} (erreur ${e.code})");
+      _catchException(e);
     }
   }
 
   static Future<void> _openUser(List<String> list, BuildContext context) async {
-    if (list.length < 2) {
-      throw PlatformException(
-          code: '111',
-          message: 'Le lien est invalie.',
-          details: 'Un argument est attendu.');
+    try {
+      if (list.length < 2) {
+        throw PlatformException(
+            code: '111',
+            message: 'Le lien est invalie.',
+            details: 'Un argument est attendu.');
+      }
+      User user = await User.fromPseudo(list[1]);
+      if (user.isEmpty()) {
+        throw PlatformException(
+            code: '112',
+            message: 'Aucun utilisateur correspondant.',
+            details:
+                'Aucun utilisateur correspondant n\'existe pour ce pseudo. Impossible d\'ouvrir le lien');
+      }
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => UserProfile(user: user)));
+    } on PlatformException catch (e) {
+      _catchException(e);
     }
-    User user = await User.fromPseudo(list[1]);
-    if (user.isEmpty()) {
-      throw PlatformException(
-          code: '112',
-          message: 'Aucun utilisateur correspondant.',
-          details:
-              'Aucun utilisateur correspondant n\'existe pour ce pseudo. Impossible d\'ouvrir le lien');
-    }
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => UserProfile(user: user)));
   }
 
   // TODO
   static Future<void> _openPost(List<String> list, BuildContext context) async {
-    throw Exception("TODO");
+    try {
+      throw Exception("TODO");
+    } catch (e) {
+      _catchException(e);
+    }
   }
 }
