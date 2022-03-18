@@ -36,6 +36,7 @@ dependencies:
   fluttertoast: ^8.0.8
   http: ^0.13.3
   hexcolor: ^2.0.5
+  google_maps_flutter_web: ^0.3.2+1
 
 
 
