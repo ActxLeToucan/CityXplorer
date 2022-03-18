@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:cityxplorer/components/icon_menu_post_profil.dart';
 import 'package:cityxplorer/components/share_bar_icon.dart';
 import 'package:cityxplorer/models/user.dart';
 import 'package:flutter/material.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html_unescape/html_unescape.dart';
+import 'package:http/http.dart' as http;
 
 import '../components/appbar.dart';
 import '../conf.dart';
@@ -57,6 +61,45 @@ class Post {
         userPseudo: unescape.convert(json['user-pseudo']),
         adresseCourte: unescape.convert(json['adresse_courte']),
         adresseLongue: unescape.convert(json['adresse_longue']));
+  }
+
+  factory Post.empty() {
+    return Post(
+        id: -1,
+        titre: "",
+        latitude: .0,
+        longitude: .0,
+        description: "",
+        date: DateTime.now(),
+        etat: "empty",
+        photos: [],
+        userPseudo: "",
+        adresseCourte: "",
+        adresseLongue: "");
+  }
+
+  static fromId(String id) async {
+    Post post = Post.empty();
+
+    String url = Conf.domainServer + Conf.apiPath + "/post?id=$id";
+    try {
+      var response = await http.get(Uri.parse(url));
+      final Map<String, dynamic> data = json.decode(response.body);
+      var res = data['result'];
+
+      if (res == 1) {
+        post = Post.fromJson(data['post']);
+      }
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
+
+    return post;
+  }
+
+  bool isEmpty() {
+    return (etat == "empty");
   }
 
   bool isValid() {

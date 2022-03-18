@@ -8,6 +8,7 @@ import 'package:uni_links/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
 
 import 'conf.dart';
+import 'models/post.dart';
 import 'models/user.dart';
 
 class UniLinks {
@@ -69,7 +70,9 @@ class UniLinks {
       if (path.characters.first == '/') path = path.replaceFirst('/', '');
 
       List<String> list = path.split('/');
-      print(list);
+      if (kDebugMode) {
+        print(list);
+      }
       if (list.isEmpty) return;
 
       switch (list[0]) {
@@ -118,11 +121,25 @@ class UniLinks {
     }
   }
 
-  // TODO
   static Future<void> _openPost(List<String> list, BuildContext context) async {
     try {
-      throw Exception("TODO");
-    } catch (e) {
+      if (list.length < 2) {
+        throw PlatformException(
+            code: '111',
+            message: 'Le lien est invalie.',
+            details: 'Un argument est attendu.');
+      }
+      Post post = await Post.fromId(list[1]);
+      if (post.isEmpty()) {
+        throw PlatformException(
+            code: '112',
+            message: 'Aucun post correspondant.',
+            details:
+                'Aucun post correspondant n\'existe pour ce pseudo. Impossible d\'ouvrir le lien');
+      }
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => post.toPage(context)));
+    } on PlatformException catch (e) {
       _catchException(e);
     }
   }
