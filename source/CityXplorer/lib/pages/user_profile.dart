@@ -7,8 +7,6 @@ import '../components/numbers_widget.dart';
 import '../components/profile_widget.dart';
 import '../models/post.dart';
 import '../models/user.dart';
-import '../styles.dart';
-import 'edit_profile.dart';
 
 class UserProfile extends StatefulWidget {
   final User user;
@@ -57,7 +55,6 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _load() async {
     setState(() => loading = true);
     Widget posts = await _renderPosts(context);
-    //await Future.delayed(const Duration(seconds: 2), () {});
     setState(() {
       postsLoaded = posts;
       loading = false;
@@ -77,8 +74,7 @@ class _UserProfileState extends State<UserProfile> {
                 userConneted = await getUser();
               }
               if (!userConneted.isEmpty()) {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => EditProfilePage(user: userConneted)));
+                userConneted.pushEditPage();
               }
             }),
         const SizedBox(height: 24),

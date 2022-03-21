@@ -1,18 +1,18 @@
-import 'dart:convert';
-
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../main.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../conf.dart';
 import '../models/user.dart';
-import '../pages/user_profile.dart';
+import '../router/delegate.dart';
 import '../styles.dart';
 
 class Menu extends StatelessWidget {
-  const Menu({Key? key}) : super(key: key);
+  final routerDelegate = Get.find<MyRouterDelegate>();
+
+  Menu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +46,7 @@ class Menu extends StatelessWidget {
         title: const Text("Se déconnecter"),
         onTap: () async {
           deconnexion();
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              'login', (Route<dynamic> route) => false);
+          routerDelegate.pushPageAndRemoveUntil(name: '/login');
         },
       ),
     ]));
@@ -72,8 +71,7 @@ class Menu extends StatelessWidget {
         onTap: () async {
           UserConneted user = await getUser();
           if (!user.isEmpty()) {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => UserProfile(user: user)));
+            user.pushPage();
           }
         });
   }

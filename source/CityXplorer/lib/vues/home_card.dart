@@ -3,7 +3,10 @@ import 'dart:convert';
 import 'package:cityxplorer/models/user.dart';
 import 'package:cityxplorer/pages/user_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../router/delegate.dart';
 
 //contenu de la page d accueil
 class Home extends StatelessWidget {
@@ -11,6 +14,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final routerDelegate = Get.find<MyRouterDelegate>();
     return Column(
       children: [
         Container(
@@ -42,8 +46,7 @@ class Home extends StatelessWidget {
                       user = User.fromJson(jsonDecode(userString));
                     }
                     if (!user.isEmpty()) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => UserProfile(user: user)));
+                      routerDelegate.pushPage(name: '/user', arguments: user);
                     }
                   }),
             ),

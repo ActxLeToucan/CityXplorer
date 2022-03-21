@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 
-import '../components/appbar.dart';
 import '../conf.dart';
-import '../pages/map-screen.dart';
+import '../router/delegate.dart';
 import '../styles.dart';
 
 class Post {
@@ -108,10 +108,7 @@ class Post {
 
   Widget toWidget(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => toPage(context)));
-      },
+      onTap: () => pushPage(),
       child: Container(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -226,30 +223,12 @@ class Post {
     );
   }
 
-  Scaffold toPage(BuildContext context) {
-    return Scaffold(
-      appBar: defaultAppBar(context),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics()),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-                child: _elementsBeforeImageOnPage(),
-                padding: const EdgeInsets.fromLTRB(12, 12, 12, 0)),
-            _renderImageOnPage(),
-            Padding(
-              child: _elementsAfterImageOnPage(context),
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-            )
-          ],
-        ),
-      ),
-    );
+  void pushPage() {
+    final routerDelegate = Get.find<MyRouterDelegate>();
+    routerDelegate.pushPage(name: '/post', arguments: this);
   }
 
-  Widget _elementsBeforeImageOnPage() {
+  Widget elementsBeforeImageOnPage() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -284,7 +263,7 @@ class Post {
     );
   }
 
-  Widget _renderImageOnPage() {
+  Widget renderImageOnPage() {
     return CarouselSlider(
       items: photos.map((i) {
         return Builder(
@@ -309,7 +288,7 @@ class Post {
     );
   }
 
-  Widget _elementsAfterImageOnPage(context) {
+  Widget elementsAfterImageOnPage(context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -334,13 +313,12 @@ class Post {
   Future<void> navigateToCreatorPage(BuildContext context) async {
     User user = await User.fromPseudo(userPseudo);
     if (!user.isEmpty()) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => user.profile()));
+      user.pushPage();
     }
   }
 
-  void navigateToMap(BuildContext context) {
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => GeolocationMap(post: this)));
+  void pushMap() {
+    final routerDelegate = Get.find<MyRouterDelegate>();
+    routerDelegate.pushPage(name: '/map', arguments: this);
   }
 }

@@ -7,37 +7,47 @@ import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 import '../conf.dart';
 import '../main.dart';
+import '../router/delegate.dart';
 import '../styles.dart';
 
 /// formulaire de creation d'un post avec gestion de la requete envoyee et de son resultat
 class NewPostScreen extends StatefulWidget {
-  final String imagePath;
-  final double latitude;
-  final double longitude;
+  final Map<String, dynamic> arguments;
 
-  const NewPostScreen(
-      {Key? key,
-      required this.imagePath,
-      required this.latitude,
-      required this.longitude})
-      : super(key: key);
+  const NewPostScreen({Key? key, required this.arguments}) : super(key: key);
 
   @override
   State<NewPostScreen> createState() => _NewPostScreenState();
 }
 
 class _NewPostScreenState extends State<NewPostScreen> {
+  final routerDelegate = Get.find<MyRouterDelegate>();
+
   final _formKey = GlobalKey<FormState>();
   final controllerTitre = TextEditingController();
   final controllerDescription = TextEditingController();
   DateTime now = DateTime.now();
   bool isLoading = false;
   List photos = [];
+
+  String imagePath = "";
+  double latitude = 0;
+  double longitude = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    imagePath = widget.arguments['imagePath'] ?? "";
+    latitude = widget.arguments['latitude'] as double;
+    longitude = widget.arguments['longitude'] as double;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,9 +56,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => routerDelegate.popRoute(),
         ),
         title: const Text(
           'Créer un post',
@@ -95,8 +103,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
               Container(
                 constraints: const BoxConstraints.expand(height: 250),
                 child: kIsWeb
-                    ? Image.network(widget.imagePath)
-                    : Image.file(File(widget.imagePath)),
+                    ? Image.network(imagePath)
+                    : Image.file(File(imagePath)),
               ),
               const SizedBox(height: 5),
               Text("Prise le : " + getCurrentDate(),
@@ -215,10 +223,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
       request.fields['description'] = controllerDescription.text;
 
       /// latitude du post
-      request.fields['latitude'] = widget.latitude.toString();
+      request.fields['latitude'] = latitude.toString();
 
       /// longitude du post
-      request.fields['longitude'] = widget.longitude.toString();
+      request.fields['longitude'] = longitude.toString();
 
       /// date courante au format adapte a la bdd
       request.fields['date'] = getCurrentDateBDD();
@@ -242,14 +250,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
       }
 
       ///ajout de la photo a la requete
-      request.files.add(await http.MultipartFile.fromPath(
-          "photo", widget.imagePath,
+      request.files.add(await http.MultipartFile.fromPath("photo", imagePath,
           contentType: MediaType("image", "jpeg")));
 
       /// on envoie la requete
       request.send().then((response) async {
         http.Response.fromStream(response).then((response) {
-          //print(response.statusCode);
+          print(response.body);
           final Map<String, dynamic> data = json.decode(response.body);
           String res = data['message'];
           int code = data['result'];
@@ -257,7 +264,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
           /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
           /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul
           if (code == 1) {
-            Navigator.of(context).pop();
+            routerDelegate.popRoute();
           }
 
           /// termine le chargement du bouton
@@ -273,6 +280,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   code: code,
                 );
               });
+        }).onError((error, stackTrace) {
+          print(error);
+          Fluttertoast.showToast(
+              msg: "Impossible d'accéder à la base de données.");
+          setState(() {
+            isLoading = false;
+          });
         });
       });
     } catch (e) {
@@ -288,7 +302,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   Future<List> getAdresse() async {
     String url =
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${widget.latitude},${widget.longitude}&key=${Conf.googleApiKey}&result_type=street_address|locality';
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=${Conf.googleApiKey}&result_type=street_address|locality';
 
     List<String> adresses = [];
 
@@ -318,7 +332,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   /// inutilisee pour le moment
   Widget carouselBuild() {
-    photos.add(widget.imagePath);
+    photos.add(imagePath);
     return CarouselSlider(
       items: photos.map((i) {
         return Builder(

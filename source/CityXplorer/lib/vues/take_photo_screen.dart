@@ -3,6 +3,9 @@ import 'package:cityxplorer/pages/new_post.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:location/location.dart';
+import 'package:get/get.dart';
+
+import '../router/delegate.dart';
 
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -17,6 +20,8 @@ class TakePictureScreen extends StatefulWidget {
 }
 
 class TakePictureScreenState extends State<TakePictureScreen> {
+  final routerDelegate = Get.find<MyRouterDelegate>();
+
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   bool isLoading = false;
@@ -100,17 +105,11 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                   final location = await _getLocation();
 
                   // If the picture was taken, display it on a new screen.
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      //builder: (context) => DisplayPictureScreen(
-                      builder: (context) => NewPostScreen(
-                          // Pass the automatically generated path to
-                          // the DisplayPictureScreen widget.
-                          imagePath: image.path,
-                          latitude: location[0] ?? 0,
-                          longitude: location[1] ?? 0),
-                    ),
-                  );
+                  routerDelegate.pushPage(name: '/new_post', arguments: {
+                    'imagePath': image.path,
+                    'latitude': location[0] ?? 0,
+                    'longitude': location[1] ?? 0
+                  });
                 } catch (e) {
                   print(e);
                 }

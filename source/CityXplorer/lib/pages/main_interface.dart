@@ -55,7 +55,7 @@ class _MainInterfaceState extends State<MainInterface> {
     return Scaffold(
       appBar: defaultAppBar(context),
       body: pages[_selectedIndex],
-      drawer: const Menu(),
+      drawer: Menu(),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Theme.of(context).textSelectionTheme.selectionColor,
         currentIndex: _selectedIndex,

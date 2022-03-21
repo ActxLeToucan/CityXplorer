@@ -29,9 +29,7 @@ class _ShareBarState extends State<ShareBar> {
           icon: const Icon(Icons.map),
           iconSize: 28,
           color: Colors.black,
-          onPressed: () {
-            widget.post.navigateToMap(context);
-          },
+          onPressed: () => widget.post.pushMap(),
         ),
         IconButton(
           icon: Icon(_isFavorited ? Icons.favorite : Icons.favorite_border),

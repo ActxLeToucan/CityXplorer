@@ -1,4 +1,7 @@
 import 'package:cityxplorer/models/user.dart';
+import 'package:get/get.dart';
+
+import '../router/delegate.dart';
 
 class UserConneted extends User {
   final String token;
@@ -57,5 +60,10 @@ class UserConneted extends User {
         avatar: user.avatar,
         niveauAcces: user.niveauAcces,
         description: user.description);
+  }
+
+  void pushEditPage() {
+    final routerDelegate = Get.find<MyRouterDelegate>();
+    routerDelegate.pushPage(name: '/edit_profile', arguments: this);
   }
 }

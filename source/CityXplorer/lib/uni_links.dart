@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:cityxplorer/pages/user_profile.dart';
+import 'package:cityxplorer/router/delegate.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
 
@@ -12,6 +14,7 @@ import 'models/post.dart';
 import 'models/user.dart';
 
 class UniLinks {
+  final routerDelegate = Get.find<MyRouterDelegate>();
   static Future<void> initUniLinks(BuildContext context) async {
     // Attach a listener to the stream
     StreamSubscription _sub = linkStream.listen((String? link) {
@@ -77,15 +80,11 @@ class UniLinks {
 
       switch (list[0]) {
         case 'user':
-          {
             _openUser(list, context);
             break;
-          }
         case 'post':
-          {
             _openPost(list, context);
             break;
-          }
         default:
           throw PlatformException(
               code: '110',
@@ -114,8 +113,7 @@ class UniLinks {
             details:
                 'Aucun utilisateur correspondant n\'existe pour ce pseudo. Impossible d\'ouvrir le lien');
       }
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => UserProfile(user: user)));
+      user.pushPage();
     } on PlatformException catch (e) {
       _catchException(e);
     }
@@ -137,8 +135,7 @@ class UniLinks {
             details:
                 'Aucun post correspondant n\'existe pour ce pseudo. Impossible d\'ouvrir le lien');
       }
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => post.toPage(context)));
+      post.pushPage();
     } on PlatformException catch (e) {
       _catchException(e);
     }

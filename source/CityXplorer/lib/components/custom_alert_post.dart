@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../router/delegate.dart';
 
 /// renvoie une boite de dialogue dynamique informant du resultat de la requete
 class AdvanceCustomAlert extends StatefulWidget {
@@ -17,6 +20,8 @@ class AdvanceCustomAlert extends StatefulWidget {
 }
 
 class _AdvanceCustomAlertState extends State<AdvanceCustomAlert> {
+  final routerDelegate = Get.find<MyRouterDelegate>();
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -49,9 +54,7 @@ class _AdvanceCustomAlertState extends State<AdvanceCustomAlert> {
                       height: 20,
                     ),
                     RaisedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+                      onPressed: routerDelegate.popRoute,
                       color: (noErr() ? Colors.lightGreen : Colors.redAccent),
                       child: Text(
                         (noErr() ? 'Super ! ' : 'Mince ...'),

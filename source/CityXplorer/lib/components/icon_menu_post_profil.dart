@@ -1,9 +1,10 @@
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../router/delegate.dart';
 
 // menu de boutons lorsque l on clique sur les 3 points dans le details d un post dans le profil
 class IconMenuPost extends StatefulWidget {
-
   const IconMenuPost({Key? key}) : super(key: key);
 
   @override
@@ -11,52 +12,55 @@ class IconMenuPost extends StatefulWidget {
 }
 
 class _IconMenuPostState extends State<IconMenuPost> {
+  final routerDelegate = Get.find<MyRouterDelegate>();
+
   @override
   Widget build(BuildContext context) {
-      return PopupMenuButton(
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              child: ListTile(
-                leading: Icon(Icons.edit),
-                title: Text('Modifier'),
+    return PopupMenuButton(
+        itemBuilder: (context) => [
+              const PopupMenuItem(
+                child: ListTile(
+                  leading: Icon(Icons.edit),
+                  title: Text('Modifier'),
+                ),
+                value: 0,
               ),
-              value: 0,
-            ),
-            const PopupMenuItem(
-              child: ListTile(
-                leading: Icon(Icons.delete, color: Colors.red),
-                title: Text('Supprimer',
-                  style: TextStyle(
-                    color: Colors.red,
-                ),),
+              const PopupMenuItem(
+                child: ListTile(
+                  leading: Icon(Icons.delete, color: Colors.red),
+                  title: Text(
+                    'Supprimer',
+                    style: TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+                value: 1,
               ),
-              value: 1,
-            ),
-          ],
-          onSelected:(value){
-            if(value == 0){
-              print("MODIFIER.");
-            }else if(value == 1){
-              alertDialogDelete(context);
-            }
+            ],
+        onSelected: (value) {
+          if (value == 0) {
+            print("MODIFIER.");
+          } else if (value == 1) {
+            alertDialogDelete(context);
           }
-      );
-    }
-  alertDialogDelete(BuildContext context) {
+        });
+  }
 
+  alertDialogDelete(BuildContext context) {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Annuler"),
-      onPressed:  () {
-        Navigator.of(context).pop();
-      },
+      onPressed: () => routerDelegate.popRoute(),
     );
     Widget continueButton = TextButton(
-      child: const Text("Supprimer",
+      child: const Text(
+        "Supprimer",
         style: TextStyle(
-        color: Colors.red,
-      ),),
-      onPressed:  () {
+          color: Colors.red,
+        ),
+      ),
+      onPressed: () {
         // supprimer le post de la bdd + retourner à la liste en faisant disparaitre le post
         //TODO
       },
@@ -81,4 +85,3 @@ class _IconMenuPostState extends State<IconMenuPost> {
     );
   }
 }
-
