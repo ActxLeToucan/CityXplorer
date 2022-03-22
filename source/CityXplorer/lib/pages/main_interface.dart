@@ -19,9 +19,7 @@ class _MainInterfaceState extends State<MainInterface> {
 
   static List<Widget> pages = <Widget>[
     const SingleChildScrollView(child: Home()),
-    getCameras().length > 0
-        ? TakePictureScreen(camera: getCameras()[0])
-        : const Text("Erreur camera"),
+    const TakePictureScreen(),
     const SingleChildScrollView(
         child: DashBoard(
       lists: {

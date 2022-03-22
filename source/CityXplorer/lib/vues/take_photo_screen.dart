@@ -5,12 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:location/location.dart';
 
 class TakePictureScreen extends StatefulWidget {
-  final CameraDescription camera;
-
-  const TakePictureScreen({
-    Key? key,
-    required this.camera,
-  }) : super(key: key);
+  const TakePictureScreen({Key? key}) : super(key: key);
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState();
@@ -19,7 +14,9 @@ class TakePictureScreen extends StatefulWidget {
 class TakePictureScreenState extends State<TakePictureScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+  CameraDescription? _camera;
   bool isLoading = false;
+  bool cameraLoaded = false;
 
   double _sliderValue = 1.0;
   double _zoomMax = 1.01;
@@ -27,17 +24,29 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   @override
   initState() {
     super.initState();
-    // To display the current output from the Camera,
-    // create a CameraController.
-    _controller = CameraController(
-      // Get a specific camera from the list of available cameras.
-      widget.camera,
-      // Define the resolution to use.
-      ResolutionPreset.max,
-    );
 
-    // Next, initialize the controller. This returns a Future.
-    _initializeControllerFuture = _controller.initialize();
+    availableCameras().then((cameras) {
+      _camera = cameras.first;
+
+      // To display the current output from the Camera,
+      // create a CameraController.
+      _controller = CameraController(
+        // Get a specific camera from the list of available cameras.
+        _camera!,
+        // Define the resolution to use.
+        ResolutionPreset.max,
+      );
+
+      // Next, initialize the controller. This returns a Future.
+      _initializeControllerFuture = _controller.initialize();
+
+      cameraLoaded = true;
+      setState(() {});
+    }).onError((error, stackTrace) {
+      print(error);
+      cameraLoaded = true;
+      setState(() {});
+    });
   }
 
   @override
@@ -49,31 +58,39 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            _controller.getMaxZoomLevel().then((value) => _zoomMax = value);
+    if (cameraLoaded) {
+      if (_camera != null) {
+        return FutureBuilder<void>(
+            future: _initializeControllerFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // If the Future is complete, display the preview.
+                _controller.getMaxZoomLevel().then((value) => _zoomMax = value);
 
-            return Stack(children: [
-              ListView(
-                children: [CameraPreview(_controller)],
-                physics: const NeverScrollableScrollPhysics(),
-              ),
-              IgnorePointer(
-                /// rend le bouton non cliquable si il est en train d envoyer la requete
-                ignoring: isLoading ? true : false,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: _renderButtons()),
-              )
-            ]);
-          } else {
-            // Otherwise, display a loading indicator.
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+                return Stack(children: [
+                  ListView(
+                    children: [CameraPreview(_controller)],
+                    physics: const NeverScrollableScrollPhysics(),
+                  ),
+                  IgnorePointer(
+                    /// rend le bouton non cliquable si il est en train d envoyer la requete
+                    ignoring: isLoading ? true : false,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: _renderButtons()),
+                  )
+                ]);
+              } else {
+                // Otherwise, display a loading indicator.
+                return const Center(child: CircularProgressIndicator());
+              }
+            });
+      } else {
+        return const Center(child: Text("Erreur camera"));
+      }
+    } else {
+      return const Center(child: CircularProgressIndicator());
+    }
   }
 
   List<Widget> _renderButtons() {

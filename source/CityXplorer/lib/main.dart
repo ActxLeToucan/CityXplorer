@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:camera/camera.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:cityxplorer/pages/create_account.dart';
 import 'package:cityxplorer/pages/login_screen.dart';
@@ -13,20 +12,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'my_http_overrides.dart';
 
-List<CameraDescription> cameras = [];
-
 Future<void> main() async {
   // Ensure that plugin services are initialized so that `availableCameras()`
   // can be called before `runApp()`
-  try {
-    WidgetsFlutterBinding.ensureInitialized();
-    cameras = await availableCameras();
-  } on CameraException catch (e) {
-    print('Error in fetching the cameras: $e');
-  }
+  WidgetsFlutterBinding.ensureInitialized();
 
   HttpOverrides.global = MyHttpOverrides();
-
 
   UserConneted user = await getUser();
   runApp(MaterialApp(
@@ -41,10 +32,6 @@ Future<void> main() async {
       'newAccount': (context) => const CreateNewAccount(),
     },
   ));
-}
-
-getCameras() {
-  return cameras;
 }
 
 connexion(UserConneted user) async {
@@ -71,4 +58,3 @@ Future<bool> isCurrentUser(String pseudo) async {
   UserConneted user = await getUser();
   return user.pseudo.compareTo(pseudo) == 0;
 }
-
