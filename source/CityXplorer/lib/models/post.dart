@@ -1,13 +1,14 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cityxplorer/components/icon_menu_post_profil.dart';
 import 'package:cityxplorer/components/share_bar_icon.dart';
 import 'package:cityxplorer/models/user.dart';
 import 'package:flutter/material.dart';
-
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html_unescape/html_unescape.dart';
 
 import '../components/appbar.dart';
 import '../conf.dart';
+import '../main.dart';
 import '../pages/map-screen.dart';
 import '../styles.dart';
 
@@ -99,12 +100,19 @@ class Post {
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 4),
-          child: Text(
-            titre,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-            maxLines: 1,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          child: Row(
+            children: [
+              Text(
+                titre,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+                maxLines: 1,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              ),
+              const Spacer(),
+              buildVerif(),
+            ],
           ),
         ),
         Row(children: [
@@ -299,5 +307,61 @@ class Post {
   void navigateToMap(BuildContext context) {
     Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => GeolocationMap(post: this)));
+  }
+
+  /// construit l'icone de verification d'un post en fonction de son etat et des droits de l'utilisateur
+  Widget buildVerif() {
+    return FutureBuilder<User>(
+      future: getUser(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return GestureDetector(
+            onTap: () {
+              /// si l utilisateur est un admin, au clic on inverse la validation du post
+              /// ou on affiche a l'utilisateur un message pour l'informer de l'utilite de cette icone
+              (snapshot.requireData.niveauAcces == 2)
+                  ? changeValidation()
+                  : showValidation();
+            },
+            child: Container(
+                padding: const EdgeInsets.all(3),
+                child: isValid()
+                    ? const Icon(
+                        Icons.verified_user,
+                        color: Colors.green,
+                        size: 24,
+                      )
+                    : const Icon(
+                        Icons.cancel_outlined,
+                        color: Colors.red,
+                        size: 24,
+                      )),
+          );
+        } else {
+          return CircularProgressIndicator(
+            strokeWidth: 1.5,
+            color: Colors.black,
+          );
+        }
+      },
+    );
+  }
+
+  /// fonction appelée lorsque qu'un admin clique sur le bouton de validation
+  void changeValidation() {
+    // envoyer la requete pour changer d'etat le post
+    // TODO
+    isValid()
+        ? Fluttertoast.showToast(msg: 'Post validé 👌!')
+        : Fluttertoast.showToast(msg: 'Post invalidé 👌!');
+  }
+
+  /// fonction appelée lorsque qu'un utilsateur classique clique sur le bouton de validation
+  void showValidation() {
+    isValid()
+        ? Fluttertoast.showToast(
+            msg: 'Le post a été validé par un administrateur ✌!')
+        : Fluttertoast.showToast(
+            msg: 'Le post n\'est pas encore validé par un administeur 😶!');
   }
 }
