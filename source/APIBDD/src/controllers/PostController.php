@@ -7,7 +7,7 @@ use cityXplorer\models\User;
 use cityXplorer\models\Partage;
 use cityXplorer\models\Photo;
 use cityXplorer\models\Post;
-use Conf;
+use cityXplorer\Conf;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Illuminate\Support\Facades\Date;
