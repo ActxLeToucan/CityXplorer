@@ -78,7 +78,7 @@ class Post {
         adresseLongue: "");
   }
 
-  static fromId(String id) async {
+  static Future<Post> fromId(String id) async {
     Post post = Post.empty();
 
     String url = Conf.domainServer + Conf.apiPath + "/post?id=$id";
@@ -225,7 +225,7 @@ class Post {
 
   void pushPage() {
     final routerDelegate = Get.find<MyRouterDelegate>();
-    routerDelegate.pushPage(name: '/post', arguments: this);
+    routerDelegate.pushPage(name: '/post', arguments: {'id': id.toString()});
   }
 
   Widget elementsBeforeImageOnPage() {
@@ -319,6 +319,6 @@ class Post {
 
   void pushMap() {
     final routerDelegate = Get.find<MyRouterDelegate>();
-    routerDelegate.pushPage(name: '/map', arguments: this);
+    routerDelegate.pushPage(name: '/map', arguments: {'id': id.toString()});
   }
 }

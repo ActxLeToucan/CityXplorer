@@ -2,9 +2,10 @@ import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/vues/take_photo_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../components/menu.dart';
-import '../uni_links.dart';
+import '../router/delegate.dart';
 import '../vues/dashboard_card.dart';
 import '../vues/home_card.dart';
 
@@ -16,12 +17,15 @@ class MainInterface extends StatefulWidget {
 }
 
 class _MainInterfaceState extends State<MainInterface> {
+  final routerDelegate = Get.put(MyRouterDelegate());
   int _selectedIndex = 0;
 
   @override
   initState() {
     super.initState();
-    UniLinks.initUniLinks(context);
+    getUser().then((user) {
+      if (user.isEmpty()) routerDelegate.pushPageAndClear(name: '/login');
+    });
   }
 
   static List<Widget> pages = <Widget>[

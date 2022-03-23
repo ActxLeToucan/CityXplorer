@@ -7,9 +7,9 @@ import '../models/directionsM.dart';
 import '../models/directionsR.dart';
 
 class GeolocationMap extends StatefulWidget {
-  final Post post;
+  final Map<String, dynamic> arguments;
 
-  const GeolocationMap({Key? key, required this.post}) : super(key: key);
+  const GeolocationMap({Key? key, required this.arguments}) : super(key: key);
   @override
   _GeolocationMapState createState() => _GeolocationMapState();
 }
@@ -27,9 +27,23 @@ class _GeolocationMapState extends State<GeolocationMap> {
   String distance = "";
   String temps = "";
 
+  Post _post = Post.empty();
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    Post.fromId(widget.arguments['id'].toString()).then((post) {
+      setState(() {
+        _post = post;
+        _initialized = true;
+      });
+    });
+    super.initState();
+  }
+
   CameraPosition initialLocation() {
     return CameraPosition(
-      target: LatLng(widget.post.latitude, widget.post.longitude),
+      target: LatLng(_post.latitude, _post.longitude),
       zoom: 14.4746,
     );
   }
@@ -120,43 +134,71 @@ class _GeolocationMapState extends State<GeolocationMap> {
     });
 
      */
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Il vous reste $distance, $temps',
-          style: const TextStyle(
-            fontSize: 18.0,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          GoogleMap(
-            mapType: MapType.hybrid,
-            initialCameraPosition: initialLocation(),
-            markers: Set.of((_user != null) ? [_user!, _destination!] : []),
-            onMapCreated: (GoogleMapController controller) {
-              _controller = controller;
-              addMarkerDestination(widget.post.latitude, widget.post.longitude);
-              /** --------------------------------------------------- **/
-              getCurrentLocation();
-            },
-            polylines: {
-              if (_data != null)
-                Polyline(
-                  polylineId: const PolylineId('overview_polyline'),
-                  color: Colors.blue,
-                  width: 4,
-                  points: _data!.polylinePoints
-                      .map((e) => LatLng(e.latitude, e.longitude))
-                      .toList(),
+    if (_initialized) {
+      if (_post.isEmpty()) {
+        return Scaffold(
+            appBar: AppBar(
+              title: const Text(
+                'Post invalide',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w600,
                 ),
-            },
+              ),
+            ),
+            body: const Center(child: Text("Post invalide.")));
+      } else {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'Il vous reste $distance, $temps',
+              style: const TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
-        ],
-      ),
-    );
+          body: Stack(
+            alignment: Alignment.center,
+            children: [
+              GoogleMap(
+                mapType: MapType.hybrid,
+                initialCameraPosition: initialLocation(),
+                markers: Set.of((_user != null) ? [_user!, _destination!] : []),
+                onMapCreated: (GoogleMapController controller) {
+                  _controller = controller;
+                  addMarkerDestination(_post.latitude, _post.longitude);
+                  /** --------------------------------------------------- **/
+                  getCurrentLocation();
+                },
+                polylines: {
+                  if (_data != null)
+                    Polyline(
+                      polylineId: const PolylineId('overview_polyline'),
+                      color: Colors.blue,
+                      width: 4,
+                      points: _data!.polylinePoints
+                          .map((e) => LatLng(e.latitude, e.longitude))
+                          .toList(),
+                    ),
+                },
+              ),
+            ],
+          ),
+        );
+      }
+    } else {
+      return Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              'Chargement...',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          body: const Center(child: CircularProgressIndicator()));
+    }
   }
 }

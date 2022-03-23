@@ -46,7 +46,7 @@ class Menu extends StatelessWidget {
         title: const Text("Se déconnecter"),
         onTap: () async {
           deconnexion();
-          routerDelegate.pushPageAndRemoveUntil(name: '/login');
+          routerDelegate.pushPageAndClear(name: '/login');
         },
       ),
     ]));

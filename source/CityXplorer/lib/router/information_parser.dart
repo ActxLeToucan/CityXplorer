@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../models/post.dart';
-import '../models/user.dart';
-
 class MyRouteInformationParser
     extends RouteInformationParser<List<RouteSettings>> {
   const MyRouteInformationParser() : super();
@@ -39,11 +36,11 @@ class MyRouteInformationParser
   String _restoreArguments(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case '/user':
-        return '?pseudo=${(routeSettings.arguments as User).pseudo}';
+        return '?pseudo=${(routeSettings.arguments as Map)['pseudo']}';
       case '/post':
-        return '?id=${(routeSettings.arguments as Post).id}';
+        return '?id=${(routeSettings.arguments as Map)['id'].toString()}';
       case '/map':
-        return '?id=${(routeSettings.arguments as Post).id}';
+        return '?id=${(routeSettings.arguments as Map)['id'].toString()}';
       default:
         return '';
     }

@@ -121,7 +121,8 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                       height: 100,
                     ),
                     GestureDetector(
-                      onTap: () => routerDelegate.pushPageAndRemoveUntil(name: '/login'),
+                      onTap: () =>
+                          routerDelegate.pushPageAndClear(name: '/login'),
                       child: Container(
                         child: const Text(
                             'Vous avez déjà un compte ?\nConnectez-vous.',
@@ -166,7 +167,7 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
         UserConneted user = UserConneted.fromJson(data['user']);
         connexion(user);
 
-        routerDelegate.pushPageAndRemoveUntil(name: '/');
+        routerDelegate.pushPageAndClear(name: '/');
       }
       Fluttertoast.showToast(msg: data['message']);
     } catch (e) {

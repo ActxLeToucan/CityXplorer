@@ -38,7 +38,7 @@ class User {
         pseudo: "", name: "", avatar: "", niveauAcces: 0, description: "");
   }
 
-  static fromPseudo(String pseudo) async {
+  static Future<User> fromPseudo(String pseudo) async {
     User user = User.empty();
 
     String url = Conf.domainServer + Conf.apiPath + "/user?pseudo=$pseudo";
@@ -96,6 +96,6 @@ class User {
 
   void pushPage() {
     final routerDelegate = Get.find<MyRouterDelegate>();
-    routerDelegate.pushPage(name: '/user', arguments: this);
+    routerDelegate.pushPage(name: '/user', arguments: {'pseudo': pseudo});
   }
 }

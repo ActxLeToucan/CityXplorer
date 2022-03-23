@@ -8,8 +8,6 @@ import 'package:cityxplorer/pages/user_profile.dart';
 import 'package:cityxplorer/router/transition_delegate.dart';
 import 'package:flutter/material.dart';
 
-import '../models/post.dart';
-import '../models/user.dart';
 import '../pages/create_account.dart';
 import '../pages/post_page.dart';
 import '../pages/search_page.dart';
@@ -53,6 +51,21 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
     return Future.value(null);
   }
 
+  void parseRoute(Uri uri) {
+    if (uri.pathSegments.isEmpty) {
+      setNewRoutePath([const RouteSettings(name: '/')]);
+    } else {
+      setNewRoutePath(uri.pathSegments
+          .map((pathSegment) => RouteSettings(
+                name: '/$pathSegment',
+                arguments: pathSegment == uri.pathSegments.last
+                    ? uri.queryParameters
+                    : null,
+              ))
+          .toList());
+    }
+  }
+
   bool _onPopPage(Route route, dynamic result) {
     if (!route.didPop(result)) return false;
 
@@ -75,7 +88,7 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
     notifyListeners();
   }
 
-  void pushPageAndRemoveUntil({required String name, dynamic arguments}) {
+  void pushPageAndClear({required String name, dynamic arguments}) {
     _pages.clear();
     pushPage(name: name, arguments: arguments);
   }
@@ -94,22 +107,26 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
         child = const CreateNewAccount();
         break;
       case '/user':
-        child = UserProfile(user: routeSettings.arguments as User);
+        child = UserProfile(
+            arguments: routeSettings.arguments as Map<String, String>);
         break;
       case '/edit_profile':
-        child = EditProfilePage(user: routeSettings.arguments as UserConneted);
+        child = const EditProfilePage();
         break;
       case '/search':
         child = const SearchPage();
         break;
       case '/post':
-        child = PostPage(post: routeSettings.arguments as Post);
+        child =
+            PostPage(arguments: routeSettings.arguments as Map<String, String>);
         break;
       case '/map':
-        child = GeolocationMap(post: routeSettings.arguments as Post);
+        child = GeolocationMap(
+            arguments: routeSettings.arguments as Map<String, String>);
         break;
       case '/new_post':
-        child = NewPostScreen(arguments: routeSettings.arguments as Map<String, dynamic>);
+        child = NewPostScreen(
+            arguments: routeSettings.arguments as Map<String, String>);
         break;
       default:
         child = Scaffold(
@@ -120,7 +137,6 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
 
     return MaterialPage(
       child: child,
-      key: Key(routeSettings.toString()) as LocalKey,
       name: routeSettings.name,
       arguments: routeSettings.arguments,
     );

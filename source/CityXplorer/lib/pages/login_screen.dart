@@ -92,8 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
                 GestureDetector(
-                  onTap: () =>
-                      routerDelegate.pushPageAndRemoveUntil(name: '/signup'),
+                  onTap: () => routerDelegate.pushPageAndClear(name: '/signup'),
                   child: Container(
                     child: const Text('Créer un compte',
                         style: Styles.textStyleInput,
@@ -145,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
         UserConneted user = UserConneted.fromJson(data['user']);
         connexion(user);
 
-        routerDelegate.pushPageAndRemoveUntil(name: '/');
+        routerDelegate.pushPageAndClear(name: '/');
       }
       Fluttertoast.showToast(msg: data['message']);
     } catch (e) {

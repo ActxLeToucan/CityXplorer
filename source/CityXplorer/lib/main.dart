@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:cityxplorer/router/delegate.dart';
@@ -9,8 +11,8 @@ import 'package:cityxplorer/router/information_parser.dart';
 import 'package:cityxplorer/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_links/uni_links.dart';
 
-import 'models/user.dart';
 import 'my_http_overrides.dart';
 
 List<CameraDescription> cameras = [];
@@ -27,21 +29,52 @@ Future<void> main() async {
 
   HttpOverrides.global = MyHttpOverrides();
 
-  UserConneted user = await getUser();
-
-  runApp(App(user: user));
+  runApp(const App());
 }
 
-class App extends StatelessWidget {
-  final routerDelegate = Get.put(MyRouterDelegate());
-  User user;
+class App extends StatefulWidget {
+  const App({Key? key}) : super(key: key);
 
-  App({Key? key, required this.user}) : super(key: key) {
-    if (user.isEmpty()) {
-      routerDelegate.pushPage(name: '/login');
-    } else {
-      routerDelegate.pushPage(name: '/');
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  final routerDelegate = Get.put(MyRouterDelegate());
+
+  StreamSubscription? _linkSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    routerDelegate.pushPage(name: '/');
+
+    if (!kIsWeb) initialize();
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> initialize() async {
+    try {
+      // Get the link that launched the app
+      final initialUri = await getInitialUri();
+
+      if (initialUri != null) {
+        routerDelegate.parseRoute(initialUri);
+      }
+    } on FormatException catch (error) {
+      error.printError();
     }
+
+    // Attach a listener to the uri_links stream
+    _linkSubscription = uriLinkStream.listen((uri) {
+      if (!mounted) return;
+      routerDelegate.parseRoute(uri!);
+    }, onError: (error) => error.printError());
   }
 
   @override
@@ -60,12 +93,12 @@ getCameras() {
   return cameras;
 }
 
-connexion(UserConneted user) async {
+Future<void> connexion(UserConneted user) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString("user", jsonEncode(user));
 }
 
-deconnexion() async {
+Future<void> deconnexion() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.remove("user");
 }
