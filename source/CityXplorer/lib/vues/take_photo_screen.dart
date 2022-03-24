@@ -124,8 +124,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                   // If the picture was taken, display it on a new screen.
                   routerDelegate.pushPage(name: '/new_post', arguments: {
                     'imagePath': image.path,
-                    'latitude': location[0] ?? 0,
-                    'longitude': location[1] ?? 0
+                    'latitude': (location[0] ?? 0).toString(),
+                    'longitude': (location[1] ?? 0).toString()
                   });
                 } catch (e) {
                   print(e);

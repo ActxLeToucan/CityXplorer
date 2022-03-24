@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
@@ -81,10 +80,6 @@ class _AppState extends State<App> {
       routeInformationParser: const MyRouteInformationParser(),
     );
   }
-}
-
-getCameras() {
-  return cameras;
 }
 
 Future<void> connexion(UserConneted user) async {

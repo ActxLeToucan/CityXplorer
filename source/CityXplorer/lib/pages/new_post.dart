@@ -18,7 +18,7 @@ import '../styles.dart';
 
 /// formulaire de creation d'un post avec gestion de la requete envoyee et de son resultat
 class NewPostScreen extends StatefulWidget {
-  final Map<String, dynamic> arguments;
+  final Map<String, String> arguments;
 
   const NewPostScreen({Key? key, required this.arguments}) : super(key: key);
 
@@ -235,9 +235,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
       request.fields['titre'] = controllerTitre.text;
       request.fields['description'] = controllerDescription.text;
 
-      request.fields['latitude'] = widget.latitude.toString();
-      request.fields['longitude'] = widget.longitude.toString();
-      
+      request.fields['latitude'] = latitude.toString();
+      request.fields['longitude'] = longitude.toString();
+
       request.fields['date'] = getCurrentDateBDD();
 
       UserConneted user = await getUser();
@@ -255,36 +255,17 @@ class _NewPostScreenState extends State<NewPostScreen> {
       request.files.add(await http.MultipartFile.fromPath("photo", imagePath,
           contentType: MediaType("image", "jpeg")));
 
-
       var response = await http.Response.fromStream(await request.send());
       // print(response.body);
-          final Map<String, dynamic> data = json.decode(response.body);
-          String res = data['message'];
-          int code = data['result'];
+      final Map<String, dynamic> data = json.decode(response.body);
+      String res = data['message'];
+      int code = data['result'];
 
-          /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
-          /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul
-          if (code == 1) {
-            routerDelegate.popRoute();
-          }
-
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AdvanceCustomAlert(
-                  message: res,
-                  code: code,
-                );
-              });
-        }).onError((error, stackTrace) {
-          print(error);
-          Fluttertoast.showToast(
-              msg: "Impossible d'accéder à la base de données.");
-          setState(() {
-            isLoading = false;
-          });
-        });
-      });
+      /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
+      /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul
+      if (code == 1) {
+        routerDelegate.popRoute();
+      }
 
       showDialog(
           context: context,
