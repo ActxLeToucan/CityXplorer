@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:cityxplorer/models/post.dart';
-import 'package:cityxplorer/pages/user_profile.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 
 import '../conf.dart';
+import '../router/delegate.dart';
 
 class User {
   final String pseudo;
@@ -37,10 +38,10 @@ class User {
         pseudo: "", name: "", avatar: "", niveauAcces: 0, description: "");
   }
 
-  static fromPseudo(String pseudo) async {
+  static Future<User> fromPseudo(String pseudo) async {
     User user = User.empty();
 
-    String url = Conf.bddDomainUrl + Conf.bddPath + "/user?pseudo=$pseudo";
+    String url = Conf.domainServer + Conf.apiPath + "/user?pseudo=$pseudo";
     try {
       var response = await http.get(Uri.parse(url));
       final Map<String, dynamic> data = json.decode(response.body);
@@ -79,7 +80,7 @@ class User {
   Future<List<Post>> getPosts() async {
     List<Post> posts = [];
 
-    String url = Conf.bddDomainUrl + Conf.bddPath + "/postsUser?pseudo=$pseudo";
+    String url = Conf.domainServer + Conf.apiPath + "/postsUser?pseudo=$pseudo";
     try {
       var response = await http.get(Uri.parse(url));
       final List<dynamic> data = json.decode(response.body);
@@ -93,7 +94,8 @@ class User {
     return posts;
   }
 
-  UserProfile profile() {
-    return UserProfile(user: this);
+  void pushPage() {
+    final routerDelegate = Get.find<MyRouterDelegate>();
+    routerDelegate.pushPage(name: '/user', arguments: {'pseudo': pseudo});
   }
 }

@@ -138,10 +138,16 @@ class PostController {
 
         $postExist = Post::where("idPost", "=", $id)->count();
         if ($postExist == 1) {
-            $post = Post::where("idPost", "=", $id)->first();
-            return $post->toArray();
+            $post = Post::where("idPost","=",$id)->first();
+            return [
+                'result' => 1,
+                'post' => $post->toArray()
+            ];
         } else {
-            return [];
+            return [
+                'result' => 0,
+                'post' => null
+            ];
         }
     }
 

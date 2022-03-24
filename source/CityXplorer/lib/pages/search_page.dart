@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cityxplorer/pages/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -48,13 +47,7 @@ class _SearchPageState extends State<SearchPage> {
             child: ListTile(
                 title: Text(_list[index].name),
                 subtitle: Text("@${_list[index].pseudo}")),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => _list[index].profile(),
-                ),
-              );
-            },
+            onTap: () => _list[index].pushPage(),
           ));
         });
   }
@@ -65,7 +58,7 @@ class _SearchPageState extends State<SearchPage> {
       controller: _controller,
       onSubmitted: (String text) async {
         String url =
-            Conf.bddDomainUrl + Conf.bddPath + "/users?q=${text.toLowerCase()}";
+            Conf.domainServer + Conf.apiPath + "/users?q=${text.toLowerCase()}";
 
         _list = [];
         try {

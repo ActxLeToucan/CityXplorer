@@ -8,10 +8,12 @@ import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 
 import '../conf.dart';
+import '../router/delegate.dart';
 import '../styles.dart';
 
 class CreateNewAccount extends StatefulWidget {
@@ -22,6 +24,8 @@ class CreateNewAccount extends StatefulWidget {
 }
 
 class _CreateNewAccountState extends State<CreateNewAccount> {
+  final routerDelegate = Get.find<MyRouterDelegate>();
+
   TextEditingController pseudo = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController name = TextEditingController();
@@ -118,7 +122,7 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                     ),
                     GestureDetector(
                       onTap: () =>
-                          Navigator.of(context).pushReplacementNamed('login'),
+                          routerDelegate.pushPageAndClear(name: '/login'),
                       child: Container(
                         child: const Text(
                             'Vous avez déjà un compte ?\nConnectez-vous.',
@@ -148,7 +152,7 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
       isLoading = true;
     });
 
-    String url = Conf.bddDomainUrl + Conf.bddPath + "/register";
+    String url = Conf.domainServer + Conf.apiPath + "/register";
 
     try {
       var response = await http.post(Uri.parse(url), body: {
@@ -163,8 +167,7 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
         UserConneted user = UserConneted.fromJson(data['user']);
         connexion(user);
 
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
+        routerDelegate.pushPageAndClear(name: '/');
       }
       Fluttertoast.showToast(msg: data['message']);
     } catch (e) {

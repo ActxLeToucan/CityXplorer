@@ -3,14 +3,23 @@ import 'dart:convert';
 import 'package:cityxplorer/models/user.dart';
 import 'package:cityxplorer/pages/user_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../router/delegate.dart';
 
 //contenu de la page d accueil
 class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+  bool initialized = false;
+  User user = User.empty();
+
+  Home({Key? key, required this.initialized, required this.user})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final routerDelegate = Get.find<MyRouterDelegate>();
+
     return Column(
       children: [
         Container(
@@ -21,47 +30,49 @@ class Home extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 30),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 140.0,
-              height: 60.0,
-              child: TextButton(
-                  child: const Text("Profil"),
-                  style: TextButton.styleFrom(
-                    primary: Colors.black,
-                    backgroundColor: Colors.greenAccent,
-                  ),
-                  onPressed: () async {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    var userString = prefs.getString('user');
-                    User user = User.empty();
-                    if (userString != null) {
-                      user = User.fromJson(jsonDecode(userString));
-                    }
-                    if (!user.isEmpty()) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => UserProfile(user: user)));
-                    }
-                  }),
-            ),
-            const SizedBox(width: 30),
-            SizedBox(
-              width: 140.0,
-              height: 60.0,
-              child: TextButton(
-                child: const Text("Mes postes"),
-                style: TextButton.styleFrom(
-                  primary: Colors.black,
-                  backgroundColor: Colors.greenAccent,
-                ),
-                onPressed: () {},
-              ),
-            ),
-          ],
-        ),
+        initialized
+            ? !user.isEmpty()
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 140.0,
+                        height: 60.0,
+                        child: TextButton(
+                            child: const Text("Profil"),
+                            style: TextButton.styleFrom(
+                              primary: Colors.black,
+                              backgroundColor: Colors.greenAccent,
+                            ),
+                            onPressed: () {
+                              if (!user.isEmpty()) {
+                                user.pushPage();
+                              }
+                            }),
+                      ),
+                      const SizedBox(width: 30),
+                      SizedBox(
+                        width: 140.0,
+                        height: 60.0,
+                        child: TextButton(
+                          child: const Text("Mes postes"),
+                          style: TextButton.styleFrom(
+                            primary: Colors.black,
+                            backgroundColor: Colors.greenAccent,
+                          ),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
+                  )
+                : const SizedBox(
+                    width: 350,
+                    child: Text(
+                      "Connectez-vous ou créez un compte pour profiter pleinement de l'application !",
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+            : const CircularProgressIndicator(),
         const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.all(10.0),

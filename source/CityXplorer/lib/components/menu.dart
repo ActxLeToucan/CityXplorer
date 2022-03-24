@@ -1,18 +1,40 @@
-import 'dart:convert';
-
 import 'package:cityxplorer/main.dart';
-import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../main.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../conf.dart';
 import '../models/user.dart';
-import '../pages/user_profile.dart';
+import '../router/delegate.dart';
 import '../styles.dart';
 
-class Menu extends StatelessWidget {
+class Menu extends StatefulWidget {
   const Menu({Key? key}) : super(key: key);
+
+  @override
+  State<Menu> createState() => _MenuState();
+}
+
+class _MenuState extends State<Menu> {
+  final routerDelegate = Get.find<MyRouterDelegate>();
+
+  bool _initialized = false;
+  User _user = User.empty();
+
+  @override
+  void initState() {
+    super.initState();
+    getUser().then((user) {
+      setState(() {
+        _user = user;
+        _initialized = true;
+      });
+    }).onError((error, stackTrace) {
+      setState(() {
+        _initialized = true;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,71 +42,59 @@ class Menu extends StatelessWidget {
         child: ListView(padding: EdgeInsets.zero, children: [
       UserAccountsDrawerHeader(
           decoration: const BoxDecoration(color: Styles.mainColor),
-          accountName: FutureBuilder<User>(
-            future: getUser(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(snapshot.requireData.name);
-              } else {
-                return const Text("chargement...");
-              }
-            },
-          ),
-          accountEmail: FutureBuilder<UserConneted>(
-            future: getUser(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text('@${snapshot.requireData.pseudo}');
-              } else {
-                return const Text("chargement...");
-              }
-            },
-          ),
+          accountName: Text(!_initialized
+              ? "chargement..."
+              : _user.name == ""
+                  ? "Utilisateur non connecté"
+                  : _user.name),
+          accountEmail: Text(!_initialized
+              ? "chargement..."
+              : _user.pseudo == ""
+                  ? ""
+                  : "@${_user.pseudo}"),
           currentAccountPicture: _avatar(context)),
       ListTile(
-        leading: const Icon(Icons.logout),
-        title: const Text("Se déconnecter"),
+        leading: Icon(_user.isEmpty() ? Icons.login : Icons.logout),
+        title: Text(_user.isEmpty() ? "Se connecter" : "Se déconnecter"),
         onTap: () async {
-          deconnexion();
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              'login', (Route<dynamic> route) => false);
+          if (!_user.isEmpty()) {
+            deconnexion();
+          }
+          routerDelegate.pushPageAndClear(name: '/login');
         },
       ),
     ]));
   }
 
   Widget _avatar(BuildContext context) {
+    String avatarUrl = _getAvatarUrl();
     return GestureDetector(
-        child: FutureBuilder<String>(
-            future: _getAvatarUrl(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData && snapshot.data != "") {
-                return CircleAvatar(
-                  backgroundImage: const AssetImage('assets/avatar.png'),
-                  foregroundImage: NetworkImage(snapshot.requireData),
-                );
-              } else {
-                return const CircleAvatar(
-                  backgroundImage: AssetImage('assets/avatar.png'),
-                );
-              }
-            }),
-        onTap: () async {
-          UserConneted user = await getUser();
-          if (!user.isEmpty()) {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => UserProfile(user: user)));
+        child: avatarUrl != ""
+            ? CircleAvatar(
+                backgroundImage: const AssetImage('assets/avatar.png'),
+                foregroundImage: NetworkImage(avatarUrl),
+              )
+            : (_initialized
+                ? const CircleAvatar(
+                    backgroundImage: AssetImage('assets/avatar.png'),
+                  )
+                : const CircleAvatar(
+                    child: CircularProgressIndicator(),
+                    backgroundColor: Colors.white,
+                  )),
+        onTap: () {
+          if (!_user.isEmpty()) {
+            _user.pushPage();
           }
         });
   }
 
-  Future<String> _getAvatarUrl() async {
-    UserConneted user = await getUser();
-    String photo = user.avatar;
+  String _getAvatarUrl() {
+    String photo = _user.avatar;
     if (photo == "") {
       return "";
     } else {
-      return "${Conf.bddDomainUrl}/img/avatar/$photo";
+      return "${Conf.domainServer}/img/avatar/$photo";
     }
   }
 }

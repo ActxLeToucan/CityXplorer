@@ -6,11 +6,13 @@ import 'package:cityxplorer/components/text_input_field.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../models/user_connected.dart';
+import '../router/delegate.dart';
 import '../styles.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,6 +23,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final routerDelegate = Get.find<MyRouterDelegate>();
+
   TextEditingController pseudo = TextEditingController();
   TextEditingController password = TextEditingController();
   bool isLoading = false;
@@ -88,8 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
                 GestureDetector(
-                  onTap: () =>
-                      Navigator.of(context).pushReplacementNamed('newAccount'),
+                  onTap: () => routerDelegate.pushPageAndClear(name: '/signup'),
                   child: Container(
                     child: const Text('Créer un compte',
                         style: Styles.textStyleInput,
@@ -127,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
       isLoading = true;
     });
 
-    String url = Conf.bddDomainUrl + Conf.bddPath + "/login";
+    String url = Conf.domainServer + Conf.apiPath + "/login";
 
     try {
       var response = await http.post(Uri.parse(url), body: {
@@ -141,8 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
         UserConneted user = UserConneted.fromJson(data['user']);
         connexion(user);
 
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil('main', (Route<dynamic> route) => false);
+        routerDelegate.pushPageAndClear(name: '/');
       }
       Fluttertoast.showToast(msg: data['message']);
     } catch (e) {

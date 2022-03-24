@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../router/delegate.dart';
 
 defaultAppBar(BuildContext context) {
+  final routerDelegate = Get.find<MyRouterDelegate>();
   return AppBar(
     title: const Text("CityXplorer"),
     centerTitle: true,
     actions: [
       // Navigate to the Search Screen
       IconButton(
-          onPressed: () => Navigator.pushNamed(context, "searchPage"),
+          onPressed: () => routerDelegate.pushPage(name: '/search'),
           icon: const Icon(Icons.search))
     ],
   );

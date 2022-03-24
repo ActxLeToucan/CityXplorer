@@ -7,57 +7,74 @@ import '../components/numbers_widget.dart';
 import '../components/profile_widget.dart';
 import '../models/post.dart';
 import '../models/user.dart';
-import '../styles.dart';
-import 'edit_profile.dart';
 
 class UserProfile extends StatefulWidget {
-  final User user;
+  final Map<String, dynamic> arguments;
 
-  const UserProfile({Key? key, required this.user}) : super(key: key);
+  const UserProfile({Key? key, required this.arguments}) : super(key: key);
 
   @override
-  State<UserProfile> createState() => _UserProfileState(user);
+  State<UserProfile> createState() => _UserProfileState();
 }
 
 class _UserProfileState extends State<UserProfile> {
-  User user;
   bool loading = false;
   Widget postsLoaded = Container();
   Widget userInfos = Container();
 
-  _UserProfileState(this.user);
+  User _user = User.empty();
+  bool _initialized = false;
 
   @override
   void initState() {
+    User.fromPseudo(widget.arguments['pseudo'].toString()).then((user) {
+      setState(() {
+        _user = user;
+        _initialized = true;
+      });
+      _load();
+    });
     super.initState();
-    _load();
   }
 
   @override
   Widget build(BuildContext context) {
-    _updateUser();
-    return Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: transparentAppBar(context),
-        body: RefreshIndicator(
-          onRefresh: _load,
-          child: ListView(
-              physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics()),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 15, 0, 35),
-                  child: _userInfos(),
-                ),
-                postsLoaded,
-              ]),
-        ));
+    if (_initialized) {
+      if (_user.isEmpty()) {
+        return Scaffold(
+            extendBodyBehindAppBar: true,
+            appBar: transparentAppBar(context),
+            body: const Center(child: Text("Utilisateur invalide.")));
+      } else {
+        _updateUser();
+        return Scaffold(
+            extendBodyBehindAppBar: true,
+            appBar: transparentAppBar(context),
+            body: RefreshIndicator(
+              onRefresh: _load,
+              child: ListView(
+                  physics: const BouncingScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics()),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 15, 0, 35),
+                      child: _userInfos(),
+                    ),
+                    postsLoaded,
+                  ]),
+            ));
+      }
+    } else {
+      return Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: transparentAppBar(context),
+          body: const Center(child: CircularProgressIndicator()));
+    }
   }
 
   Future<void> _load() async {
     setState(() => loading = true);
     Widget posts = await _renderPosts(context);
-    //await Future.delayed(const Duration(seconds: 2), () {});
     setState(() {
       postsLoaded = posts;
       loading = false;
@@ -68,25 +85,24 @@ class _UserProfileState extends State<UserProfile> {
     return Column(
       children: [
         ProfileWidget(
-            user: user,
+            user: _user,
             onClicked: () async {
               UserConneted userConneted = UserConneted.empty();
-              if (user is UserConneted) {
-                userConneted = (user as UserConneted);
-              } else if (await isCurrentUser(user.pseudo)) {
+              if (_user is UserConneted) {
+                userConneted = (_user as UserConneted);
+              } else if (await isCurrentUser(_user.pseudo)) {
                 userConneted = await getUser();
               }
               if (!userConneted.isEmpty()) {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => EditProfilePage(user: userConneted)));
+                userConneted.pushEditPage();
               }
             }),
         const SizedBox(height: 24),
-        buildName(user),
+        buildName(_user),
         const SizedBox(height: 24),
-        NumbersWidget(user: user),
+        NumbersWidget(user: _user),
         const SizedBox(height: 48),
-        buildAbout(user),
+        buildAbout(_user),
       ],
     );
   }
@@ -100,7 +116,7 @@ class _UserProfileState extends State<UserProfile> {
           const SizedBox(height: 4),
           Text(
             "@${user.pseudo}",
-            style: TextStyle(color: Colors.grey),
+            style: const TextStyle(color: Colors.grey),
           )
         ],
       );
@@ -133,8 +149,8 @@ class _UserProfileState extends State<UserProfile> {
       );
 
   Future<Widget> _renderPosts(BuildContext context) async {
-    List<Post> posts = await user.getPosts();
-    bool isCurrent = await isCurrentUser(user.pseudo);
+    List<Post> posts = await _user.getPosts();
+    bool isCurrent = await isCurrentUser(_user.pseudo);
     if (posts.isEmpty) {
       return const Center(
         child: Text("Aucun post n'a été publié par cet utilisateur."),
@@ -142,7 +158,7 @@ class _UserProfileState extends State<UserProfile> {
     } else {
       List<Widget> list = [];
       for (Post post in posts) {
-        if (post.isValid() || user.niveauAcces >= 2 || isCurrent) {
+        if (post.isValid() || _user.niveauAcces >= 2 || isCurrent) {
           list.add(post.toWidget(context));
         }
       }
@@ -150,13 +166,14 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
+  // mise a jour de l'utilisateur stocké dans les SharedPreferences
   void _updateUser() async {
-    if ((!user.isEmpty() && user is UserConneted) ||
-        await isCurrentUser(user.pseudo)) {
+    if ((!_user.isEmpty() && _user is UserConneted) ||
+        await isCurrentUser(_user.pseudo)) {
       UserConneted userConneted = await getUser();
-      User newUser = await User.fromPseudo(user.pseudo);
+      User newUser = await User.fromPseudo(_user.pseudo);
       UserConneted userUpdated = userConneted.updateWith(newUser);
-      user = userUpdated;
+      _user = userUpdated;
       connexion(userUpdated);
     }
   }

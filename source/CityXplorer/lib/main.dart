@@ -1,14 +1,17 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
+
 import 'package:cityxplorer/models/user_connected.dart';
-import 'package:cityxplorer/pages/create_account.dart';
-import 'package:cityxplorer/pages/login_screen.dart';
-import 'package:cityxplorer/pages/main_interface.dart';
-import 'package:cityxplorer/pages/search_page.dart';
+import 'package:cityxplorer/router/delegate.dart';
+import 'package:cityxplorer/router/information_parser.dart';
 import 'package:cityxplorer/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_links/uni_links.dart';
 
 import 'my_http_overrides.dart';
 
@@ -19,27 +22,72 @@ Future<void> main() async {
 
   HttpOverrides.global = MyHttpOverrides();
 
-  UserConneted user = await getUser();
-  runApp(MaterialApp(
-    title: 'CityXplorer',
-    theme: ThemeData(
-        colorScheme: const ColorScheme.light(primary: Styles.mainColor)),
-    home: (user.isEmpty() ? const LoginScreen() : const MainInterface()),
-    routes: {
-      'main': (context) => const MainInterface(),
-      'searchPage': (context) => const SearchPage(),
-      'login': (context) => const LoginScreen(),
-      'newAccount': (context) => const CreateNewAccount(),
-    },
-  ));
+  runApp(const App());
 }
 
-connexion(UserConneted user) async {
+class App extends StatefulWidget {
+  const App({Key? key}) : super(key: key);
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  final routerDelegate = Get.put(MyRouterDelegate());
+
+  StreamSubscription? _linkSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    routerDelegate.pushPage(name: '/');
+
+    if (!kIsWeb) initialize();
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> initialize() async {
+    try {
+      // Get the link that launched the app
+      final initialUri = await getInitialUri();
+
+      if (initialUri != null) {
+        routerDelegate.parseRoute(initialUri);
+      }
+    } on FormatException catch (error) {
+      error.printError();
+    }
+
+    // Attach a listener to the uri_links stream
+    _linkSubscription = uriLinkStream.listen((uri) {
+      if (!mounted) return;
+      routerDelegate.parseRoute(uri!);
+    }, onError: (error) => error.printError());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: 'CityXplorer',
+      theme: ThemeData(
+          colorScheme: const ColorScheme.light(primary: Styles.mainColor)),
+      routerDelegate: routerDelegate,
+      routeInformationParser: const MyRouteInformationParser(),
+    );
+  }
+}
+
+Future<void> connexion(UserConneted user) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString("user", jsonEncode(user));
 }
 
-deconnexion() async {
+Future<void> deconnexion() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.remove("user");
 }

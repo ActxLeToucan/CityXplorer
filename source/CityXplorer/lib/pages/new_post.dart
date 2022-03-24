@@ -7,31 +7,28 @@ import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 import '../conf.dart';
 import '../main.dart';
+import '../router/delegate.dart';
 import '../styles.dart';
 
 /// formulaire de creation d'un post avec gestion de la requete envoyee et de son resultat
 class NewPostScreen extends StatefulWidget {
-  final String imagePath;
-  final double latitude;
-  final double longitude;
+  final Map<String, String> arguments;
 
-  const NewPostScreen(
-      {Key? key,
-      required this.imagePath,
-      required this.latitude,
-      required this.longitude})
-      : super(key: key);
+  const NewPostScreen({Key? key, required this.arguments}) : super(key: key);
 
   @override
   State<NewPostScreen> createState() => _NewPostScreenState();
 }
 
 class _NewPostScreenState extends State<NewPostScreen> {
+  final routerDelegate = Get.find<MyRouterDelegate>();
+
   final _formKey = GlobalKey<FormState>();
   final controllerTitre = TextEditingController();
   final controllerDescription = TextEditingController();
@@ -39,148 +36,174 @@ class _NewPostScreenState extends State<NewPostScreen> {
   bool isLoading = false;
   List photos = [];
 
+  String imagePath = "";
+  double latitude = 0;
+  double longitude = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    imagePath = widget.arguments['imagePath'] ?? "";
+    latitude = double.parse(widget.arguments['latitude'] ?? "0.0");
+    longitude = double.parse(widget.arguments['longitude'] ?? "0.0");
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text(
-          'Créer un post',
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                  controller: controllerTitre,
-                  textInputAction: TextInputAction.next,
-                  autofocus: true,
-                  decoration: const InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Styles.mainColor, width: 2.5),
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Styles.mainColor, width: 1.5),
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    ),
-                    border: OutlineInputBorder(),
-                    helperText: "Obligatoire",
-                    hintText: 'Ajouter un titre',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Remplissez ce champ pour continuer ';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(height: 15),
-              Container(
-                constraints: const BoxConstraints.expand(height: 250),
-                child: kIsWeb
-                    ? Image.network(widget.imagePath)
-                    : Image.file(File(widget.imagePath)),
-              ),
-              const SizedBox(height: 5),
-              Text("Prise le : " + getCurrentDate(),
-                  style: const TextStyle(fontSize: 16)),
-              const SizedBox(height: 5),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  minLines: 2,
-                  maxLines: 5,
-                  keyboardType: TextInputType.multiline,
-                  controller: controllerDescription,
-                  decoration: const InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Styles.mainColor, width: 2.5),
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Styles.mainColor, width: 1.5),
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    ),
-                    helperText: "Optionnel",
-                    border: OutlineInputBorder(),
-                    hintText: 'Ajouter une description',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 60.0,
-                  child: IgnorePointer(
-                    /// rend le bouton non cliquable si il est en train d envoyer la requete
-                    ignoring: isLoading ? true : false,
-                    child: ElevatedButton(
-                      style: TextButton.styleFrom(
-                        primary: Colors.black,
-                      ),
-                      onPressed: () async {
-                        // Validate returns true if the form is valid, or false otherwise.
-                        if (_formKey.currentState!.validate()) {
-                          try {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            await postLePost();
-                          } catch (e) {
-                            setState(() {
-                              isLoading = false;
-                            });
-                            Fluttertoast.showToast(msg: '$e');
-                          }
-                        }
-                      },
-                      child: (isLoading)
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 1.5,
-                                color: Colors.white,
-                              ))
-                          : const Text('Valider',
-                              style: TextStyle(fontSize: 20)),
-                    ),
-                  ),
-                ),
-              ),
-              /**
-              carouselBuild(),
-              ElevatedButton(
-                onPressed: () {},
-                child: Text('NOUVELLE PHOTO', style: TextStyle(fontSize: 20)),
-
-              ),**/
-            ],
+    if (imagePath != "") {
+      return Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => routerDelegate.popRoute(),
+          ),
+          title: const Text(
+            'Créer un post',
           ),
         ),
-      ),
-    );
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                    controller: controllerTitre,
+                    textInputAction: TextInputAction.next,
+                    autofocus: true,
+                    decoration: const InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Styles.mainColor, width: 2.5),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Styles.mainColor, width: 1.5),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      border: OutlineInputBorder(),
+                      helperText: "Obligatoire",
+                      hintText: 'Ajouter un titre',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Remplissez ce champ pour continuer ';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(height: 15),
+                Container(
+                  constraints: const BoxConstraints.expand(height: 250),
+                  child: kIsWeb
+                      ? Image.network(imagePath)
+                      : Image.file(File(imagePath)),
+                ),
+                const SizedBox(height: 5),
+                Text("Prise le : " + getCurrentDate(),
+                    style: const TextStyle(fontSize: 16)),
+                const SizedBox(height: 5),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    minLines: 2,
+                    maxLines: 5,
+                    keyboardType: TextInputType.multiline,
+                    controller: controllerDescription,
+                    decoration: const InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Styles.mainColor, width: 2.5),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Styles.mainColor, width: 1.5),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      helperText: "Optionnel",
+                      border: OutlineInputBorder(),
+                      hintText: 'Ajouter une description',
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 60.0,
+                    child: IgnorePointer(
+                      /// rend le bouton non cliquable si il est en train d envoyer la requete
+                      ignoring: isLoading ? true : false,
+                      child: ElevatedButton(
+                        style: TextButton.styleFrom(
+                          primary: Colors.black,
+                        ),
+                        onPressed: () async {
+                          // Validate returns true if the form is valid, or false otherwise.
+                          if (_formKey.currentState!.validate()) {
+                            try {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              await postLePost();
+                            } catch (e) {
+                              setState(() {
+                                isLoading = false;
+                              });
+                              Fluttertoast.showToast(msg: '$e');
+                            }
+                          }
+                        },
+                        child: (isLoading)
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 1.5,
+                                  color: Colors.white,
+                                ))
+                            : const Text('Valider',
+                                style: TextStyle(fontSize: 20)),
+                      ),
+                    ),
+                  ),
+                ),
+                /**
+                    carouselBuild(),
+                    ElevatedButton(
+                    onPressed: () {},
+                    child: Text('NOUVELLE PHOTO', style: TextStyle(fontSize: 20)),
+
+                    ),**/
+              ],
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => routerDelegate.popRoute(),
+            ),
+            title: const Text(
+              'Créer un post',
+            ),
+          ),
+          body: const Center(child: Text("Photo invalide.")));
+    }
   }
 
   /// renvoie la date du jour au format JJ/MM/AAAA -- affichage utilisateur
@@ -205,14 +228,16 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   /// methode appelee lors de la creation du post dans la BDD
   Future postLePost() async {
-    String url = Conf.bddDomainUrl + Conf.bddPath + "/post";
+    String url = Conf.domainServer + Conf.apiPath + "/post";
 
     var request = http.MultipartRequest("POST", Uri.parse(url));
     try {
       request.fields['titre'] = controllerTitre.text;
       request.fields['description'] = controllerDescription.text;
-      request.fields['latitude'] = widget.latitude.toString();
-      request.fields['longitude'] = widget.longitude.toString();
+
+      request.fields['latitude'] = latitude.toString();
+      request.fields['longitude'] = longitude.toString();
+
       request.fields['date'] = getCurrentDateBDD();
 
       UserConneted user = await getUser();
@@ -226,8 +251,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
       request.fields['adresse-longue'] = adresses[0] ?? "";
       request.fields['adresse-courte'] = adresses[1] ?? "";
 
-      request.files.add(await http.MultipartFile.fromPath(
-          "photo", widget.imagePath,
+      ///ajout de la photo a la requete
+      request.files.add(await http.MultipartFile.fromPath("photo", imagePath,
           contentType: MediaType("image", "jpeg")));
 
       var response = await http.Response.fromStream(await request.send());
@@ -239,12 +264,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
       /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
       /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul
       if (code == 1) {
-        Navigator.of(context).pop();
+        routerDelegate.popRoute();
       }
-
-      setState(() {
-        isLoading = false;
-      });
 
       showDialog(
           context: context,
@@ -266,7 +287,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   Future<List> getAdresse() async {
     String url =
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${widget.latitude},${widget.longitude}&key=${Conf.googleApiKey}&result_type=street_address|locality';
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=${Conf.googleApiKey}&result_type=street_address|locality';
 
     List<String> adresses = [];
 
@@ -296,7 +317,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   /// inutilisee pour le moment
   Widget carouselBuild() {
-    photos.add(widget.imagePath);
+    photos.add(imagePath);
     return CarouselSlider(
       items: photos.map((i) {
         return Builder(

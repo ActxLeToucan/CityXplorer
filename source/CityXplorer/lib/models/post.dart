@@ -1,13 +1,20 @@
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cityxplorer/components/icon_menu_post_profil.dart';
 import 'package:cityxplorer/components/share_bar_icon.dart';
 import 'package:cityxplorer/models/user.dart';
 import 'package:flutter/material.dart';
+
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html_unescape/html_unescape.dart';
+import 'package:http/http.dart' as http;
 
-import '../components/appbar.dart';
 import '../conf.dart';
+import '../router/delegate.dart';
 import '../main.dart';
 import '../pages/map-screen.dart';
 import '../styles.dart';
@@ -60,16 +67,52 @@ class Post {
         adresseLongue: unescape.convert(json['adresse_longue']));
   }
 
+  factory Post.empty() {
+    return Post(
+        id: -1,
+        titre: "",
+        latitude: .0,
+        longitude: .0,
+        description: "",
+        date: DateTime.now(),
+        etat: "empty",
+        photos: [],
+        userPseudo: "",
+        adresseCourte: "",
+        adresseLongue: "");
+  }
+
+  static Future<Post> fromId(String id) async {
+    Post post = Post.empty();
+
+    String url = Conf.domainServer + Conf.apiPath + "/post?id=$id";
+    try {
+      var response = await http.get(Uri.parse(url));
+      final Map<String, dynamic> data = json.decode(response.body);
+      var res = data['result'];
+
+      if (res == 1) {
+        post = Post.fromJson(data['post']);
+      }
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
+
+    return post;
+  }
+
+  bool isEmpty() {
+    return (etat == "empty");
+  }
+
   bool isValid() {
     return etat.compareTo("valide") == 0;
   }
 
   Widget toWidget(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => toPage(context)));
-      },
+      onTap: () => pushPage(),
       child: Container(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -147,7 +190,7 @@ class Post {
                 child: (photos.isEmpty
                     ? Image.asset("assets/default.jpg", fit: BoxFit.cover)
                     : Image.network(
-                        "${Conf.bddDomainUrl}/img/posts/${photos[0]}",
+                        "${Conf.domainServer}/img/posts/${photos[0]}",
                         fit: BoxFit.cover,
                       )),
               ),
@@ -191,30 +234,12 @@ class Post {
     );
   }
 
-  Scaffold toPage(BuildContext context) {
-    return Scaffold(
-      appBar: defaultAppBar(context),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics()),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-                child: _elementsBeforeImageOnPage(),
-                padding: const EdgeInsets.fromLTRB(12, 12, 12, 0)),
-            _renderImageOnPage(),
-            Padding(
-              child: _elementsAfterImageOnPage(context),
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-            )
-          ],
-        ),
-      ),
-    );
+  void pushPage() {
+    final routerDelegate = Get.find<MyRouterDelegate>();
+    routerDelegate.pushPage(name: '/post', arguments: {'id': id.toString()});
   }
 
-  Widget _elementsBeforeImageOnPage() {
+  Widget elementsBeforeImageOnPage() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -249,14 +274,14 @@ class Post {
     );
   }
 
-  Widget _renderImageOnPage() {
+  Widget renderImageOnPage() {
     return CarouselSlider(
       items: photos.map((i) {
         return Builder(
           builder: (BuildContext context) {
             return SizedBox(
                 width: MediaQuery.of(context).size.width,
-                child: Image.network("${Conf.bddDomainUrl}/img/posts/$i"));
+                child: Image.network("${Conf.domainServer}/img/posts/$i"));
           },
         );
       }).toList(),
@@ -274,7 +299,7 @@ class Post {
     );
   }
 
-  Widget _elementsAfterImageOnPage(context) {
+  Widget elementsAfterImageOnPage(context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,14 +324,13 @@ class Post {
   Future<void> navigateToCreatorPage(BuildContext context) async {
     User user = await User.fromPseudo(userPseudo);
     if (!user.isEmpty()) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => user.profile()));
+      user.pushPage();
     }
   }
 
-  void navigateToMap(BuildContext context) {
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => GeolocationMap(post: this)));
+  void pushMap() {
+    final routerDelegate = Get.find<MyRouterDelegate>();
+    routerDelegate.pushPage(name: '/map', arguments: {'id': id.toString()});
   }
 
   /// construit l'icone de verification d'un post en fonction de son etat et des droits de l'utilisateur

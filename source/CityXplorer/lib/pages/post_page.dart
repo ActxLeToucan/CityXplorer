@@ -1,0 +1,77 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../components/appbar.dart';
+import '../models/post.dart';
+import '../router/delegate.dart';
+
+class PostPage extends StatefulWidget {
+  final Map<String, dynamic> arguments;
+
+  const PostPage({Key? key, required this.arguments}) : super(key: key);
+
+  @override
+  State<PostPage> createState() => _PostPageState();
+}
+
+class _PostPageState extends State<PostPage> {
+  final routerDelegate = Get.find<MyRouterDelegate>();
+
+  Post _post = Post.empty();
+  bool _loaded = false;
+
+  @override
+  void initState() {
+    Post.fromId(widget.arguments['id'].toString()).then((post) {
+      setState(() {
+        _post = post;
+        _loaded = true;
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loaded) {
+      if (_post.isEmpty()) {
+        return Scaffold(
+            appBar: defaultAppBar(context),
+            body: const Center(child: Text("Post invalide.")));
+      } else {
+        return Scaffold(
+          appBar: defaultAppBar(context),
+          body: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                    child: _post.elementsBeforeImageOnPage(),
+                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 0)),
+                _post.renderImageOnPage(),
+                Padding(
+                  child: _post.elementsAfterImageOnPage(context),
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                )
+              ],
+            ),
+          ),
+        );
+      }
+    } else {
+      return Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              'Chargement...',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          body: const Center(child: CircularProgressIndicator()));
+    }
+  }
+}
