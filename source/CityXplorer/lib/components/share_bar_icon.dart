@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:share_plus/share_plus.dart';
 
+import '../conf.dart';
 import '../models/post.dart';
 
 class ShareBar extends StatefulWidget {
@@ -23,7 +25,8 @@ class _ShareBarState extends State<ShareBar> {
           icon: const Icon(Icons.share),
           iconSize: 28,
           color: Colors.black,
-          onPressed: () {},
+          onPressed: () =>
+              Share.share("${Conf.domainServer}/post?id=${widget.post.id}"),
         ),
         IconButton(
           icon: const Icon(Icons.map),
@@ -38,9 +41,9 @@ class _ShareBarState extends State<ShareBar> {
           onPressed: () {
             setState(() {
               _isFavorited = !_isFavorited;
-              if(_isFavorited){
+              if (_isFavorited) {
                 Fluttertoast.showToast(msg: "Ajouté aux favoris");
-              }else{
+              } else {
                 Fluttertoast.showToast(msg: "Retiré des favoris");
               }
             });
