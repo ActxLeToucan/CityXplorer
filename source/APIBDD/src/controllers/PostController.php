@@ -7,12 +7,12 @@ use cityXplorer\models\User;
 use cityXplorer\models\Partage;
 use cityXplorer\models\Photo;
 use cityXplorer\models\Post;
-use Conf;
+use cityXplorer\Conf;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Illuminate\Support\Facades\Date;
 
-class PostController{
+class PostController {
     /**
      * @var object container
      */
@@ -34,16 +34,16 @@ class PostController{
      * @param int $idUser Id de l'utilisateur à associer au post
      * @param int $idPost Id du post associé à l'utilisateur
      */
-    public function addToPartageById(Request $rq,Response $rs,array $args,int $idUser,int $idPost){
+    public function addToPartageById(Request $rq, Response $rs, array $args, int $idUser, int $idPost) {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor();
         $url = $base . $route_uri;
         $content = $rq->getParsedBody();
 
-        $PartageToAdd=new Partage();
-        $PartageToAdd->idUtilisateur=$idUser;
-        $PartageToAdd->idPost=$idPost;
+        $PartageToAdd = new Partage();
+        $PartageToAdd->idUtilisateur = $idUser;
+        $PartageToAdd->idPost = $idPost;
         $PartageToAdd->save();
     }
 
@@ -54,7 +54,7 @@ class PostController{
      * @param array $args
      * @return array L'état du post, ajouté ou non
      */
-    public function addPost(Request $rq, Response $rs, array $args): array{
+    public function addPost(Request $rq, Response $rs, array $args): array {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('createPost');
@@ -75,7 +75,6 @@ class PostController{
             "message" => "Erreur lors de l'insertion",
             "post" => null
         ];
-
         if (isset($content['token'])) {
             $user = User::where("token", "=", $content['token'])->first();
             $tab = [
@@ -83,25 +82,25 @@ class PostController{
                 "message" => "Erreur : token invalide",
                 "post" => null
             ];
-            if(!is_null($user)){
+            if (!is_null($user)) {
                 // upload image
                 $cheminServeur = $_FILES['photo']['tmp_name'];
                 $extension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
-                $fileName = time().bin2hex(openssl_random_pseudo_bytes(20)).'.'.$extension;
+                $fileName = time() . bin2hex(openssl_random_pseudo_bytes(20)) . '.' . $extension;
                 $uploadFile = Conf::PATH_IMAGE_POSTS . "/$fileName";
                 move_uploaded_file($cheminServeur, $uploadFile);
 
                 // creation post
                 $newPost = new Post();
-                $newPost->latitude=$latitude;
-                $newPost->longitude=$longitude;
-                $newPost->description=$descr;
-                $newPost->titre=$titre;
-                $newPost->datePost=$datePost;
-                $newPost->etat='Invalide';
-                $newPost->idUser=$user->id;
-                $newPost->adresse_courte=$adresse_courte;
-                $newPost->adresse_longue=$adresse_longue;
+                $newPost->latitude = $latitude;
+                $newPost->longitude = $longitude;
+                $newPost->description = $descr;
+                $newPost->titre = $titre;
+                $newPost->datePost = $datePost;
+                $newPost->etat = 'Invalide';
+                $newPost->idUser = $user->id;
+                $newPost->adresse_courte = $adresse_courte;
+                $newPost->adresse_longue = $adresse_longue;
                 $newPost->save();
 
                 // creation photo
@@ -129,7 +128,7 @@ class PostController{
      * @param array $args
      * @return array Contenant les valeurs d'un post et son créateur
      */
-    public function getPostById(Request $rq, Response $rs, array $args): array{
+    public function getPostById(Request $rq, Response $rs, array $args): array {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('postId');
@@ -137,7 +136,7 @@ class PostController{
 
         $id = $_GET['id'];
 
-        $postExist = Post::where("idPost","=",$id)->count();
+        $postExist = Post::where("idPost", "=", $id)->count();
         if ($postExist == 1) {
             $post = Post::where("idPost","=",$id)->first();
             return [
@@ -159,7 +158,7 @@ class PostController{
      * @param array $args
      * @return array Contenant tous les posts de l'utilisateur
      */
-    public function getUserPosts(Request $rq, Response $rs, array $args): array{
+    public function getUserPosts(Request $rq, Response $rs, array $args): array {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('postsUser');
@@ -170,7 +169,7 @@ class PostController{
         $userNameExist = User::where("pseudo", "=", $pseudo)->count();
 
         if ($userNameExist == 1) {
-            $user = User::where("pseudo","=",$pseudo)->first();
+            $user = User::where("pseudo", "=", $pseudo)->first();
             $tabPosts = [];
             foreach ($user->posts as $post) {
                 $tabPosts[] = $post->toArray();
@@ -181,33 +180,38 @@ class PostController{
 
         return [];
     }
+
     public function delete(Request $rq, Response $rs, array $args): array {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('likeUser');
+        $route_uri = $container->router->pathFor('delete');
         $url = $base . $route_uri;
+        $token = $_GET["token"];
+        $idPost = $_GET["id"];
+        $userExist = User::where("token", "=", $token)->count();
+        $post = Post::where("idPost", "=", $idPost)->first();
 
-        $token = $rq->getQueryParams('token');
-        $idPost = $rq->getQueryParams('id');
-        $user = User::where("token", "=", $token)->first();
-        $post = Post::where("id", "=", $idPost)->first();
-
-        if (!isset($rq->getQueryParams()['token']) || is_null($post) || !isset($rq->getQueryParams()['id']) || is_null($user)) {
-
+        if (!isset($rq->getQueryParams()['token']) || is_null($post) || !isset($rq->getQueryParams()['id']) || $userExist != 1) {
             return [
                 "result" => 0,
                 "message" => "Erreur : id ou token invalide",
+                "1" => $rq->getQueryParams()['token'],
+                "2" => is_null($post),
+                "3" => !isset($rq->getQueryParams()['id'])
             ];
         } else {
-            $photos = Photo::where("idPost","=",$idPost)->get();
+            $photos = Photo::where("idPost", "=", $idPost)->get();
             foreach ($photos as $image) {
-                is_null($image) || $image == "" ? : unlink(Conf::PATH_IMAGE_POSTS . "/$image");
+                is_null($image) || $image == "" ?: unlink(Conf::PATH_IMAGE_POSTS . "/$image");
             }
             $post->delete();
-            return [ "result" => 1,
-                "message" => "Post Supprimé",];
+            return [
+                "result" => 1,
+                "message" => "Post Supprimé"
+            ];
         }
     }
+
 
     public function like(Request $rq, Response $rs, array $args): array {
         $container = $this->c;
@@ -215,24 +219,63 @@ class PostController{
         $route_uri = $container->router->pathFor('likeUser');
         $url = $base . $route_uri;
 
-        $token = $rq->getQueryParams('token');
-        $idPost = $rq->getQueryParams('id');
-        $user = User::where("token", "=", $token)->first();
-        $post = Post::where("id", "=", $idPost)->first();
+        $token = $_GET["token"];
+        $idPost = $_GET["id"];
+        $userExist = User::where("token", "=", $token)->first();
+        $post = Post::where("idPost", "=", $idPost)->first();
 
-        if (!isset($rq->getQueryParams()['token']) || is_null($post) || !isset($rq->getQueryParams()['id']) || is_null($user)) {
+        if (!isset($rq->getQueryParams()['token']) || is_null($post) || !isset($rq->getQueryParams()['id']) || is_null($userExist)) {
             return [
                 "result" => 0,
                 "message" => "Erreur: Id ou token invalide",
+                "1" => $rq->getQueryParams()['token'],
+                "2" => $idPost,
+                "3" => is_null($post),
+                "4" => !isset($rq->getQueryParams()['id'])
             ];
-        }else{
-            $like =new Like();
-            $userId=$user->id;
-            $postId=$post->idPost;
-
+        } else {
+            $user = User::where('token', '=', $token);
+            $like = new Like();
+            $userId = $user->id;
+            $postId = $post->idPost;
+            $like->idUtilisateur = $userId;
+            $like->idPost = $postId;
+            $like->save();
             return [
                 "result" => 1,
-                "message" => "Post liké !",];
+                "message" => "Post liké !",
+            ];
+        }
+    }
+
+    public function dislike(Request $rq, Response $rs, array $args): array {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('dislike');
+        $url = $base . $route_uri;
+        $token = $_GET["token"];
+        $idPost = $_GET["id"];
+        $userExist = User::where("token", "=", $token)->count();
+        $post = Post::where("idPost", "=", $idPost)->first();
+
+        if (!isset($rq->getQueryParams()['token']) || is_null($post) || !isset($idPost) || $userExist != 1) {
+            return [
+                "result" => 0,
+                "message" => "Erreur : id ou token invalide",
+                "1" => $rq->getQueryParams()['token'],
+                "2" => is_null($post),
+                "3" => !isset($idPost)
+            ];
+        } else {
+            $user = User::where('token', '=', $token)->first();
+            $userId=$user->id;
+            $idPost=$post->idPost;
+            $like=Like::where(["idUtilisateur" => $userId, "idPost" => $idPost]);
+            $like->delete();
+            return [
+                "result" => 1,
+                "message" => "Dislike du post"
+            ];
         }
     }
 }

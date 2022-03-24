@@ -76,7 +76,7 @@ $app->delete('/post',
     function (Request $rq, Response $rs,array $args):Response{
         $controller=new PostController($this);
         return $rs->withJson($controller->delete($rq,$rs,$args),200);
-    });
+    })->setName("delete");
 // obtention de tous les posts d'un user
 $app->get('/postsUser',
     function (Request $rq, Response $rs, array $args): Response{
@@ -88,7 +88,13 @@ $app->post('/like',
     function (Request $rq, Response $rs, array $args): Response{
         $controller=new PostController($this);
         return $rs->withJson($controller->like($rq,$rs,$args),200);
-    });
+    })->setName("likeUser");;
+$app->delete('/like',
+    function (Request $rq, Response $rs, array $args): Response{
+        $controller=new PostController($this);
+        return $rs->withJson($controller->dislike($rq,$rs,$args),200);
+    })->setName("dislike");;
+
 
 //Test
 $app->get('/hello/{name}', function ($rq,$rs,$args) {

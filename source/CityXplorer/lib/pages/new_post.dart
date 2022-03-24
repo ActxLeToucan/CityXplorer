@@ -232,47 +232,32 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
     var request = http.MultipartRequest("POST", Uri.parse(url));
     try {
-      /// titre du post
       request.fields['titre'] = controllerTitre.text;
-
-      /// description du post (possiblement vide)
       request.fields['description'] = controllerDescription.text;
 
-      /// latitude du post
-      request.fields['latitude'] = latitude.toString();
-
-      /// longitude du post
-      request.fields['longitude'] = longitude.toString();
-
-      /// date courante au format adapte a la bdd
+      request.fields['latitude'] = widget.latitude.toString();
+      request.fields['longitude'] = widget.longitude.toString();
+      
       request.fields['date'] = getCurrentDateBDD();
 
       UserConneted user = await getUser();
       if (!user.isEmpty()) {
-        /// token d authentification de l utilsateur
         request.fields['token'] = user.token;
       } else {
         throw Exception('Erreur : session !');
       }
 
-      /// adresses au format court et long
       List adresses = await getAdresse();
-      if (adresses.isNotEmpty) {
-        request.fields['adresse-longue'] = adresses[0];
-        request.fields['adresse-courte'] = adresses[1];
-      } else {
-        request.fields['adresse-longue'] = "";
-        request.fields['adresse-courte'] = "";
-      }
+      request.fields['adresse-longue'] = adresses[0] ?? "";
+      request.fields['adresse-courte'] = adresses[1] ?? "";
 
       ///ajout de la photo a la requete
       request.files.add(await http.MultipartFile.fromPath("photo", imagePath,
           contentType: MediaType("image", "jpeg")));
 
-      /// on envoie la requete
-      request.send().then((response) async {
-        http.Response.fromStream(response).then((response) {
-          print(response.body);
+
+      var response = await http.Response.fromStream(await request.send());
+      // print(response.body);
           final Map<String, dynamic> data = json.decode(response.body);
           String res = data['message'];
           int code = data['result'];
@@ -282,11 +267,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
           if (code == 1) {
             routerDelegate.popRoute();
           }
-
-          /// termine le chargement du bouton
-          setState(() {
-            isLoading = false;
-          });
 
           showDialog(
               context: context,
@@ -305,11 +285,19 @@ class _NewPostScreenState extends State<NewPostScreen> {
           });
         });
       });
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AdvanceCustomAlert(
+              message: res,
+              code: code,
+            );
+          });
     } catch (e) {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
 
-      /// termine le chargement du bouton
       setState(() {
         isLoading = false;
       });
