@@ -306,9 +306,12 @@ class Post {
             child: ShareBar(post: this),
           ),
         ),
-        TextButton(
-          child: Text("@$userPseudo", style: Styles.textStyleLink),
-          onPressed: () => navigateToCreatorPage(context),
+        GestureDetector(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+            child: Text("@$userPseudo", style: Styles.textStyleLink),
+          ),
+          onTap: () => navigateToCreatorPage(context),
         ),
         Text(description)
       ],
