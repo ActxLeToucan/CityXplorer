@@ -54,7 +54,7 @@ class _AdvanceCustomAlertState extends State<AdvanceCustomAlert> {
                       height: 20,
                     ),
                     RaisedButton(
-                      onPressed: routerDelegate.popRoute,
+                      onPressed: () => Navigator.pop(context),
                       color: (noErr() ? Colors.lightGreen : Colors.redAccent),
                       child: Text(
                         (noErr() ? 'Super ! ' : 'Mince ...'),

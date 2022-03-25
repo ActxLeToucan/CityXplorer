@@ -264,9 +264,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
       /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
       /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul
       if (code == 1) {
-        routerDelegate.popRoute();
+        Navigator.pop(context);
       }
-
       showDialog(
           context: context,
           builder: (BuildContext context) {
