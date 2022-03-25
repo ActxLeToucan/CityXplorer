@@ -34,7 +34,7 @@
                 <data
                     android:host="cityxplorer.streamlor.io"
                     android:pathPrefix="/"
-                    android:scheme="http" />
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

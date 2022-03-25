@@ -52,7 +52,7 @@
             <string>cityxplorer.streamlor.io/</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string>http</string>
+                <string>https</string>
             </array>
         </dict>
      </array>
