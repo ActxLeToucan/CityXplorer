@@ -43,11 +43,12 @@ class _SearchPageState extends State<SearchPage> {
         itemCount: _list.length,
         itemBuilder: (context, index) {
           return Card(
-              child: GestureDetector(
+              child: MaterialButton(
+            padding: EdgeInsets.zero,
             child: ListTile(
                 title: Text(_list[index].name),
                 subtitle: Text("@${_list[index].pseudo}")),
-            onTap: () => _list[index].pushPage(),
+            onPressed: () => _list[index].pushPage(),
           ));
         });
   }

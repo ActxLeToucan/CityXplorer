@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:cityxplorer/components/background_image.dart';
 import 'package:cityxplorer/components/password_input.dart';
@@ -39,107 +38,98 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
         const BackgroundImage(image: AssetImage('assets/forest.jpg')),
         Scaffold(
           backgroundColor: Colors.transparent,
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: size.width * 0.1,
-                ),
-                Stack(
-                  children: [
-                    Center(
-                      child: ClipOval(
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                          child: CircleAvatar(
-                            radius: size.width * 0.14,
-                            backgroundColor: Styles.backgroundColorInput,
-                            child: Icon(
-                              Icons.account_box_outlined,
-                              color: Colors.white,
-                              size: size.width * 0.1,
-                            ),
-                          ),
+          body: SizedBox(
+            height: double.infinity,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  Center(child: _renderTitle()),
+                  Column(
+                    children: [
+                      TextInputField(
+                        controller: pseudo,
+                        icon: Icons.account_circle,
+                        hint: 'Pseudo',
+                        inputType: TextInputType.name,
+                        inputAction: TextInputAction.next,
+                      ),
+                      TextInputField(
+                        controller: name,
+                        icon: Icons.accessibility_new,
+                        hint: 'Nom',
+                        inputType: TextInputType.name,
+                        inputAction: TextInputAction.next,
+                      ),
+                      PasswordInput(
+                        controller: password,
+                        icon: Icons.lock_rounded,
+                        hint: 'Password',
+                        inputAction: TextInputAction.next,
+                        onSubmitted: (_) => register(),
+                      ),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      IgnorePointer(
+                        ignoring: isLoading ? true : false,
+                        child: MaterialButton(
+                          height: size.height * Styles.heightElementLogin,
+                          minWidth: size.width * Styles.widthElementLogin,
+                          color: HexColor("22402F"),
+                          onPressed: () async {
+                            register();
+                          },
+                          child: (isLoading)
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 1.5,
+                                    color: Colors.white,
+                                  ))
+                              : const Text(
+                                  "S'inscrire",
+                                  style: Styles.textStyleLoginButton,
+                                ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: size.width * 0.1,
-                ),
-                Column(
-                  children: [
-                    TextInputField(
-                      controller: pseudo,
-                      icon: Icons.account_circle,
-                      hint: 'Pseudo',
-                      inputType: TextInputType.name,
-                      inputAction: TextInputAction.next,
-                    ),
-                    TextInputField(
-                      controller: name,
-                      icon: Icons.accessibility_new,
-                      hint: 'Nom',
-                      inputType: TextInputType.name,
-                      inputAction: TextInputAction.next,
-                    ),
-                    PasswordInput(
-                      controller: password,
-                      icon: Icons.lock_rounded,
-                      hint: 'Password',
-                      inputAction: TextInputAction.next,
-                      onSubmitted: (_) => register(),
-                    ),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    IgnorePointer(
-                      ignoring: isLoading ? true : false,
-                      child: MaterialButton(
-                        height: size.height * Styles.heightElementLogin,
-                        minWidth: size.width * Styles.widthElementLogin,
-                        color: HexColor("22402F"),
-                        onPressed: () async {
-                          register();
-                        },
-                        child: (isLoading)
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 1.5,
-                                  color: Colors.white,
-                                ))
-                            : const Text(
-                                "S'inscrire",
-                                style: Styles.textStyleLoginButton,
-                              ),
+                      const SizedBox(
+                        height: 50,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 100,
-                    ),
-                    GestureDetector(
-                      onTap: () =>
-                          routerDelegate.pushPageAndClear(name: '/login'),
-                      child: Container(
-                        child: const Text(
-                            'Vous avez déjà un compte ?\nConnectez-vous.',
-                            style: Styles.textStyleInput,
-                            textAlign: TextAlign.center),
-                        decoration: const BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    width: 1, color: Styles.loginTextColor))),
+                      TextButton(
+                        onPressed: () =>
+                            routerDelegate.pushPageAndClear(name: '/login'),
+                        child: Container(
+                          child: const Text('Se connecter',
+                              style: Styles.textStyleInput,
+                              textAlign: TextAlign.center),
+                          decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 1, color: Styles.loginTextColor))),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-              ],
+                      TextButton(
+                        onPressed: () =>
+                            routerDelegate.pushPageAndClear(name: '/'),
+                        child: Container(
+                          child: const Text('Continuer sans se connecter',
+                              style: Styles.textStyleInput,
+                              textAlign: TextAlign.center),
+                          decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 1, color: Styles.loginTextColor))),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
             ),
           ),
         )
@@ -178,5 +168,16 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  Widget _renderTitle() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 80, horizontal: 0),
+      child: const Text(
+        'CityXplorer',
+        style: TextStyle(
+            color: Colors.white, fontSize: 60, fontWeight: FontWeight.bold),
+      ),
+    );
   }
 }

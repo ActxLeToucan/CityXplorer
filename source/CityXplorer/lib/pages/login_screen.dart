@@ -34,79 +34,95 @@ class _LoginScreenState extends State<LoginScreen> {
     Size size = MediaQuery.of(context).size;
     return Stack(
       children: [
-        const BackgroundImage(
-          image: AssetImage('assets/forest.jpg'),
-        ),
+        const BackgroundImage(image: AssetImage('assets/forest.jpg')),
         Scaffold(
           backgroundColor: Colors.transparent,
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                Center(child: _renderTitle()),
-                Column(
-                  children: [
-                    TextInputField(
-                      controller: pseudo,
-                      icon: Icons.account_circle,
-                      hint: 'Pseudo',
-                      inputType: TextInputType.name,
-                      inputAction: TextInputAction.next,
-                    ),
-                    PasswordInput(
-                      controller: password,
-                      icon: Icons.lock_rounded,
-                      hint: 'Mot de passe',
-                      inputAction: TextInputAction.done,
-                      onSubmitted: (_) => login(),
-                    ),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    IgnorePointer(
-                      /// rend le bouton non cliquable si il est en train d envoyer la requete
-                      ignoring: isLoading ? true : false,
-                      child: MaterialButton(
-                        height: size.height * Styles.heightElementLogin,
-                        minWidth: size.width * Styles.widthElementLogin,
-                        color: HexColor("22402F"),
-                        onPressed: () async {
-                          login();
-                        },
-                        child: (isLoading)
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 1.5,
-                                  color: Colors.white,
-                                ))
-                            : const Text(
-                                'Se connecter',
-                                style: Styles.textStyleLoginButton,
-                              ),
+          body: SizedBox(
+            height: double.infinity,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  Center(child: _renderTitle()),
+                  Column(
+                    children: [
+                      TextInputField(
+                        controller: pseudo,
+                        icon: Icons.account_circle,
+                        hint: 'Pseudo',
+                        inputType: TextInputType.name,
+                        inputAction: TextInputAction.next,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 100,
-                    ),
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () => routerDelegate.pushPageAndClear(name: '/signup'),
-                  child: Container(
-                    child: const Text('Créer un compte',
-                        style: Styles.textStyleInput,
-                        textAlign: TextAlign.center),
-                    decoration: const BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(
-                                width: 1, color: Styles.loginTextColor))),
+                      PasswordInput(
+                        controller: password,
+                        icon: Icons.lock_rounded,
+                        hint: 'Mot de passe',
+                        inputAction: TextInputAction.done,
+                        onSubmitted: (_) => login(),
+                      ),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      IgnorePointer(
+                        /// rend le bouton non cliquable si il est en train d envoyer la requete
+                        ignoring: isLoading ? true : false,
+                        child: MaterialButton(
+                          height: size.height * Styles.heightElementLogin,
+                          minWidth: size.width * Styles.widthElementLogin,
+                          color: HexColor("22402F"),
+                          onPressed: () async {
+                            login();
+                          },
+                          child: (isLoading)
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 1.5,
+                                    color: Colors.white,
+                                  ))
+                              : const Text(
+                                  'Se connecter',
+                                  style: Styles.textStyleLoginButton,
+                                ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      TextButton(
+                        onPressed: () =>
+                            routerDelegate.pushPageAndClear(name: '/signup'),
+                        child: Container(
+                          child: const Text('Créer un compte',
+                              style: Styles.textStyleInput,
+                              textAlign: TextAlign.center),
+                          decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 1, color: Styles.loginTextColor))),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () =>
+                            routerDelegate.pushPageAndClear(name: '/'),
+                        child: Container(
+                          child: const Text('Continuer sans se connecter',
+                              style: Styles.textStyleInput,
+                              textAlign: TextAlign.center),
+                          decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 1, color: Styles.loginTextColor))),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-              ],
+                  const SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -116,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _renderTitle() {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 100, horizontal: 0),
+      margin: const EdgeInsets.symmetric(vertical: 80, horizontal: 0),
       child: const Text(
         'CityXplorer',
         style: TextStyle(

@@ -111,28 +111,25 @@ class Post {
   }
 
   Widget toWidget(BuildContext context) {
-    return GestureDetector(
-      onTap: () => pushPage(),
-      child: Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          color: Colors.black12,
-        ),
-        margin: const EdgeInsets.fromLTRB(6, 0, 6, 6),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-              child: _elementsBeforeImageOnWidget(),
-            ),
-            _renderImageOnWidget(),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-              child: _elementsAfterImageOnWidget(),
-            )
-          ],
-        ),
+    return Container(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+        color: Colors.black12,
+      ),
+      margin: const EdgeInsets.fromLTRB(6, 0, 6, 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+            child: _elementsBeforeImageOnWidget(),
+          ),
+          GestureDetector(child: _renderImageOnWidget(), onTap: pushPage),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+            child: _elementsAfterImageOnWidget(),
+          )
+        ],
       ),
     );
   }
@@ -309,12 +306,9 @@ class Post {
             child: ShareBar(post: this),
           ),
         ),
-        GestureDetector(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
-            child: Text("@$userPseudo", style: Styles.textStyleLink),
-          ),
-          onTap: () => navigateToCreatorPage(context),
+        TextButton(
+          child: Text("@$userPseudo", style: Styles.textStyleLink),
+          onPressed: () => navigateToCreatorPage(context),
         ),
         Text(description)
       ],
