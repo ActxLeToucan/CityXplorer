@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:cityxplorer/models/user.dart';
-import 'package:cityxplorer/pages/user_profile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../router/delegate.dart';
+import '../conf.dart';
 
 //contenu de la page d accueil
 class Home extends StatelessWidget {
@@ -18,7 +15,17 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routerDelegate = Get.find<MyRouterDelegate>();
+    Widget buttonDownload = Container();
+    if (kIsWeb && Conf.downloadable.contains(defaultTargetPlatform)) {
+      buttonDownload = Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextButton(
+            onPressed: _pageDownload,
+            child: const Text(
+                "Téléchargez CityXplorer sur votre appareil pour profiter au maximum des fonctionnalités de l'application !",
+                textAlign: TextAlign.center)),
+      );
+    }
 
     return Column(
       children: [
@@ -91,7 +98,17 @@ class Home extends StatelessWidget {
             ),
           ),
         ),
+        buttonDownload
       ],
     );
+  }
+
+  Future<void> _pageDownload() async {
+    var url = Conf.downloadRelease;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

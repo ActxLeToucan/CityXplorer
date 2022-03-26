@@ -1,4 +1,3 @@
-import 'package:cityxplorer/models/user_connected.dart';
 import 'package:cityxplorer/pages/edit_profile.dart';
 import 'package:cityxplorer/pages/login_screen.dart';
 import 'package:cityxplorer/pages/main_interface.dart';
@@ -52,6 +51,9 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
   }
 
   void parseRoute(Uri uri) {
+    if (uri.hasFragment) {
+      uri = Uri.parse(uri.toString().replaceFirst("#/", ""));
+    }
     if (uri.pathSegments.isEmpty) {
       setNewRoutePath([const RouteSettings(name: '/')]);
     } else {
