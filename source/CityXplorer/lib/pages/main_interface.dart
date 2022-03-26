@@ -80,7 +80,7 @@ class _MainInterfaceState extends State<MainInterface> {
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home),
-                  label: 'Home',
+                  label: 'Accueil',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.add_a_photo_rounded),
@@ -88,7 +88,7 @@ class _MainInterfaceState extends State<MainInterface> {
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.speed),
-                  label: 'Dashboard',
+                  label: 'Tableau de bord',
                 ),
               ],
             )
