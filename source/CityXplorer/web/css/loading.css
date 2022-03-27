@@ -19,8 +19,13 @@
     color: darkgreen;
 }
 
-#loading-message, #splash a {
-    margin-top: 30px;
+#loading-message {
+    margin-top: 15px;
+}
+
+
+#splash a {
+    margin-top: 40px;
 }
 
 .dot-1 {
