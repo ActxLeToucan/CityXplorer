@@ -3,7 +3,7 @@
 ini_set('display_errors', 1);
 
 use cityXplorer\controllers\PostController;
-use cityXplorer\controllers\RegisterController;
+use cityXplorer\controllers\UserController;
 use cityXplorer\dbInit;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -33,27 +33,41 @@ $app->get('/doc', function (Request $rq, Response $rs, array $args): Response {
 // connexion
 $app->post('/login',
     function (Request $rq, Response $rs, array $args): Response{
-        $controller=new RegisterController($this);
+        $controller=new UserController($this);
         return $rs->withJson($controller->login($rq,$rs,$args),200);
     })->setName("login");
 // inscription
 $app->post('/register',
     function (Request $rq, Response $rs, array $args): Response{
-        $controller=new RegisterController($this);
+        $controller=new UserController($this);
         return $rs->withJson($controller->register($rq,$rs,$args),200);
     })->setName("register");
 // obtention d'un utilisateur
 $app->get('/user',
     function (Request $rq, Response $rs, array $args): Response{
-        $controller=new RegisterController($this);
+        $controller=new UserController($this);
         return $rs->withJson($controller->user($rq,$rs,$args),200);
     })->setName("user");
 // recherche d'utilisateurs
 $app->get('/users',
     function (Request $rq, Response $rs, array $args): Response{
-        $controller=new RegisterController($this);
+        $controller=new UserController($this);
         return $rs->withJson($controller->searchUsers($rq,$rs,$args),200);
     })->setName("users");
+
+// modification utilisateur
+$app->put('/user',
+    function (Request $rq, Response $rs, array $args): Response {
+        $controller = new UserController($this);
+        return $rs->withJson($controller->editUser($rq, $rs, $args), 200);
+    })->setName("edit_user");
+
+// suppression utilisateur
+$app->delete('/user',
+    function (Request $rq, Response $rs, array $args): Response {
+        $controller = new UserController($this);
+        return $rs->withJson($controller->deleteUser($rq, $rs, $args), 200);
+    })->setName("edit_user");
 
 
 /**

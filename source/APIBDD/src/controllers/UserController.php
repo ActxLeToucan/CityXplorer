@@ -7,7 +7,7 @@ use cityXplorer\models\User;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-class RegisterController {
+class UserController {
     const TAILLE_PSEUDO_MIN = 4;
     const TAILLE_PSEUDO_MAX = 50;
     const REGEX_PSEUDO = '/^[\w\-]*$/';
@@ -81,13 +81,13 @@ class RegisterController {
                 "message" => "Ce nom est trop court. Réessayez.",
                 "user" => null
             ];
-        } else if (strlen($password) > self::TAILLE_NAME_MAX) {
+        } else if (strlen($name) > self::TAILLE_NAME_MAX) {
             return [
                 "result" => 0,
                 "message" => "Ce nom est trop long. Réessayez.",
                 "user" => null
             ];
-        } else if (strlen($name) < self::TAILLE_MDP_MIN) {
+        } else if (strlen($password) < self::TAILLE_MDP_MIN) {
             return [
                 "result" => 0,
                 "message" => "Ce mot de passe est trop court. Réessayez.",
@@ -208,4 +208,81 @@ class RegisterController {
 
     }
 
+    // TODO
+    public function editUser(Request $rq, Response $rs, array $args): array {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('edit_user');
+        $url = $base . $route_uri;
+
+        $content = $rq->getParsedBody(); // marche pas
+        echo $content ?? "\nnull\n";
+
+        $token = $content['token'];
+        $name = filter_var($content['name'], FILTER_SANITIZE_STRING);
+        $description = filter_var($content['description'], FILTER_SANITIZE_STRING);
+
+        $userNameExist = User::where("token", "=", $token)->count();
+
+        if ($userNameExist != 1) {
+            return [
+                "result" => 0,
+                "message" => "Token invalide",
+                "user" => null
+            ];
+        } else if (strlen($name) < self::TAILLE_NAME_MIN) {
+            return [
+                "result" => 0,
+                "message" => "Ce nom est trop court. Réessayez.",
+                "user" => null
+            ];
+        } else {
+            $user = User::where('token', '=', $token)->first();
+            $user->name = $name;
+            $user->description = $description;
+            $user->save();
+
+            return [
+                "result" => 1,
+                "message" => "Modifications enregistrées.",
+                "user" => $user->toArray(true)
+            ];
+        }
+    }
+
+    public function deleteUser(Request $rq, Response $rs, array $args): array {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('edit_user');
+        $url = $base . $route_uri;
+
+        if (!isset($rq->getQueryParams()['token'])) {
+            return [
+                "result" => 0,
+                "message" => "Token invalide."
+            ];
+        }
+        if (!isset($rq->getQueryParams()['pseudo'])) {
+            return [
+                "result" => 0,
+                "message" => "Pseudo invalide."
+            ];
+        }
+        $user = User::where([
+            "pseudo" => $rq->getQueryParams()['pseudo'],
+            "token" => $rq->getQueryParams()['token']
+        ])->first();
+        if (is_null($user)) {
+            return [
+                "result" => 0,
+                "message" => "Aucun utilisateur correspondant."
+            ];
+        }
+
+        $user->delete();
+        return [
+            "result" => 1,
+            "message" => "Votre compte à été supprimé."
+        ];
+    }
 }

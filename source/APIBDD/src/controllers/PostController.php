@@ -10,7 +10,6 @@ use cityXplorer\models\Post;
 use cityXplorer\Conf;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Illuminate\Support\Facades\Date;
 
 class PostController {
     /**
