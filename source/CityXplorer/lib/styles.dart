@@ -6,7 +6,7 @@ class Styles {
   static const TextStyle textStyleLink = TextStyle(color: Colors.green);
 
   // login
-  static final Color? backgroundColorInput = Colors.grey[500]?.withOpacity(0.5);
+  static final Color? loginFieldColor = Colors.grey[500]?.withOpacity(0.5);
   static const Color loginTextColor = Colors.white;
   static const double loginTextSize = 22.0;
   static const TextStyle textStyleInput = TextStyle(

@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/components/custom_alert_post.dart';
+import 'package:cityxplorer/components/input_field.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,6 @@ import 'package:http_parser/http_parser.dart';
 import '../conf.dart';
 import '../main.dart';
 import '../router/delegate.dart';
-import '../styles.dart';
 
 /// formulaire de creation d'un post avec gestion de la requete envoyee et de son resultat
 class NewPostScreen extends StatefulWidget {
@@ -30,7 +31,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   final routerDelegate = Get.find<MyRouterDelegate>();
 
   final _formKey = GlobalKey<FormState>();
-  final controllerTitre = TextEditingController();
+  final controllerTitre = TextEditingController(text: "Sans titre");
   final controllerDescription = TextEditingController();
   DateTime now = DateTime.now();
   bool isLoading = false;
@@ -52,92 +53,48 @@ class _NewPostScreenState extends State<NewPostScreen> {
   Widget build(BuildContext context) {
     if (imagePath != "") {
       return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => routerDelegate.popRoute(),
-          ),
-          title: const Text(
-            'Créer un post',
-          ),
-        ),
+        appBar: namedAppBar(context, "Créer un post"),
         body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Form(
             key: _formKey,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 15),
+              child: Column(
+                children: [
+                  Container(
+                    constraints: const BoxConstraints.expand(height: 250),
+                    child: kIsWeb
+                        ? Image.network(imagePath)
+                        : Image.file(File(imagePath)),
+                  ),
+                  const SizedBox(height: 5),
+                  Text("Prise le : " + getCurrentDate(),
+                      style: const TextStyle(fontSize: 16)),
+                  const SizedBox(height: 10),
+                  InputField(
                     controller: controllerTitre,
-                    textInputAction: TextInputAction.next,
-                    autofocus: true,
-                    decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Styles.mainColor, width: 2.5),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Styles.mainColor, width: 1.5),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      border: OutlineInputBorder(),
-                      helperText: "Obligatoire",
-                      hintText: 'Ajouter un titre',
-                    ),
+                    hintText: "Titre",
+                    hintPosition: HintPosition.swap,
+                    withBottomSpace: true,
+                    autoFocus: true,
+                    inputAction: TextInputAction.next,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Remplissez ce champ pour continuer ';
+                        return 'Remplissez ce champ pour continuer';
                       }
                       return null;
                     },
                   ),
-                ),
-                const SizedBox(height: 15),
-                Container(
-                  constraints: const BoxConstraints.expand(height: 250),
-                  child: kIsWeb
-                      ? Image.network(imagePath)
-                      : Image.file(File(imagePath)),
-                ),
-                const SizedBox(height: 5),
-                Text("Prise le : " + getCurrentDate(),
-                    style: const TextStyle(fontSize: 16)),
-                const SizedBox(height: 5),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
+                  InputField(
+                    controller: controllerDescription,
+                    hintText: "Description",
+                    hintPosition: HintPosition.swap,
                     minLines: 2,
                     maxLines: 5,
-                    keyboardType: TextInputType.multiline,
-                    controller: controllerDescription,
-                    decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Styles.mainColor, width: 2.5),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Styles.mainColor, width: 1.5),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      helperText: "Optionnel",
-                      border: OutlineInputBorder(),
-                      hintText: 'Ajouter une description',
-                    ),
+                    withBottomSpace: true,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SizedBox(
+                  SizedBox(
                     width: double.infinity,
                     height: 60.0,
                     child: IgnorePointer(
@@ -176,15 +133,15 @@ class _NewPostScreenState extends State<NewPostScreen> {
                       ),
                     ),
                   ),
-                ),
-                /**
-                    carouselBuild(),
-                    ElevatedButton(
-                    onPressed: () {},
-                    child: Text('NOUVELLE PHOTO', style: TextStyle(fontSize: 20)),
+                  /**
+                      carouselBuild(),
+                      ElevatedButton(
+                      onPressed: () {},
+                      child: Text('NOUVELLE PHOTO', style: TextStyle(fontSize: 20)),
 
-                    ),**/
-              ],
+                      ),**/
+                ],
+              ),
             ),
           ),
         ),

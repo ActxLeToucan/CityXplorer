@@ -1,10 +1,10 @@
 import 'package:cityxplorer/components/appbar.dart';
+import 'package:cityxplorer/components/input_field.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 
 import '../components/profile_widget.dart';
-import '../components/textfield_widget.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -31,6 +31,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController name = TextEditingController(text: _user.name);
+    TextEditingController description =
+        TextEditingController(text: _user.description);
     if (_initialized) {
       if (_user.isEmpty()) {
         return Scaffold(
@@ -53,24 +56,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   onClicked: () async {},
                 ),
                 const SizedBox(height: 24),
-                TextFieldWidget(
-                  label: 'Nom',
-                  text: _user.name,
-                  onChanged: (name) {},
-                ),
-                const SizedBox(height: 24),
-                TextFieldWidget(
-                  label: 'Pseudo',
-                  text: _user.pseudo,
-                  onChanged: (email) {},
-                ),
-                const SizedBox(height: 24),
-                TextFieldWidget(
-                  label: 'Description',
-                  text: _user.description,
-                  maxLines: 5,
-                  onChanged: (about) {},
-                ),
+                InputField(
+                    controller: name,
+                    hintText: "Nom",
+                    hintPosition: HintPosition.above,
+                    withBottomSpace: true),
+                InputField(
+                    controller: description,
+                    hintText: "Description",
+                    hintPosition: HintPosition.above,
+                    minLines: 2,
+                    maxLines: 5),
               ],
             ),
           ),
