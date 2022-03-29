@@ -103,10 +103,10 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
         child = const MainInterface();
         break;
       case '/login':
-        child = const LoginScreen();
+        child = LoginScreen();
         break;
       case '/signup':
-        child = const CreateNewAccount();
+        child = CreateNewAccount();
         break;
       case '/user':
         child = UserProfile(

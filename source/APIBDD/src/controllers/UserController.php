@@ -253,7 +253,7 @@ class UserController {
     public function deleteUser(Request $rq, Response $rs, array $args): array {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('edit_user');
+        $route_uri = $container->router->pathFor('del_user');
         $url = $base . $route_uri;
 
         if (!isset($rq->getQueryParams()['token'])) {

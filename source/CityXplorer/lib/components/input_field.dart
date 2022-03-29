@@ -138,3 +138,123 @@ class InputLogin extends InputField {
             withoutBorder: true,
             withBottomSpace: withBottomSpace);
 }
+
+enum ButtonType { big, small }
+
+class Button extends StatefulWidget {
+  final ButtonType type;
+  final String? text;
+  final IconData? icon;
+  final Color? backgroundColor;
+  final Color? contentColor;
+  final bool withLoadingAnimation;
+  final double? fontSize;
+  final Function? onPressed;
+  final bool underlined;
+  bool _isLoading = false;
+
+  Button({
+    Key? key,
+    required this.type,
+    this.backgroundColor = Styles.mainColor,
+    this.withLoadingAnimation = false,
+    this.onPressed,
+    this.text,
+    this.icon,
+    this.contentColor = Colors.black,
+    this.fontSize,
+    this.underlined = false,
+  }) : super(key: key);
+
+  @override
+  State<Button> createState() => _ButtonState();
+}
+
+class _ButtonState extends State<Button> {
+  bool isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget button;
+
+    Widget content = const Text("");
+    if (widget.text != null) {
+      content = Text(
+        widget.text ?? "",
+        style: TextStyle(color: widget.contentColor, fontSize: widget.fontSize),
+      );
+    } else if (widget.icon != null) {
+      content = Icon(widget.icon, color: widget.contentColor);
+    }
+
+    Widget child = isLoading
+        ? SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(
+              strokeWidth: 1.5,
+              color: widget.contentColor,
+            ))
+        : content;
+
+    switch (widget.type) {
+      case ButtonType.big:
+        button = MaterialButton(
+          onPressed: actionOnPressed,
+          color: widget.backgroundColor,
+          child: child,
+        );
+        break;
+      case ButtonType.small:
+        button = TextButton(
+            onPressed: actionOnPressed,
+            child: widget.underlined
+                ? Container(
+                    child: child,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(
+                                width: 1,
+                                color: widget.contentColor ?? Colors.black))))
+                : child);
+        break;
+    }
+    if (widget.withLoadingAnimation) {
+      button = IgnorePointer(
+        ignoring: isLoading,
+        child: button,
+      );
+    }
+    return widget.type == ButtonType.big
+        ? SizedBox(child: button, height: 60.0, width: double.infinity)
+        : button;
+  }
+
+  Future<void> actionOnPressed() async {
+    if (widget.onPressed == null) return;
+
+    if (widget.withLoadingAnimation) setState(() => isLoading = true);
+    await widget.onPressed!();
+    if (widget.withLoadingAnimation) setState(() => isLoading = false);
+  }
+}
+
+class ButtonLogin extends Button {
+  ButtonLogin({
+    Key? key,
+    required ButtonType type,
+    required String text,
+    required Function onPressed,
+  }) : super(
+          key: key,
+          type: type,
+          text: text,
+          fontSize: Styles.loginTextSize,
+          contentColor: Colors.white,
+          backgroundColor:
+              type == ButtonType.big ? const Color(0xFF22402F) : null,
+          withLoadingAnimation: type == ButtonType.big,
+          underlined: type == ButtonType.small,
+          onPressed: onPressed,
+        );
+}

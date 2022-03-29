@@ -6,31 +6,24 @@ import 'package:cityxplorer/main.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../models/user_connected.dart';
 import '../router/delegate.dart';
-import '../styles.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class LoginScreen extends StatelessWidget {
+  LoginScreen({Key? key}) : super(key: key);
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
   final routerDelegate = Get.find<MyRouterDelegate>();
 
-  TextEditingController pseudo = TextEditingController();
-  TextEditingController password = TextEditingController();
-  bool isLoading = false;
+  final TextEditingController pseudo = TextEditingController();
+  final TextEditingController password = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    ButtonLogin buttonLogin = ButtonLogin(
+        type: ButtonType.big, text: "Se connecter", onPressed: login);
     return Stack(
       children: [
         const BackgroundImage(image: AssetImage('assets/forest.jpg')),
@@ -55,69 +48,29 @@ class _LoginScreenState extends State<LoginScreen> {
                           withBottomSpace: true,
                         ),
                         InputLogin(
-                          controller: password,
-                          icon: Icons.lock_rounded,
-                          hintText: 'Mot de passe',
-                          inputAction: TextInputAction.done,
-                          withBottomSpace: true,
-                          isPassword: true,
-                          onSubmitted: (_) => login(),
-                        ),
-                        IgnorePointer(
-                          /// rend le bouton non cliquable si il est en train d envoyer la requete
-                          ignoring: isLoading ? true : false,
-                          child: MaterialButton(
-                            height: size.height * Styles.heightElementLogin,
-                            minWidth: size.width * Styles.widthElementLogin,
-                            color: HexColor("22402F"),
-                            onPressed: () async {
-                              login();
-                            },
-                            child: (isLoading)
-                                ? const SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 1.5,
-                                      color: Colors.white,
-                                    ))
-                                : const Text(
-                                    'Se connecter',
-                                    style: Styles.textStyleLoginButton,
-                                  ),
-                          ),
-                        ),
+                            controller: password,
+                            icon: Icons.lock_rounded,
+                            hintText: 'Mot de passe',
+                            inputAction: TextInputAction.done,
+                            withBottomSpace: true,
+                            isPassword: true,
+                            onSubmitted: (_) {
+                              //TODO
+                            }),
+                        buttonLogin,
                         const SizedBox(
                           height: 50,
                         ),
-                        TextButton(
-                          onPressed: () =>
-                              routerDelegate.pushPageAndClear(name: '/signup'),
-                          child: Container(
-                            child: const Text('Créer un compte',
-                                style: Styles.textStyleInput,
-                                textAlign: TextAlign.center),
-                            decoration: const BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(
-                                        width: 1,
-                                        color: Styles.loginTextColor))),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () =>
-                              routerDelegate.pushPageAndClear(name: '/'),
-                          child: Container(
-                            child: const Text('Continuer sans se connecter',
-                                style: Styles.textStyleInput,
-                                textAlign: TextAlign.center),
-                            decoration: const BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(
-                                        width: 1,
-                                        color: Styles.loginTextColor))),
-                          ),
-                        ),
+                        ButtonLogin(
+                            type: ButtonType.small,
+                            text: "Créer un compte",
+                            onPressed: () => routerDelegate.pushPageAndClear(
+                                name: '/signup')),
+                        ButtonLogin(
+                            type: ButtonType.small,
+                            text: "Continuer sans compte",
+                            onPressed: () =>
+                                routerDelegate.pushPageAndClear(name: '/')),
                       ],
                     ),
                   ),
@@ -145,12 +98,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future login() async {
-    setState(() {
-      isLoading = true;
-    });
-
     String url = Conf.domainServer + Conf.apiPath + "/login";
-
+    await Future.delayed(const Duration(seconds: 2), () {});
     try {
       var response = await http.post(Uri.parse(url), body: {
         'pseudo': pseudo.text,
@@ -170,9 +119,5 @@ class _LoginScreenState extends State<LoginScreen> {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
-
-    setState(() {
-      isLoading = false;
-    });
   }
 }

@@ -5,15 +5,12 @@ import 'package:cityxplorer/components/input_field.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../router/delegate.dart';
-import '../styles.dart';
 
 class CreateNewAccount extends StatefulWidget {
   const CreateNewAccount({Key? key}) : super(key: key);
@@ -32,7 +29,8 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    ButtonLogin buttonRegister = ButtonLogin(
+        type: ButtonType.big, text: "S'inscrire", onPressed: register);
     return Stack(
       children: [
         const BackgroundImage(image: AssetImage('assets/forest.jpg')),
@@ -64,68 +62,29 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                           withBottomSpace: true,
                         ),
                         InputLogin(
-                          controller: password,
-                          icon: Icons.lock_rounded,
-                          hintText: 'Mot de passe',
-                          inputAction: TextInputAction.done,
-                          withBottomSpace: true,
-                          onSubmitted: (_) => register(),
-                          isPassword: true,
-                        ),
-                        IgnorePointer(
-                          ignoring: isLoading ? true : false,
-                          child: MaterialButton(
-                            height: size.height * Styles.heightElementLogin,
-                            minWidth: size.width * Styles.widthElementLogin,
-                            color: HexColor("22402F"),
-                            onPressed: () async {
-                              register();
-                            },
-                            child: (isLoading)
-                                ? const SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 1.5,
-                                      color: Colors.white,
-                                    ))
-                                : const Text(
-                                    "S'inscrire",
-                                    style: Styles.textStyleLoginButton,
-                                  ),
-                          ),
-                        ),
+                            controller: password,
+                            icon: Icons.lock_rounded,
+                            hintText: 'Mot de passe',
+                            inputAction: TextInputAction.done,
+                            withBottomSpace: true,
+                            isPassword: true,
+                            onSubmitted: (_) {
+                              //TODO
+                            }),
+                        buttonRegister,
                         const SizedBox(
                           height: 50,
                         ),
-                        TextButton(
-                          onPressed: () =>
-                              routerDelegate.pushPageAndClear(name: '/login'),
-                          child: Container(
-                            child: const Text('Se connecter',
-                                style: Styles.textStyleInput,
-                                textAlign: TextAlign.center),
-                            decoration: const BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(
-                                        width: 1,
-                                        color: Styles.loginTextColor))),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () =>
-                              routerDelegate.pushPageAndClear(name: '/'),
-                          child: Container(
-                            child: const Text('Continuer sans se connecter',
-                                style: Styles.textStyleInput,
-                                textAlign: TextAlign.center),
-                            decoration: const BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(
-                                        width: 1,
-                                        color: Styles.loginTextColor))),
-                          ),
-                        ),
+                        ButtonLogin(
+                            type: ButtonType.small,
+                            text: "Se connecter",
+                            onPressed: () => routerDelegate.pushPageAndClear(
+                                name: '/login')),
+                        ButtonLogin(
+                            type: ButtonType.small,
+                            text: "Continuer sans compte",
+                            onPressed: () =>
+                                routerDelegate.pushPageAndClear(name: '/')),
                       ],
                     ),
                   ),

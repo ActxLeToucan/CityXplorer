@@ -67,7 +67,7 @@ $app->delete('/user',
     function (Request $rq, Response $rs, array $args): Response {
         $controller = new UserController($this);
         return $rs->withJson($controller->deleteUser($rq, $rs, $args), 200);
-    })->setName("edit_user");
+    })->setName("del_user");
 
 
 /**
