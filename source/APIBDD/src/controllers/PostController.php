@@ -201,7 +201,8 @@ class PostController {
         } else {
             $photos = Photo::where("idPost", "=", $idPost)->get();
             foreach ($photos as $image) {
-                is_null($image) || $image == "" ?: unlink(Conf::PATH_IMAGE_POSTS . "/$image");
+                $image->deleteFile();
+                $image->delete();
             }
             $post->delete();
             return $rs->withJSON([

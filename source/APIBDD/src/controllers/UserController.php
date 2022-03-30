@@ -3,6 +3,7 @@
 
 namespace cityXplorer\controllers;
 
+use cityXplorer\Conf;
 use cityXplorer\models\User;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -277,7 +278,15 @@ class UserController {
             ], 200);
         }
 
+        foreach ($user->posts as $post) {
+            foreach ($post->photos as $photo) {
+                $photo->deleteFile();
+                $photo->delete();
+            }
+            $post->delete();
+        }
         $user->delete();
+
         return $rs->withJSON([
             "result" => 1,
             "message" => "Votre compte à été supprimé."

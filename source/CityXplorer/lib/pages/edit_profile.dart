@@ -96,7 +96,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   type: ButtonType.small,
                   text: "Supprimer mon compte",
                   contentColor: Styles.darkred,
-                  onPressed: () {}, // TODO
+                  onPressed: () => alertDelete(context),
                 ),
               ],
             ),
@@ -111,7 +111,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  Future editProfile() async {
+  Future<bool> alertDelete(BuildContext context) async {
+    final result = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Supprimer"),
+            content: const Text(
+                "Voulez-vous vraiment supprimer votre compte CityXplorer ? Cette action est irréversible."),
+            actions: [
+              TextButton(
+                child: const Text('Annuler'),
+                onPressed: () => Navigator.pop(context, true),
+              ),
+              TextButton(
+                child: const Text(
+                  'Supprimer',
+                  style: TextStyle(color: Styles.darkred),
+                ),
+                onPressed: deleteAccount,
+              ),
+            ],
+          );
+        });
+
+    return result ?? true;
+  }
+
+  Future<void> editProfile() async {
     String url = Conf.domainServer + Conf.apiPath + "/user";
     Map<String, dynamic> body = {
       "token": _user.token,
@@ -126,6 +153,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
       final Map<String, dynamic> data = json.decode(response.body);
 
       Fluttertoast.showToast(msg: data['message']);
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    String url = Conf.domainServer +
+        Conf.apiPath +
+        "/user?pseudo=${_user.pseudo}&token=${_user.token}";
+
+    try {
+      var response = await http.delete(Uri.parse(url));
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      Fluttertoast.showToast(msg: data['message']);
+
+      if (data["result"] == 1) {
+        deconnexion();
+        routerDelegate.pushPageAndClear(name: '/login');
+      }
     } catch (e) {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
