@@ -12,18 +12,23 @@ import '../conf.dart';
 import '../models/user_connected.dart';
 import '../router/delegate.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final routerDelegate = Get.find<MyRouterDelegate>();
 
   final TextEditingController pseudo = TextEditingController();
   final TextEditingController password = TextEditingController();
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
-    ButtonLogin buttonLogin = ButtonLogin(
-        type: ButtonType.big, text: "Se connecter", onPressed: login);
     return Stack(
       children: [
         const BackgroundImage(image: AssetImage('assets/forest.jpg')),
@@ -54,10 +59,17 @@ class LoginScreen extends StatelessWidget {
                             inputAction: TextInputAction.done,
                             withBottomSpace: true,
                             isPassword: true,
-                            onSubmitted: (_) {
-                              //TODO
+                            onSubmitted: (_) async {
+                              setState(() => isLoading = true);
+                              await login();
+                              setState(() => isLoading = false);
                             }),
-                        buttonLogin,
+                        ButtonLogin(
+                          type: ButtonType.big,
+                          text: "Se connecter",
+                          onPressed: login,
+                          parentState: isLoading,
+                        ),
                         const SizedBox(
                           height: 50,
                         ),
@@ -99,7 +111,7 @@ class LoginScreen extends StatelessWidget {
 
   Future login() async {
     String url = Conf.domainServer + Conf.apiPath + "/login";
-    await Future.delayed(const Duration(seconds: 2), () {});
+
     try {
       var response = await http.post(Uri.parse(url), body: {
         'pseudo': pseudo.text,

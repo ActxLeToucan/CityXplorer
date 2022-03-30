@@ -22,15 +22,14 @@ class CreateNewAccount extends StatefulWidget {
 class _CreateNewAccountState extends State<CreateNewAccount> {
   final routerDelegate = Get.find<MyRouterDelegate>();
 
-  TextEditingController pseudo = TextEditingController();
-  TextEditingController password = TextEditingController();
-  TextEditingController name = TextEditingController();
+  final TextEditingController pseudo = TextEditingController();
+  final TextEditingController password = TextEditingController();
+  final TextEditingController name = TextEditingController();
+
   bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
-    ButtonLogin buttonRegister = ButtonLogin(
-        type: ButtonType.big, text: "S'inscrire", onPressed: register);
     return Stack(
       children: [
         const BackgroundImage(image: AssetImage('assets/forest.jpg')),
@@ -68,10 +67,17 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                             inputAction: TextInputAction.done,
                             withBottomSpace: true,
                             isPassword: true,
-                            onSubmitted: (_) {
-                              //TODO
+                            onSubmitted: (_) async {
+                              setState(() => isLoading = true);
+                              await register();
+                              setState(() => isLoading = false);
                             }),
-                        buttonRegister,
+                        ButtonLogin(
+                          type: ButtonType.big,
+                          text: "S'inscrire",
+                          onPressed: register,
+                          parentState: isLoading,
+                        ),
                         const SizedBox(
                           height: 50,
                         ),
@@ -101,10 +107,6 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
   }
 
   Future register() async {
-    setState(() {
-      isLoading = true;
-    });
-
     String url = Conf.domainServer + Conf.apiPath + "/register";
 
     try {
@@ -127,10 +129,6 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   Widget _renderTitle() {

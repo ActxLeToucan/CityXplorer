@@ -151,9 +151,9 @@ class Button extends StatefulWidget {
   final double? fontSize;
   final Function? onPressed;
   final bool underlined;
-  bool _isLoading = false;
+  final bool? parentState;
 
-  Button({
+  const Button({
     Key? key,
     required this.type,
     this.backgroundColor = Styles.mainColor,
@@ -164,6 +164,7 @@ class Button extends StatefulWidget {
     this.contentColor = Colors.black,
     this.fontSize,
     this.underlined = false,
+    this.parentState,
   }) : super(key: key);
 
   @override
@@ -172,6 +173,18 @@ class Button extends StatefulWidget {
 
 class _ButtonState extends State<Button> {
   bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.parentState != null) isLoading = widget.parentState!;
+  }
+
+  @override
+  void didUpdateWidget(covariant Button oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.parentState != null) isLoading = widget.parentState!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -240,11 +253,12 @@ class _ButtonState extends State<Button> {
 }
 
 class ButtonLogin extends Button {
-  ButtonLogin({
+  const ButtonLogin({
     Key? key,
     required ButtonType type,
     required String text,
     required Function onPressed,
+    bool? parentState,
   }) : super(
           key: key,
           type: type,
@@ -256,5 +270,6 @@ class ButtonLogin extends Button {
           withLoadingAnimation: type == ButtonType.big,
           underlined: type == ButtonType.small,
           onPressed: onPressed,
+          parentState: parentState,
         );
 }
