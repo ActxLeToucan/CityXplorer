@@ -51,9 +51,9 @@ class PostController {
      * @param Request $rq
      * @param Response $rs
      * @param array $args
-     * @return array L'état du post, ajouté ou non
+     * @return Response
      */
-    public function addPost(Request $rq, Response $rs, array $args): array {
+    public function addPost(Request $rq, Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('createPost');
@@ -117,7 +117,7 @@ class PostController {
             }
         }
 
-        return $tab;
+        return $rs->withJSON($tab, 200);
     }
 
     /**
@@ -125,9 +125,9 @@ class PostController {
      * @param Request $rq
      * @param Response $rs
      * @param array $args
-     * @return array Contenant les valeurs d'un post et son créateur
+     * @return Response
      */
-    public function getPostById(Request $rq, Response $rs, array $args): array {
+    public function getPostById(Request $rq, Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('postId');
@@ -138,15 +138,15 @@ class PostController {
         $postExist = Post::where("idPost", "=", $id)->count();
         if ($postExist == 1) {
             $post = Post::where("idPost","=",$id)->first();
-            return [
+            return $rs->withJSON([
                 'result' => 1,
                 'post' => $post->toArray()
-            ];
+            ], 200);
         } else {
-            return [
+            return $rs->withJSON([
                 'result' => 0,
                 'post' => null
-            ];
+            ], 200);
         }
     }
 
@@ -155,9 +155,9 @@ class PostController {
      * @param Request $rq
      * @param Response $rs
      * @param array $args
-     * @return array Contenant tous les posts de l'utilisateur
+     * @return Response
      */
-    public function getUserPosts(Request $rq, Response $rs, array $args): array {
+    public function getUserPosts(Request $rq, Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('postsUser');
@@ -174,13 +174,13 @@ class PostController {
                 $tabPosts[] = $post->toArray();
             }
 
-            return $tabPosts;
+            return $rs->withJSON($tabPosts, 200);
         }
 
-        return [];
+        return $rs->withJSON([], 200);
     }
 
-    public function delete(Request $rq, Response $rs, array $args): array {
+    public function delete(Request $rq, Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('delete');
@@ -191,28 +191,28 @@ class PostController {
         $post = Post::where("idPost", "=", $idPost)->first();
 
         if (!isset($rq->getQueryParams()['token']) || is_null($post) || !isset($rq->getQueryParams()['id']) || $userExist != 1) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Erreur : id ou token invalide",
                 "1" => $rq->getQueryParams()['token'],
                 "2" => is_null($post),
                 "3" => !isset($rq->getQueryParams()['id'])
-            ];
+            ], 200);
         } else {
             $photos = Photo::where("idPost", "=", $idPost)->get();
             foreach ($photos as $image) {
                 is_null($image) || $image == "" ?: unlink(Conf::PATH_IMAGE_POSTS . "/$image");
             }
             $post->delete();
-            return [
+            return $rs->withJSON([
                 "result" => 1,
                 "message" => "Post Supprimé"
-            ];
+            ], 200);
         }
     }
 
 
-    public function like(Request $rq, Response $rs, array $args): array {
+    public function like(Request $rq, Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('likeUser');
@@ -224,14 +224,14 @@ class PostController {
         $post = Post::where("idPost", "=", $idPost)->first();
 
         if (!isset($rq->getQueryParams()['token']) || is_null($post) || !isset($rq->getQueryParams()['id']) || is_null($userExist)) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Erreur: Id ou token invalide",
                 "1" => $rq->getQueryParams()['token'],
                 "2" => $idPost,
                 "3" => is_null($post),
                 "4" => !isset($rq->getQueryParams()['id'])
-            ];
+            ], 200);
         } else {
             $user = User::where('token', '=', $token);
             $like = new Like();
@@ -240,14 +240,14 @@ class PostController {
             $like->idUtilisateur = $userId;
             $like->idPost = $postId;
             $like->save();
-            return [
+            return $rs->withJSON([
                 "result" => 1,
                 "message" => "Post liké !",
-            ];
+            ], 200);
         }
     }
 
-    public function dislike(Request $rq, Response $rs, array $args): array {
+    public function dislike(Request $rq, Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('dislike');
@@ -258,23 +258,23 @@ class PostController {
         $post = Post::where("idPost", "=", $idPost)->first();
 
         if (!isset($rq->getQueryParams()['token']) || is_null($post) || !isset($idPost) || $userExist != 1) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Erreur : id ou token invalide",
                 "1" => $rq->getQueryParams()['token'],
                 "2" => is_null($post),
                 "3" => !isset($idPost)
-            ];
+            ], 200);
         } else {
             $user = User::where('token', '=', $token)->first();
             $userId=$user->id;
             $idPost=$post->idPost;
             $like=Like::where(["idUtilisateur" => $userId, "idPost" => $idPost]);
             $like->delete();
-            return [
+            return $rs->withJSON([
                 "result" => 1,
                 "message" => "Dislike du post"
-            ];
+            ], 200);
         }
     }
 }

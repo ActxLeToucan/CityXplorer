@@ -35,9 +35,9 @@ class UserController {
      * @param Request $rq requête
      * @param Response $rs réponse
      * @param array $args arguments de la requête
-     * @return array
+     * @return Response
      */
-    public function register(Request $rq, Response $rs, array $args): array {
+    public function register(Request $rq, Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('register');
@@ -52,53 +52,53 @@ class UserController {
         $userNameExist = User::where("pseudo", "=", $pseudo)->count();
 
         if (strlen($pseudo) < self::TAILLE_PSEUDO_MIN) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Ce nom d'utilisateur est trop court. Réessayez.",
                 "user" => null
-            ];
+            ], 200);
         } else if (strlen($pseudo) > self::TAILLE_PSEUDO_MAX) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Ce nom d'utilisateur est trop long. Réessayez.",
                 "user" => null
-            ];
+            ], 200);
         } else if (preg_match(self::REGEX_PSEUDO, $pseudo) == 0) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Ce nom d'utilisateur est invalide. Réessayez.",
                 "user" => null
-            ];
+            ], 200);
         } else if ($userNameExist != 0) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Ce nom d'utilisateur est déjà pris. Réessayez.",
                 "user" => null
-            ];
+            ], 200);
         } else if (strlen($name) < self::TAILLE_NAME_MIN) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Ce nom est trop court. Réessayez.",
                 "user" => null
-            ];
+            ], 200);
         } else if (strlen($name) > self::TAILLE_NAME_MAX) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Ce nom est trop long. Réessayez.",
                 "user" => null
-            ];
+            ], 200);
         } else if (strlen($password) < self::TAILLE_MDP_MIN) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Ce mot de passe est trop court. Réessayez.",
                 "user" => null
-            ];
+            ], 200);
         } else if (strlen($password) > self::TAILLE_MDP_MAX) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Ce mot de passe est trop long. Réessayez.",
                 "user" => null
-            ];
+            ], 200);
         } else {
             $password = password_hash($password, PASSWORD_DEFAULT, $options);
             $newUser = new User();
@@ -111,11 +111,11 @@ class UserController {
 
             $user = User::where('pseudo', '=', $pseudo)->first();
 
-            return [
+            return $rs->withJSON([
                 "result" => 1,
                 "message" => "Vous êtes connecté en tant que $user->pseudo.",
                 "user" => $user->toArray(true)
-            ];
+            ], 200);
         }
     }
 
@@ -124,9 +124,9 @@ class UserController {
      * @param Request $rq requête
      * @param Response $rs réponse
      * @param array $args arguments de la requête
-     * @return array
+     * @return Response
      */
-    public function login(Request $rq, Response $rs, array $args): array {
+    public function login(Request $rq, Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('login');
@@ -143,19 +143,19 @@ class UserController {
             if (password_verify($password,$hashedPassword)) {
                 $user = User::where('pseudo', '=', $pseudo)->first();
 
-                return [
+                return $rs->withJSON([
                     "result" => 1,
                     "message" => "Vous êtes connecté en tant que $user->pseudo.",
                     "user" => $user->toArray(true)
-                ];
+                ], 200);
             }
         }
 
-        return [
+        return $rs->withJSON([
             "result" => 0,
             "message" => "Nom d'utilisateur ou mot de passe incorrect.",
             "user" => null
-        ];
+        ], 200);
     }
 
     /**
@@ -163,9 +163,9 @@ class UserController {
      * @param Request $rq
      * @param Response $rs
      * @param array $args
-     * @return array Contenant toutes les caractéristiques des personnes trouvées
+     * @return Response
      */
-    public function searchUsers(Request $rq, Response $rs, array $args): array{
+    public function searchUsers(Request $rq, Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('users');
@@ -181,10 +181,10 @@ class UserController {
         } else {
             $tab = [];
         }
-        return $tab;
+        return $rs->withJSON($tab, 200);
     }
 
-    public function user(Request $rq, Response $rs, array $args): array {
+    public function user(Request $rq, Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('user');
@@ -195,28 +195,26 @@ class UserController {
 
         if ($userNameExist == 1) {
             $user = User::where("pseudo","=",$pseudo)->first();
-                return [
+                return $rs->withJSON([
                     "result" => 1,
                     "user" => $user->toArray()
-                ];
+                ], 200);
         }
 
-        return [
+        return $rs->withJSON([
             "result" => 0,
             "user" => null
-        ];
+        ], 200);
 
     }
 
-    // TODO
-    public function editUser(Request $rq, Response $rs, array $args): array {
+    public function editUser(Request $rq, Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('edit_user');
         $url = $base . $route_uri;
 
-        $content = $rq->getParsedBody(); // marche pas
-        echo $content ?? "\nnull\n";
+        $content = $rq->getParsedBody();
 
         $token = $content['token'];
         $name = filter_var($content['name'], FILTER_SANITIZE_STRING);
@@ -225,64 +223,64 @@ class UserController {
         $userNameExist = User::where("token", "=", $token)->count();
 
         if ($userNameExist != 1) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Token invalide",
                 "user" => null
-            ];
+            ], 200);
         } else if (strlen($name) < self::TAILLE_NAME_MIN) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Ce nom est trop court. Réessayez.",
                 "user" => null
-            ];
+            ], 200);
         } else {
             $user = User::where('token', '=', $token)->first();
             $user->name = $name;
             $user->description = $description;
             $user->save();
 
-            return [
+            return $rs->withJSON([
                 "result" => 1,
                 "message" => "Modifications enregistrées.",
                 "user" => $user->toArray(true)
-            ];
+            ], 200);
         }
     }
 
-    public function deleteUser(Request $rq, Response $rs, array $args): array {
+    public function deleteUser(Request $rq, Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('del_user');
         $url = $base . $route_uri;
 
         if (!isset($rq->getQueryParams()['token'])) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Token invalide."
-            ];
+            ], 200);
         }
         if (!isset($rq->getQueryParams()['pseudo'])) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Pseudo invalide."
-            ];
+            ], 200);
         }
         $user = User::where([
             "pseudo" => $rq->getQueryParams()['pseudo'],
             "token" => $rq->getQueryParams()['token']
         ])->first();
         if (is_null($user)) {
-            return [
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Aucun utilisateur correspondant."
-            ];
+            ], 200);
         }
 
         $user->delete();
-        return [
+        return $rs->withJSON([
             "result" => 1,
             "message" => "Votre compte à été supprimé."
-        ];
+        ], 200);
     }
 }
