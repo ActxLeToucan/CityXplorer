@@ -94,44 +94,26 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     maxLines: 5,
                     withBottomSpace: true,
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 60.0,
-                    child: IgnorePointer(
-                      /// rend le bouton non cliquable si il est en train d envoyer la requete
-                      ignoring: isLoading ? true : false,
-                      child: ElevatedButton(
-                        style: TextButton.styleFrom(
-                          primary: Colors.black,
-                        ),
-                        onPressed: () async {
-                          // Validate returns true if the form is valid, or false otherwise.
-                          if (_formKey.currentState!.validate()) {
-                            try {
-                              setState(() {
-                                isLoading = true;
-                              });
-                              await postLePost();
-                            } catch (e) {
-                              setState(() {
-                                isLoading = false;
-                              });
-                              Fluttertoast.showToast(msg: '$e');
-                            }
-                          }
-                        },
-                        child: (isLoading)
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 1.5,
-                                  color: Colors.white,
-                                ))
-                            : const Text('Valider',
-                                style: TextStyle(fontSize: 20)),
-                      ),
-                    ),
+                  Button(
+                    type: ButtonType.big,
+                    text: "Valider",
+                    withLoadingAnimation: true,
+                    onPressed: () async {
+                      // Validate returns true if the form is valid, or false otherwise.
+                      if (_formKey.currentState!.validate()) {
+                        try {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          await postLePost();
+                        } catch (e) {
+                          setState(() {
+                            isLoading = false;
+                          });
+                          Fluttertoast.showToast(msg: '$e');
+                        }
+                      }
+                    },
                   ),
                   /**
                       carouselBuild(),

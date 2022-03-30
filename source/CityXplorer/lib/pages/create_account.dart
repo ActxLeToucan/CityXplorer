@@ -108,13 +108,16 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
 
   Future register() async {
     String url = Conf.domainServer + Conf.apiPath + "/register";
+    Map<String, dynamic> body = {
+      "pseudo": pseudo.text,
+      "password": password.text,
+      "name": name.text
+    };
 
     try {
-      var response = await http.post(Uri.parse(url), body: {
-        "pseudo": pseudo.text,
-        "password": password.text,
-        "name": name.text
-      });
+      var response = await http.post(Uri.parse(url),
+          body: json.encode(body),
+          headers: {'content-type': 'application/json'});
       final Map<String, dynamic> data = json.decode(response.body);
       var res = data['result'];
 

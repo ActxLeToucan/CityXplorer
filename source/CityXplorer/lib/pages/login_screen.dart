@@ -111,12 +111,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future login() async {
     String url = Conf.domainServer + Conf.apiPath + "/login";
+    Map<String, dynamic> body = {
+      'pseudo': pseudo.text,
+      'password': password.text,
+    };
 
     try {
-      var response = await http.post(Uri.parse(url), body: {
-        'pseudo': pseudo.text,
-        'password': password.text,
-      });
+      var response = await http.post(Uri.parse(url),
+          body: json.encode(body),
+          headers: {'content-type': 'application/json'});
       final Map<String, dynamic> data = json.decode(response.body);
       var res = data['result'];
 

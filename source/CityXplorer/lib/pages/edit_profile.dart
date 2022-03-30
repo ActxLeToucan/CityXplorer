@@ -1,10 +1,18 @@
+import 'dart:convert';
+
 import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/components/input_field.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 import '../components/profile_widget.dart';
+import '../conf.dart';
+import '../router/delegate.dart';
+import '../styles.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -14,6 +22,11 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  final routerDelegate = Get.find<MyRouterDelegate>();
+
+  TextEditingController name = TextEditingController();
+  final TextEditingController description = TextEditingController();
+
   UserConneted _user = UserConneted.empty();
   bool _initialized = false;
 
@@ -23,6 +36,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       setState(() {
         _user = user;
         _initialized = true;
+        name.text = _user.name;
+        description.text = _user.description;
       });
     });
 
@@ -31,9 +46,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController name = TextEditingController(text: _user.name);
-    TextEditingController description =
-        TextEditingController(text: _user.description);
     if (_initialized) {
       if (_user.isEmpty()) {
         return Scaffold(
@@ -53,7 +65,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ProfileWidget(
                   user: _user,
                   isEdit: true,
-                  onClicked: () async {},
+                  onClicked: () async {}, // TODO
                 ),
                 const SizedBox(height: 24),
                 InputField(
@@ -66,7 +78,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     hintText: "Description",
                     hintPosition: HintPosition.above,
                     minLines: 2,
-                    maxLines: 5),
+                    maxLines: 5,
+                    withBottomSpace: true),
+                Button(
+                  type: ButtonType.big,
+                  text: "Valider les changements",
+                  withLoadingAnimation: true,
+                  onPressed: editProfile,
+                ),
+                const SizedBox(height: 25),
+                Button(
+                  type: ButtonType.small,
+                  text: "Changer de mot de passe",
+                  onPressed: () {}, // TODO
+                ),
+                Button(
+                  type: ButtonType.small,
+                  text: "Supprimer mon compte",
+                  contentColor: Styles.darkred,
+                  onPressed: () {}, // TODO
+                ),
               ],
             ),
           ),
@@ -77,6 +108,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
           extendBodyBehindAppBar: true,
           appBar: transparentAppBar(context),
           body: const Center(child: CircularProgressIndicator()));
+    }
+  }
+
+  Future editProfile() async {
+    String url = Conf.domainServer + Conf.apiPath + "/user";
+    Map<String, dynamic> body = {
+      "token": _user.token,
+      "name": name.text,
+      "description": description.text,
+    };
+
+    try {
+      var response = await http.put(Uri.parse(url),
+          body: json.encode(body),
+          headers: {'content-type': 'application/json'});
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      Fluttertoast.showToast(msg: data['message']);
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
   }
 }

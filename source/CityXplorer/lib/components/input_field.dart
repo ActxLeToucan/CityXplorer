@@ -132,7 +132,7 @@ class InputLogin extends InputField {
             onSubmitted: onSubmitted,
             validator: validator,
             textColor: Styles.loginTextColor,
-            textSize: Styles.loginTextSize,
+            textSize: Styles.bigButtonTextSize,
             hintColor: Styles.loginTextColor,
             fieldColor: Styles.loginFieldColor,
             withoutBorder: true,
@@ -161,7 +161,7 @@ class Button extends StatefulWidget {
     this.onPressed,
     this.text,
     this.icon,
-    this.contentColor = Colors.black,
+    this.contentColor,
     this.fontSize,
     this.underlined = false,
     this.parentState,
@@ -194,10 +194,16 @@ class _ButtonState extends State<Button> {
     if (widget.text != null) {
       content = Text(
         widget.text ?? "",
-        style: TextStyle(color: widget.contentColor, fontSize: widget.fontSize),
+        style: TextStyle(
+            color: widget.contentColor ??
+                (widget.type == ButtonType.big ? Colors.white : Colors.black),
+            fontSize: widget.fontSize ??
+                (widget.type == ButtonType.big
+                    ? Styles.bigButtonTextSize
+                    : null)),
       );
     } else if (widget.icon != null) {
-      content = Icon(widget.icon, color: widget.contentColor);
+      content = Icon(widget.icon, color: widget.contentColor ?? Colors.black);
     }
 
     Widget child = isLoading
@@ -206,7 +212,8 @@ class _ButtonState extends State<Button> {
             height: 16,
             child: CircularProgressIndicator(
               strokeWidth: 1.5,
-              color: widget.contentColor,
+              color: widget.contentColor ??
+                  (widget.type == ButtonType.big ? Colors.white : Colors.black),
             ))
         : content;
 
@@ -263,7 +270,7 @@ class ButtonLogin extends Button {
           key: key,
           type: type,
           text: text,
-          fontSize: Styles.loginTextSize,
+          fontSize: Styles.bigButtonTextSize,
           contentColor: Colors.white,
           backgroundColor:
               type == ButtonType.big ? const Color(0xFF22402F) : null,
