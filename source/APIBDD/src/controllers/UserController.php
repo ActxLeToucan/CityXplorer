@@ -319,7 +319,7 @@ class UserController {
                     $uploadFile = Conf::PATH_IMAGE_AVATAR . "/$fileName";
                     move_uploaded_file($cheminServeur, $uploadFile);
 
-                    // TODO suppression ancien avatar si pas 'avatar.png'
+                    if ($user->avatar != "" && $user->avatar != 'avatar.png' && file_exists(Conf::PATH_IMAGE_AVATAR . "/$user->avatar")) unlink(Conf::PATH_IMAGE_AVATAR . "/$user->avatar");
 
                     $user->avatar = $fileName;
                     $user->save();

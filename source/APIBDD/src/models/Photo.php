@@ -20,6 +20,6 @@ class Photo extends Model{
     }
 
     public function deleteFile() {
-        if (!is_null($this) && $this->url != "") unlink(Conf::PATH_IMAGE_POSTS . "/$this->url");
+        if (!is_null($this) && $this->url != "" && file_exists(Conf::PATH_IMAGE_POSTS . "/$this->url")) unlink(Conf::PATH_IMAGE_POSTS . "/$this->url");
     }
 }

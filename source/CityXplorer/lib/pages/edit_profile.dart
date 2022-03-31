@@ -131,7 +131,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
           .add(await http.MultipartFile.fromPath("avatar", image.path));
 
       var response = await http.Response.fromStream(await request.send());
-      print(response.body);
       final Map<String, dynamic> data = json.decode(response.body);
       String res = data['message'];
       int code = data['result'];
@@ -140,8 +139,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       if (code == 1) {
         await updateUser(_user);
-        setState(() async {
-          _user = await getUser();
+        UserConneted newUser = await getUser();
+        setState(() {
+          _user = newUser;
           _initialized = true;
         });
       }
