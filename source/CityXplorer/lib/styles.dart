@@ -4,7 +4,7 @@ class Styles {
   // global
   static const Color mainColor = Color(0xFF388E3C);
   static const Color darkred = Color(0xFFA00000);
-  static const TextStyle textStyleLink = TextStyle(color: mainColor);
+  static const Color linkColor = mainColor;
 
   // login
   static final Color? loginFieldColor = Colors.grey[500]?.withOpacity(0.5);

@@ -109,12 +109,15 @@ Future<bool> isCurrentUser(String pseudo) async {
 }
 
 /// mise a jour de l'utilisateur stocké dans les SharedPreferences
-Future<void> updateUser(User user) async {
+/// retourne le meme utilisateur, potentiellement modifié
+Future<User> updateUser(User user) async {
   if ((!user.isEmpty() && user is UserConneted) ||
       await isCurrentUser(user.pseudo)) {
     UserConneted oldUser = await getUser();
     User newUser = await User.fromPseudo(user.pseudo);
     UserConneted userUpdated = oldUser.updateWith(newUser);
     connexion(userUpdated);
+    return userUpdated;
   }
+  return user;
 }

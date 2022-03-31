@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 import '../components/appbar.dart';
 import '../models/post.dart';
-import '../router/delegate.dart';
 
 class PostPage extends StatefulWidget {
   final Map<String, dynamic> arguments;
@@ -15,8 +13,6 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  final routerDelegate = Get.find<MyRouterDelegate>();
-
   Post _post = Post.empty();
   bool _loaded = false;
 

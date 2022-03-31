@@ -1,4 +1,5 @@
 import 'package:cityxplorer/components/appbar.dart';
+import 'package:cityxplorer/components/description.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,6 @@ class _UserProfileState extends State<UserProfile> {
     User.fromPseudo(widget.arguments['pseudo'].toString()).then((user) {
       setState(() {
         _user = user;
-        _initialized = true;
       });
       _load();
     });
@@ -45,7 +45,6 @@ class _UserProfileState extends State<UserProfile> {
             appBar: transparentAppBar(context),
             body: const Center(child: Text("Utilisateur invalide.")));
       } else {
-        updateUser(_user);
         return Scaffold(
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
@@ -74,12 +73,11 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _load() async {
     setState(() => _initialized = false);
     Widget posts = await _renderPosts(context);
-    await updateUser(_user);
 
-    UserConneted user = await getUser();
+    User u = await updateUser(_user);
 
     setState(() {
-      _user = user;
+      _user = u;
       postsLoaded = posts;
       _initialized = true;
     });
@@ -144,10 +142,11 @@ class _UserProfileState extends State<UserProfile> {
                         color: Colors.grey,
                         fontStyle: FontStyle.italic),
                   )
-                : Text(
-                    user.description,
-                    style: const TextStyle(fontSize: 16, height: 1.4),
-                  ),
+                : Description(
+                    description: user.description,
+                    fontSize: 16,
+                    height: 1.4,
+                    defaultColor: Colors.grey),
           ],
         ),
       );
