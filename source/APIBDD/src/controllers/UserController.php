@@ -292,4 +292,52 @@ class UserController {
             "message" => "Votre compte à été supprimé."
         ], 200);
     }
+
+    public function avatar(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('avatar');
+        $url = $base . $route_uri;
+
+        $tab = [
+            "result" => 0,
+            "message" => "Erreur : Modification impossible"
+        ];
+        $content = $rq->getParsedBody();
+        if (isset($content['token'])) {
+            $user = User::where("token", "=", $content['token'])->first();
+            $tab = [
+                "result" => 0,
+                "message" => "Erreur : Token invalide"
+            ];
+            if (!is_null($user)) {
+                if (sizeof($_FILES) == 1 && $_FILES['avatar']['error'] == 0) {
+                    // upload image
+                    $cheminServeur = $_FILES['avatar']['tmp_name'];
+                    $extension = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
+                    $fileName = time() . bin2hex(openssl_random_pseudo_bytes(20)) . '.' . $extension;
+                    $uploadFile = Conf::PATH_IMAGE_AVATAR . "/$fileName";
+                    move_uploaded_file($cheminServeur, $uploadFile);
+
+                    // TODO suppression ancien avatar si pas 'avatar.png'
+
+                    $user->avatar = $fileName;
+                    $user->save();
+
+                    // résultats
+                    $tab = [
+                        "result" => 1,
+                        "message" => "Avatar modifié"
+                    ];
+                } else {
+                    $tab = [
+                        "result" => 0,
+                        "message" => "Fichier invalide"
+                    ];
+                }
+            }
+        }
+
+        return $rs->withJSON($tab, 200);
+    }
 }

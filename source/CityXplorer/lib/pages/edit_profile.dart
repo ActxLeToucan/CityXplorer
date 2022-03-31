@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/components/input_field.dart';
 import 'package:cityxplorer/main.dart';
+import 'package:cityxplorer/models/user.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 import '../components/profile_widget.dart';
 import '../conf.dart';
@@ -24,7 +26,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   final routerDelegate = Get.find<MyRouterDelegate>();
 
-  TextEditingController name = TextEditingController();
+  final TextEditingController name = TextEditingController();
   final TextEditingController description = TextEditingController();
 
   UserConneted _user = UserConneted.empty();
@@ -65,7 +67,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ProfileWidget(
                   user: _user,
                   isEdit: true,
-                  onClicked: () async {}, // TODO
+                  onClicked: changeAvatar,
                 ),
                 const SizedBox(height: 24),
                 InputField(
@@ -111,6 +113,47 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
+  Future<void> changeAvatar() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (image == null) return;
+
+    setState(() {
+      _initialized = false;
+    });
+    String url = Conf.domainServer + Conf.apiPath + "/avatar";
+    var request = http.MultipartRequest("POST", Uri.parse(url));
+    request.fields['token'] = _user.token;
+
+    try {
+      request.files
+          .add(await http.MultipartFile.fromPath("avatar", image.path));
+
+      var response = await http.Response.fromStream(await request.send());
+      print(response.body);
+      final Map<String, dynamic> data = json.decode(response.body);
+      String res = data['message'];
+      int code = data['result'];
+
+      Fluttertoast.showToast(msg: res);
+
+      if (code == 1) {
+        await updateUser(_user);
+        setState(() async {
+          _user = await getUser();
+          _initialized = true;
+        });
+      }
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
+    setState(() {
+      _initialized = true;
+    });
+  }
+
   Future<bool> alertDelete(BuildContext context) async {
     final result = await showDialog<bool>(
         context: context,
@@ -153,6 +196,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
       final Map<String, dynamic> data = json.decode(response.body);
 
       Fluttertoast.showToast(msg: data['message']);
+
+      if (data["result"] == 1) {
+        await updateUser(_user);
+      }
     } catch (e) {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");

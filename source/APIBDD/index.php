@@ -43,6 +43,9 @@ $app->put('/user', 'cityXplorer\controllers\UserController:editUser')->setName("
 // suppression utilisateur
 $app->delete('/user', 'cityXplorer\controllers\UserController:deleteUser')->setName("del_user");
 
+// ajout avatar
+$app->post('/avatar', 'cityXplorer\controllers\UserController:avatar')->setName("avatar");
+
 
 /**
  * POST

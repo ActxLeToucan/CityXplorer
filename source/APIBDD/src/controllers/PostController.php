@@ -82,38 +82,46 @@ class PostController {
                 "post" => null
             ];
             if (!is_null($user)) {
-                // upload image
-                $cheminServeur = $_FILES['photo']['tmp_name'];
-                $extension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
-                $fileName = time() . bin2hex(openssl_random_pseudo_bytes(20)) . '.' . $extension;
-                $uploadFile = Conf::PATH_IMAGE_POSTS . "/$fileName";
-                move_uploaded_file($cheminServeur, $uploadFile);
+                if (sizeof($_FILES) == 1 && $_FILES['photo']['error'] == 0) {
+                    // upload image
+                    $cheminServeur = $_FILES['photo']['tmp_name'];
+                    $extension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+                    $fileName = time() . bin2hex(openssl_random_pseudo_bytes(20)) . '.' . $extension;
+                    $uploadFile = Conf::PATH_IMAGE_POSTS . "/$fileName";
+                    move_uploaded_file($cheminServeur, $uploadFile);
 
-                // creation post
-                $newPost = new Post();
-                $newPost->latitude = $latitude;
-                $newPost->longitude = $longitude;
-                $newPost->description = $descr;
-                $newPost->titre = $titre;
-                $newPost->datePost = $datePost;
-                $newPost->etat = 'Invalide';
-                $newPost->idUser = $user->id;
-                $newPost->adresse_courte = $adresse_courte;
-                $newPost->adresse_longue = $adresse_longue;
-                $newPost->save();
+                    // creation post
+                    $newPost = new Post();
+                    $newPost->latitude = $latitude;
+                    $newPost->longitude = $longitude;
+                    $newPost->description = $descr;
+                    $newPost->titre = $titre;
+                    $newPost->datePost = $datePost;
+                    $newPost->etat = 'Invalide';
+                    $newPost->idUser = $user->id;
+                    $newPost->adresse_courte = $adresse_courte;
+                    $newPost->adresse_longue = $adresse_longue;
+                    $newPost->save();
 
-                // creation photo
-                $newPhoto = new Photo();
-                $newPhoto->idPost = $newPost->idPost;
-                $newPhoto->url = $fileName;
-                $newPhoto->save();
+                    // creation photo
+                    $newPhoto = new Photo();
+                    $newPhoto->idPost = $newPost->idPost;
+                    $newPhoto->url = $fileName;
+                    $newPhoto->save();
 
-                // résultats
-                $tab = [
-                    "result" => 1,
-                    "message" => "Insertion effectuée",
-                    "post" => $newPost->toArray()
-                ];
+                    // résultats
+                    $tab = [
+                        "result" => 1,
+                        "message" => "Insertion effectuée",
+                        "post" => $newPost->toArray()
+                    ];
+                } else {
+                    $tab = [
+                        "result" => 0,
+                        "message" => "Fichier invalide",
+                        "post" => null
+                    ];
+                }
             }
         }
 
