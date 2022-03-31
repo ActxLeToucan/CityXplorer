@@ -2,6 +2,7 @@ import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/components/description.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
+import 'package:cityxplorer/styles.dart';
 import 'package:flutter/material.dart';
 
 import '../components/numbers_widget.dart';
@@ -134,19 +135,19 @@ class _UserProfileState extends State<UserProfile> {
             ),
             const SizedBox(height: 16),
             user.description == ""
-                ? const Text(
+                ? Text(
                     "Aucune description.",
                     style: TextStyle(
                         fontSize: 16,
                         height: 1.4,
-                        color: Colors.grey,
+                        color: Colors.black.withOpacity(0.65),
                         fontStyle: FontStyle.italic),
                   )
                 : Description(
                     description: user.description,
                     fontSize: 16,
                     height: 1.4,
-                    defaultColor: Colors.grey),
+                    defaultColor: Colors.black.withOpacity(0.65)),
           ],
         ),
       );
