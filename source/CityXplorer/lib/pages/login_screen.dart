@@ -22,6 +22,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final routerDelegate = Get.find<MyRouterDelegate>();
 
+  final _formKey = GlobalKey<FormState>();
+
   final TextEditingController pseudo = TextEditingController();
   final TextEditingController password = TextEditingController();
 
@@ -41,51 +43,66 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   Center(child: _renderTitle()),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: Column(
-                      children: [
-                        InputLogin(
-                          controller: pseudo,
-                          icon: Icons.account_circle,
-                          hintText: 'Pseudo',
-                          inputAction: TextInputAction.next,
-                          withBottomSpace: true,
+                  Form(
+                      key: _formKey,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Column(
+                          children: [
+                            InputLogin(
+                              controller: pseudo,
+                              icon: Icons.account_circle,
+                              hintText: 'Pseudo',
+                              inputAction: TextInputAction.next,
+                              withBottomSpace: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Entrez votre mot de passe';
+                                }
+                                return null;
+                              },
+                            ),
+                            InputLogin(
+                              controller: password,
+                              icon: Icons.lock_rounded,
+                              hintText: 'Mot de passe',
+                              inputAction: TextInputAction.done,
+                              withBottomSpace: true,
+                              isPassword: true,
+                              onSubmitted: (_) async {
+                                setState(() => isLoading = true);
+                                await login();
+                                setState(() => isLoading = false);
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Entrez votre pseudo';
+                                }
+                                return null;
+                              },
+                            ),
+                            ButtonLogin(
+                              type: ButtonType.big,
+                              text: "Se connecter",
+                              onPressed: login,
+                              parentState: isLoading,
+                            ),
+                            const SizedBox(
+                              height: 50,
+                            ),
+                            ButtonLogin(
+                                type: ButtonType.small,
+                                text: "Créer un compte",
+                                onPressed: () => routerDelegate
+                                    .pushPageAndClear(name: '/signup')),
+                            ButtonLogin(
+                                type: ButtonType.small,
+                                text: "Continuer sans compte",
+                                onPressed: () =>
+                                    routerDelegate.pushPageAndClear(name: '/')),
+                          ],
                         ),
-                        InputLogin(
-                            controller: password,
-                            icon: Icons.lock_rounded,
-                            hintText: 'Mot de passe',
-                            inputAction: TextInputAction.done,
-                            withBottomSpace: true,
-                            isPassword: true,
-                            onSubmitted: (_) async {
-                              setState(() => isLoading = true);
-                              await login();
-                              setState(() => isLoading = false);
-                            }),
-                        ButtonLogin(
-                          type: ButtonType.big,
-                          text: "Se connecter",
-                          onPressed: login,
-                          parentState: isLoading,
-                        ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        ButtonLogin(
-                            type: ButtonType.small,
-                            text: "Créer un compte",
-                            onPressed: () => routerDelegate.pushPageAndClear(
-                                name: '/signup')),
-                        ButtonLogin(
-                            type: ButtonType.small,
-                            text: "Continuer sans compte",
-                            onPressed: () =>
-                                routerDelegate.pushPageAndClear(name: '/')),
-                      ],
-                    ),
-                  ),
+                      )),
                   const SizedBox(
                     height: 20,
                   ),
@@ -110,29 +127,32 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future login() async {
-    String url = Conf.domainServer + Conf.apiPath + "/login";
-    Map<String, dynamic> body = {
-      'pseudo': pseudo.text,
-      'password': password.text,
-    };
+    if (_formKey.currentState!.validate()) {
+      String url = Conf.domainServer + Conf.apiPath + "/login";
+      Map<String, dynamic> body = {
+        'pseudo': pseudo.text,
+        'password': password.text,
+      };
 
-    try {
-      var response = await http.post(Uri.parse(url),
-          body: json.encode(body),
-          headers: {'content-type': 'application/json'});
-      final Map<String, dynamic> data = json.decode(response.body);
-      var res = data['result'];
+      try {
+        var response = await http.post(Uri.parse(url),
+            body: json.encode(body),
+            headers: {'content-type': 'application/json'});
+        final Map<String, dynamic> data = json.decode(response.body);
+        var res = data['result'];
 
-      if (res == 1) {
-        UserConneted user = UserConneted.fromJson(data['user']);
-        connexion(user);
+        if (res == 1) {
+          UserConneted user = UserConneted.fromJson(data['user']);
+          connexion(user);
 
-        routerDelegate.pushPageAndClear(name: '/');
+          routerDelegate.pushPageAndClear(name: '/');
+        }
+        Fluttertoast.showToast(msg: data['message']);
+      } catch (e) {
+        print(e);
+        Fluttertoast.showToast(
+            msg: "Impossible d'accéder à la base de données.");
       }
-      Fluttertoast.showToast(msg: data['message']);
-    } catch (e) {
-      print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
   }
 }

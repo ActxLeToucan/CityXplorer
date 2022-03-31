@@ -22,8 +22,11 @@ class CreateNewAccount extends StatefulWidget {
 class _CreateNewAccountState extends State<CreateNewAccount> {
   final routerDelegate = Get.find<MyRouterDelegate>();
 
+  final _formKey = GlobalKey<FormState>();
+
   final TextEditingController pseudo = TextEditingController();
   final TextEditingController password = TextEditingController();
+  final TextEditingController passwordAgain = TextEditingController();
   final TextEditingController name = TextEditingController();
 
   bool isLoading = false;
@@ -42,58 +45,114 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
               child: Column(
                 children: [
                   Center(child: _renderTitle()),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: Column(
-                      children: [
-                        InputLogin(
-                          controller: pseudo,
-                          hintText: 'Pseudo',
-                          icon: Icons.account_circle,
-                          inputAction: TextInputAction.next,
-                          withBottomSpace: true,
+                  Form(
+                      key: _formKey,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Column(
+                          children: [
+                            InputLogin(
+                              controller: pseudo,
+                              hintText: 'Pseudo',
+                              icon: Icons.account_circle,
+                              inputAction: TextInputAction.next,
+                              withBottomSpace: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Entrez un pseudo';
+                                }
+                                if (value.length < Conf.taillePseudoMin) {
+                                  return "Ce pseudo est trop court";
+                                }
+                                if (value.length > Conf.taillePseudoMax) {
+                                  return "Ce pseudo est trop long";
+                                }
+                                if (!Conf.regexPseudo.hasMatch(value)) {
+                                  return "Ce pseudo est invalide";
+                                }
+                                return null;
+                              },
+                            ),
+                            InputLogin(
+                              controller: name,
+                              icon: Icons.accessibility_new,
+                              hintText: 'Nom',
+                              inputAction: TextInputAction.next,
+                              withBottomSpace: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Entrez un nom';
+                                }
+                                if (value.length < Conf.tailleNameMin) {
+                                  return "Ce nom est trop court";
+                                }
+                                if (value.length > Conf.tailleNameMax) {
+                                  return "Ce nom est trop long";
+                                }
+                                return null;
+                              },
+                            ),
+                            InputLogin(
+                              controller: password,
+                              icon: Icons.lock_rounded,
+                              hintText: 'Mot de passe',
+                              inputAction: TextInputAction.next,
+                              withBottomSpace: true,
+                              isPassword: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Choississez un mot de passe';
+                                }
+                                if (value.length < Conf.tailleMdpMin) {
+                                  return "Ce mot de passe est trop court";
+                                }
+                                if (value.length > Conf.tailleMdpMax) {
+                                  return "Ce mot de passe est trop long";
+                                }
+                                return null;
+                              },
+                            ),
+                            InputLogin(
+                              controller: passwordAgain,
+                              icon: Icons.lock_rounded,
+                              hintText: 'Confirmation mot de passe',
+                              inputAction: TextInputAction.done,
+                              withBottomSpace: true,
+                              isPassword: true,
+                              onSubmitted: (_) async {
+                                setState(() => isLoading = true);
+                                await register();
+                                setState(() => isLoading = false);
+                              },
+                              validator: (value) {
+                                if (value != password.text) {
+                                  return "Les mots de passe ne correspondent pas";
+                                }
+                                return null;
+                              },
+                            ),
+                            ButtonLogin(
+                              type: ButtonType.big,
+                              text: "S'inscrire",
+                              onPressed: register,
+                              parentState: isLoading,
+                            ),
+                            const SizedBox(
+                              height: 50,
+                            ),
+                            ButtonLogin(
+                                type: ButtonType.small,
+                                text: "Se connecter",
+                                onPressed: () => routerDelegate
+                                    .pushPageAndClear(name: '/login')),
+                            ButtonLogin(
+                                type: ButtonType.small,
+                                text: "Continuer sans compte",
+                                onPressed: () =>
+                                    routerDelegate.pushPageAndClear(name: '/')),
+                          ],
                         ),
-                        InputLogin(
-                          controller: name,
-                          icon: Icons.accessibility_new,
-                          hintText: 'Nom',
-                          inputAction: TextInputAction.next,
-                          withBottomSpace: true,
-                        ),
-                        InputLogin(
-                            controller: password,
-                            icon: Icons.lock_rounded,
-                            hintText: 'Mot de passe',
-                            inputAction: TextInputAction.done,
-                            withBottomSpace: true,
-                            isPassword: true,
-                            onSubmitted: (_) async {
-                              setState(() => isLoading = true);
-                              await register();
-                              setState(() => isLoading = false);
-                            }),
-                        ButtonLogin(
-                          type: ButtonType.big,
-                          text: "S'inscrire",
-                          onPressed: register,
-                          parentState: isLoading,
-                        ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        ButtonLogin(
-                            type: ButtonType.small,
-                            text: "Se connecter",
-                            onPressed: () => routerDelegate.pushPageAndClear(
-                                name: '/login')),
-                        ButtonLogin(
-                            type: ButtonType.small,
-                            text: "Continuer sans compte",
-                            onPressed: () =>
-                                routerDelegate.pushPageAndClear(name: '/')),
-                      ],
-                    ),
-                  ),
+                      )),
                   const SizedBox(
                     height: 20,
                   ),
@@ -107,30 +166,33 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
   }
 
   Future register() async {
-    String url = Conf.domainServer + Conf.apiPath + "/register";
-    Map<String, dynamic> body = {
-      "pseudo": pseudo.text,
-      "password": password.text,
-      "name": name.text
-    };
+    if (_formKey.currentState!.validate()) {
+      String url = Conf.domainServer + Conf.apiPath + "/register";
+      Map<String, dynamic> body = {
+        "pseudo": pseudo.text,
+        "password": password.text,
+        "name": name.text
+      };
 
-    try {
-      var response = await http.post(Uri.parse(url),
-          body: json.encode(body),
-          headers: {'content-type': 'application/json'});
-      final Map<String, dynamic> data = json.decode(response.body);
-      var res = data['result'];
+      try {
+        var response = await http.post(Uri.parse(url),
+            body: json.encode(body),
+            headers: {'content-type': 'application/json'});
+        final Map<String, dynamic> data = json.decode(response.body);
+        var res = data['result'];
 
-      if (res == 1) {
-        UserConneted user = UserConneted.fromJson(data['user']);
-        connexion(user);
+        if (res == 1) {
+          UserConneted user = UserConneted.fromJson(data['user']);
+          connexion(user);
 
-        routerDelegate.pushPageAndClear(name: '/');
+          routerDelegate.pushPageAndClear(name: '/');
+        }
+        Fluttertoast.showToast(msg: data['message']);
+      } catch (e) {
+        print(e);
+        Fluttertoast.showToast(
+            msg: "Impossible d'accéder à la base de données.");
       }
-      Fluttertoast.showToast(msg: data['message']);
-    } catch (e) {
-      print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
   }
 

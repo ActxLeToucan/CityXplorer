@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/components/input_field.dart';
 import 'package:cityxplorer/main.dart';
-import 'package:cityxplorer/models/user.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -25,6 +24,8 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   final routerDelegate = Get.find<MyRouterDelegate>();
+
+  final _formKey = GlobalKey<FormState>();
 
   final TextEditingController name = TextEditingController();
   final TextEditingController description = TextEditingController();
@@ -53,57 +54,74 @@ class _EditProfilePageState extends State<EditProfilePage> {
         return Scaffold(
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
-            body: const Center(child: Text("Utilisateur invalide.")));
+            body: const Center(
+                child: Text("Connectez-vous pour accéder à cette page")));
       } else {
         return Scaffold(
-          extendBodyBehindAppBar: true,
-          appBar: transparentAppBar(context),
-          body: Padding(
-            padding: const EdgeInsets.fromLTRB(32, 15, 32, 0),
-            child: ListView(
-              physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics()),
-              children: [
-                ProfileWidget(
-                  user: _user,
-                  isEdit: true,
-                  onClicked: changeAvatar,
+            extendBodyBehindAppBar: true,
+            appBar: transparentAppBar(context),
+            body: Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(32, 15, 32, 0),
+                child: ListView(
+                  physics: const BouncingScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics()),
+                  children: [
+                    ProfileWidget(
+                      user: _user,
+                      isEdit: true,
+                      onClicked: changeAvatar,
+                    ),
+                    const SizedBox(height: 24),
+                    InputField(
+                      controller: name,
+                      hintText: "Nom",
+                      hintPosition: HintPosition.above,
+                      withBottomSpace: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Entrez un nom';
+                        }
+                        if (value.length < Conf.tailleNameMin) {
+                          return "Ce nom est trop court";
+                        }
+                        if (value.length > Conf.tailleNameMax) {
+                          return "Ce nom est trop long";
+                        }
+                        return null;
+                      },
+                    ),
+                    InputField(
+                        controller: description,
+                        hintText: "Description",
+                        hintPosition: HintPosition.above,
+                        minLines: 2,
+                        maxLines: 5,
+                        withBottomSpace: true),
+                    Button(
+                      type: ButtonType.big,
+                      text: "Valider les changements",
+                      withLoadingAnimation: true,
+                      onPressed: editProfile,
+                    ),
+                    const SizedBox(height: 25),
+                    Button(
+                      type: ButtonType.small,
+                      text: "Changer de mot de passe",
+                      onPressed: () =>
+                          routerDelegate.pushPage(name: '/change_password'),
+                    ),
+                    Button(
+                      type: ButtonType.small,
+                      text: "Supprimer mon compte",
+                      contentColor: Styles.darkred,
+                      onPressed: () => alertDelete(context),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 24),
-                InputField(
-                    controller: name,
-                    hintText: "Nom",
-                    hintPosition: HintPosition.above,
-                    withBottomSpace: true),
-                InputField(
-                    controller: description,
-                    hintText: "Description",
-                    hintPosition: HintPosition.above,
-                    minLines: 2,
-                    maxLines: 5,
-                    withBottomSpace: true),
-                Button(
-                  type: ButtonType.big,
-                  text: "Valider les changements",
-                  withLoadingAnimation: true,
-                  onPressed: editProfile,
-                ),
-                const SizedBox(height: 25),
-                Button(
-                  type: ButtonType.small,
-                  text: "Changer de mot de passe",
-                  onPressed: () {}, // TODO
-                ),
-                Button(
-                  type: ButtonType.small,
-                  text: "Supprimer mon compte",
-                  contentColor: Styles.darkred,
-                  onPressed: () => alertDelete(context),
-                ),
-              ],
-            ),
-          ),
-        );
+              ),
+            ));
       }
     } else {
       return Scaffold(
@@ -182,27 +200,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> editProfile() async {
-    String url = Conf.domainServer + Conf.apiPath + "/user";
-    Map<String, dynamic> body = {
-      "token": _user.token,
-      "name": name.text,
-      "description": description.text,
-    };
+    if (_formKey.currentState!.validate()) {
+      String url = Conf.domainServer + Conf.apiPath + "/user";
+      Map<String, dynamic> body = {
+        "token": _user.token,
+        "name": name.text,
+        "description": description.text,
+      };
 
-    try {
-      var response = await http.put(Uri.parse(url),
-          body: json.encode(body),
-          headers: {'content-type': 'application/json'});
-      final Map<String, dynamic> data = json.decode(response.body);
+      try {
+        var response = await http.put(Uri.parse(url),
+            body: json.encode(body),
+            headers: {'content-type': 'application/json'});
+        final Map<String, dynamic> data = json.decode(response.body);
 
-      Fluttertoast.showToast(msg: data['message']);
+        Fluttertoast.showToast(msg: data['message']);
 
-      if (data["result"] == 1) {
-        await updateUser(_user);
+        if (data["result"] == 1) {
+          await updateUser(_user);
+        }
+      } catch (e) {
+        print(e);
+        Fluttertoast.showToast(
+            msg: "Impossible d'accéder à la base de données.");
       }
-    } catch (e) {
-      print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
   }
 

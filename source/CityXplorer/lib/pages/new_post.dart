@@ -34,7 +34,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
   final controllerTitre = TextEditingController(text: "Sans titre");
   final controllerDescription = TextEditingController();
   DateTime now = DateTime.now();
-  bool isLoading = false;
   List photos = [];
 
   String imagePath = "";
@@ -98,22 +97,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     type: ButtonType.big,
                     text: "Valider",
                     withLoadingAnimation: true,
-                    onPressed: () async {
-                      // Validate returns true if the form is valid, or false otherwise.
-                      if (_formKey.currentState!.validate()) {
-                        try {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          await postLePost();
-                        } catch (e) {
-                          setState(() {
-                            isLoading = false;
-                          });
-                          Fluttertoast.showToast(msg: '$e');
-                        }
-                      }
-                    },
+                    onPressed: postLePost,
                   ),
                   /**
                       carouselBuild(),
@@ -167,59 +151,58 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   /// methode appelee lors de la creation du post dans la BDD
   Future postLePost() async {
-    String url = Conf.domainServer + Conf.apiPath + "/post";
+    if (_formKey.currentState!.validate()) {
+      String url = Conf.domainServer + Conf.apiPath + "/post";
 
-    var request = http.MultipartRequest("POST", Uri.parse(url));
-    try {
-      request.fields['titre'] = controllerTitre.text;
-      request.fields['description'] = controllerDescription.text;
+      var request = http.MultipartRequest("POST", Uri.parse(url));
+      try {
+        request.fields['titre'] = controllerTitre.text;
+        request.fields['description'] = controllerDescription.text;
 
-      request.fields['latitude'] = latitude.toString();
-      request.fields['longitude'] = longitude.toString();
+        request.fields['latitude'] = latitude.toString();
+        request.fields['longitude'] = longitude.toString();
 
-      request.fields['date'] = getCurrentDateBDD();
+        request.fields['date'] = getCurrentDateBDD();
 
-      UserConneted user = await getUser();
-      if (!user.isEmpty()) {
-        request.fields['token'] = user.token;
-      } else {
-        throw Exception('Erreur : session !');
+        UserConneted user = await getUser();
+        if (!user.isEmpty()) {
+          request.fields['token'] = user.token;
+        } else {
+          throw Exception('Erreur : session !');
+        }
+
+        List adresses = await getAdresse();
+        request.fields['adresse-longue'] = adresses[0] ?? "";
+        request.fields['adresse-courte'] = adresses[1] ?? "";
+
+        ///ajout de la photo a la requete
+        request.files.add(await http.MultipartFile.fromPath("photo", imagePath,
+            contentType: MediaType("image", "jpeg")));
+
+        var response = await http.Response.fromStream(await request.send());
+        // print(response.body);
+        final Map<String, dynamic> data = json.decode(response.body);
+        String res = data['message'];
+        int code = data['result'];
+
+        /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
+        /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul
+        if (code == 1) {
+          Navigator.pop(context);
+        }
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AdvanceCustomAlert(
+                message: res,
+                code: code,
+              );
+            });
+      } catch (e) {
+        print(e);
+        Fluttertoast.showToast(
+            msg: "Impossible d'accéder à la base de données.");
       }
-
-      List adresses = await getAdresse();
-      request.fields['adresse-longue'] = adresses[0] ?? "";
-      request.fields['adresse-courte'] = adresses[1] ?? "";
-
-      ///ajout de la photo a la requete
-      request.files.add(await http.MultipartFile.fromPath("photo", imagePath,
-          contentType: MediaType("image", "jpeg")));
-
-      var response = await http.Response.fromStream(await request.send());
-      // print(response.body);
-      final Map<String, dynamic> data = json.decode(response.body);
-      String res = data['message'];
-      int code = data['result'];
-
-      /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
-      /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul
-      if (code == 1) {
-        Navigator.pop(context);
-      }
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AdvanceCustomAlert(
-              message: res,
-              code: code,
-            );
-          });
-    } catch (e) {
-      print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
-
-      setState(() {
-        isLoading = false;
-      });
     }
   }
 
