@@ -58,6 +58,7 @@ class PostController {
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('createPost');
         $url = $base . $route_uri;
+
         $content = $rq->getParsedBody();
 
         $startTime = strtotime($content['date']);
@@ -140,6 +141,7 @@ class PostController {
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('postId');
         $url = $base . $route_uri;
+
         $content=$rq->getQueryParams();
         $id = $content['id'];
 
@@ -170,6 +172,7 @@ class PostController {
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('postsUser');
         $url = $base . $route_uri;
+
         $content = $rq->getQueryParams();
         $pseudo = $content['pseudo'];
 
@@ -193,6 +196,7 @@ class PostController {
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('delete');
         $url = $base . $route_uri;
+
         $content= $rq->getQueryParams();
         $token = $content["token"];
         $idPost = $content["id"];
@@ -225,36 +229,35 @@ class PostController {
     public function like(Request $rq, Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('likeUser');
+        $route_uri = $container->router->pathFor('like');
         $url = $base . $route_uri;
-        $content = $rq->getQueryParams();
-        $token = $content["token"];
-        $idPost = $content["id"];
-        $userExist = User::where("token", "=", $token)->first();
-        $post = Post::where("idPost", "=", $idPost)->first();
 
-        if (!isset($rq->getQueryParams()['token']) || is_null($post) || !isset($rq->getQueryParams()['id']) || is_null($userExist)) {
+        $content = $rq->getParsedBody();
+
+        if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
             return $rs->withJSON([
                 "result" => 0,
-                "message" => "Erreur: Id ou token invalide",
-                "1" => $rq->getQueryParams()['token'],
-                "2" => $idPost,
-                "3" => is_null($post),
-                "4" => !isset($rq->getQueryParams()['id'])
-            ], 200);
-        } else {
-            $user = User::where('token', '=', $token);
-            $like = new Like();
-            $userId = $user->id;
-            $postId = $post->idPost;
-            $like->idUtilisateur = $userId;
-            $like->idPost = $postId;
-            $like->save();
-            return $rs->withJSON([
-                "result" => 1,
-                "message" => "Post liké !",
+                "message" => "Token invalide"
             ], 200);
         }
+
+        if (!isset($content['id']) || is_null($post = Post::where("idPost", "=", $content['id'])->first())) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Post invalide"
+            ], 200);
+        }
+
+        $nb = $user->likes->where('idPost', '=', $post->idPost)->count();
+
+        if ($nb == 0) {
+            $user->likes()->save($post);
+        }
+
+        return $rs->withJSON([
+            "result" => 1,
+            "message" => "Post liké"
+        ], 200);
     }
 
     public function dislike(Request $rq, Response $rs, array $args): Response {
@@ -262,30 +265,32 @@ class PostController {
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('dislike');
         $url = $base . $route_uri;
-        $content=$rq->getQueryParams();
-        $token = $content["token"];
-        $idPost = $content["id"];
-        $userExist = User::where("token", "=", $token)->count();
-        $post = Post::where("idPost", "=", $idPost)->first();
 
-        if (!isset($rq->getQueryParams()['token']) || is_null($post) || !isset($idPost) || $userExist != 1) {
+        $content = $rq->getParsedBody();
+
+        if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
             return $rs->withJSON([
                 "result" => 0,
-                "message" => "Erreur : id ou token invalide",
-                "1" => $rq->getQueryParams()['token'],
-                "2" => is_null($post),
-                "3" => !isset($idPost)
-            ], 200);
-        } else {
-            $user = User::where('token', '=', $token)->first();
-            $userId=$user->id;
-            $idPost=$post->idPost;
-            $like=Like::where(["idUtilisateur" => $userId, "idPost" => $idPost]);
-            $like->delete();
-            return $rs->withJSON([
-                "result" => 1,
-                "message" => "Dislike du post"
+                "message" => "Token invalide"
             ], 200);
         }
+
+        if (!isset($content['id']) || is_null($post = Post::where("idPost", "=", $content['id'])->first())) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Post invalide"
+            ], 200);
+        }
+
+        $nb = $user->likes->where('idPost', '=', $post->idPost)->count();
+
+        if ($nb != 0) {
+            $user->likes()->detach($post->id);
+        }
+
+        return $rs->withJSON([
+            "result" => 1,
+            "message" => "Post disliké"
+        ], 200);
     }
 }

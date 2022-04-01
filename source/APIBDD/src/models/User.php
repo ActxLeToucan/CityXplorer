@@ -4,6 +4,7 @@ namespace cityXplorer\models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Model {
@@ -13,6 +14,15 @@ class User extends Model {
 
     public function posts(): HasMany {
         return $this->hasMany('cityXplorer\models\Post',"idUser");
+    }
+
+    public function likes(): BelongsToMany {
+        return $this->belongsToMany(
+            "cityXplorer\models\Post",
+            "avotepour",
+            "idUtilisateur",
+            "idPost"
+        );
     }
 
     public function toArray(bool $userConnected = false): array {
