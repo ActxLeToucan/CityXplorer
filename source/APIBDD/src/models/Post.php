@@ -34,6 +34,10 @@ class Post extends Model{
         foreach ($this->photos as $photo) {
             $tabPhotos[] = $photo->url;
         }
+        $tabLikedBy = [];
+        foreach ($this->likedByUsers as $user) {
+            $tabLikedBy[] = $user->pseudo;
+        }
 
         return [
             "id" => $this->idPost,
@@ -44,6 +48,7 @@ class Post extends Model{
             "date" => $this->datePost,
             "etat" => $this->etat,
             "photos" => $tabPhotos,
+            "likedBy" => $tabLikedBy,
             "user-pseudo" => $this->user->pseudo,
             "adresse_courte" => $this->adresse_courte,
             "adresse_longue" => $this->adresse_longue

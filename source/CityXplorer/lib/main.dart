@@ -121,3 +121,11 @@ Future<User> updateUser(User user) async {
   }
   return user;
 }
+
+Future<User> reloadUser() async {
+  UserConneted oldUser = await getUser();
+  User newUser = await User.fromPseudo(oldUser.pseudo);
+  UserConneted userUpdated = oldUser.updateWith(newUser);
+  connexion(userUpdated);
+  return userUpdated;
+}

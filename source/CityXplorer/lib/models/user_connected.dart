@@ -12,13 +12,15 @@ class UserConneted extends User {
       required String name,
       required String avatar,
       required int niveauAcces,
-      required String description})
+      required String description,
+      required List<int?> likes})
       : super(
             pseudo: pseudo,
             name: name,
             avatar: avatar,
             niveauAcces: niveauAcces,
-            description: description);
+            description: description,
+            likes: likes);
 
   factory UserConneted.fromJson(Map<String, dynamic> json) {
     return UserConneted(
@@ -27,7 +29,8 @@ class UserConneted extends User {
         name: json['name'],
         avatar: json['avatar'],
         niveauAcces: json['niveauAcces'],
-        description: json['description']);
+        description: json['description'],
+        likes: List<int>.from(json['likes']));
   }
 
   factory UserConneted.empty() {
@@ -37,7 +40,8 @@ class UserConneted extends User {
         name: "",
         avatar: "",
         niveauAcces: 0,
-        description: "");
+        description: "",
+        likes: []);
   }
 
   @override
@@ -48,7 +52,8 @@ class UserConneted extends User {
       "name": this.name,
       "avatar": this.avatar,
       "niveauAcces": this.niveauAcces,
-      "description": this.description
+      "description": this.description,
+      "likes": this.likes
     };
   }
 
@@ -59,7 +64,8 @@ class UserConneted extends User {
         name: user.name,
         avatar: user.avatar,
         niveauAcces: user.niveauAcces,
-        description: user.description);
+        description: user.description,
+        likes: user.likes);
   }
 
   void pushEditPage() {

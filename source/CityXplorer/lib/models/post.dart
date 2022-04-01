@@ -26,6 +26,7 @@ class Post {
   final DateTime date;
   final String etat;
   final List<String?> photos;
+  final List<String?> likedByUsers;
   final String userPseudo;
   final String adresseCourte;
   final String adresseLongue;
@@ -39,6 +40,7 @@ class Post {
       required this.date,
       required this.etat,
       required this.photos,
+      required this.likedByUsers,
       required this.userPseudo,
       required this.adresseCourte,
       required this.adresseLongue});
@@ -60,6 +62,7 @@ class Post {
             : DateTime.now()),
         etat: (json['etat'] as String).toLowerCase(),
         photos: List<String>.from(json['photos']),
+        likedByUsers: List<String>.from(json['likedBy']),
         userPseudo: unescape.convert(json['user-pseudo']),
         adresseCourte: unescape.convert(json['adresse_courte']),
         adresseLongue: unescape.convert(json['adresse_longue']));
@@ -75,6 +78,7 @@ class Post {
         date: DateTime.now(),
         etat: "empty",
         photos: [],
+        likedByUsers: [],
         userPseudo: "",
         adresseCourte: "",
         adresseLongue: "");

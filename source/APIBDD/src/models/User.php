@@ -26,20 +26,27 @@ class User extends Model {
     }
 
     public function toArray(bool $userConnected = false): array {
+        $tabLikes = [];
+        foreach ($this->likes as $like) {
+            $tabLikes[] = $like->idPost;
+        }
+
         if ($userConnected) return [
             "pseudo" => $this->pseudo,
             "token" => $this->token,
             "name" => $this->name,
             "avatar" => $this->avatar,
             "niveauAcces" => $this->niveauAcces,
-            "description" => $this->description
+            "description" => $this->description,
+            "likes" => $tabLikes
         ];
         else return [
             "pseudo" => $this->pseudo,
             "name" => $this->name,
             "avatar" => $this->avatar,
             "niveauAcces" => $this->niveauAcces,
-            "description" => $this->description
+            "description" => $this->description,
+            "likes" => $tabLikes
         ];
     }
 

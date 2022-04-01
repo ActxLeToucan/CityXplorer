@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:cityxplorer/main.dart';
+import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../models/post.dart';
@@ -15,6 +20,16 @@ class ShareBar extends StatefulWidget {
 
 class _ShareBarState extends State<ShareBar> {
   bool _isFavorited = false;
+  UserConneted user = UserConneted.empty();
+
+  @override
+  void initState() {
+    super.initState();
+    getUser().then((u) => setState(() {
+          user = u;
+          _isFavorited = (user.likes.contains(widget.post.id));
+        }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,19 +53,46 @@ class _ShareBarState extends State<ShareBar> {
           icon: Icon(_isFavorited ? Icons.favorite : Icons.favorite_border),
           iconSize: 28,
           color: Colors.red[400],
-          onPressed: () {
-            // TODO
-            setState(() {
-              _isFavorited = !_isFavorited;
-              if (_isFavorited) {
-                Fluttertoast.showToast(msg: "Ajouté aux favoris");
-              } else {
-                Fluttertoast.showToast(msg: "Retiré des favoris");
-              }
-            });
-          },
+          onPressed: likePost,
         ),
       ],
     );
+  }
+
+  Future<void> likePost() async {
+    if (user.isEmpty()) {
+      Fluttertoast.showToast(
+          msg: "Vous devez être connecté pour liker un post.");
+      return;
+    }
+
+    String url = Conf.domainServer + Conf.apiPath + "/like";
+    Map<String, dynamic> body = {
+      "token": user.token,
+      "id": widget.post.id,
+    };
+
+    try {
+      var response = _isFavorited
+          ? await http.delete(Uri.parse(url),
+              body: json.encode(body),
+              headers: {'content-type': 'application/json'})
+          : await http.post(Uri.parse(url),
+              body: json.encode(body),
+              headers: {'content-type': 'application/json'});
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      Fluttertoast.showToast(msg: data['message']);
+
+      if (data['result'] == 1) {
+        await reloadUser();
+        setState(() {
+          _isFavorited = !_isFavorited;
+        });
+      }
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
   }
 }
