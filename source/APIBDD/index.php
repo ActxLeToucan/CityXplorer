@@ -65,8 +65,11 @@ $app->get('/postsUser', 'cityXplorer\controllers\PostController:getUserPosts')->
 $app->post('/like', 'cityXplorer\controllers\PostController:like')->setName("likeUser");
 
 $app->delete('/like', 'cityXplorer\controllers\PostController:dislike')->setName("dislike");;
-
-
+/**
+ * LIST
+ */
+$app->post('/list', 'cityXplorer\controllers\ListController:createList')->setName("createList");;
+$app->post('/postList', 'cityXplorer\controllers\ListController:enregistrerPostList')->setName("insertPostToList");
 //Test
 $app->get('/hello/{name}', function ($rq,$rs,$args) {
     echo $args['name'] ;
