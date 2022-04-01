@@ -285,7 +285,7 @@ class PostController {
         $nb = $user->likes->where('idPost', '=', $post->idPost)->count();
 
         if ($nb != 0) {
-            $user->likes()->detach($post->id);
+            $user->likes()->detach($post->idPost);
         }
 
         return $rs->withJSON([
