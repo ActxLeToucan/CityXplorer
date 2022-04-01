@@ -4,6 +4,7 @@ namespace cityXplorer\models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Model {
@@ -31,5 +32,17 @@ class User extends Model {
             "niveauAcces" => $this->niveauAcces,
             "description" => $this->description
         ];
+    }
+
+    public function listDl(): BelongsToMany{
+        return $this->belongsToMany(
+            'cityXplorer\models\Liste',
+            'listeEnregistrees',
+            'User_id',
+        'ListeId'
+        );
+    }
+    public function createdLists(): HasMany {
+        return $this->hasMany('cityXplorer\models\Listes', 'idUtilisateur');
     }
 }

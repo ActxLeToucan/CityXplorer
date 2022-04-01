@@ -70,9 +70,20 @@ $app->delete('/like', 'cityXplorer\controllers\PostController:dislike')->setName
 /**
  * LIST
  */
-$app->post('/list', 'cityXplorer\controllers\ListController:createList')->setName("createList");;
+//Testé
+$app->post('/list', 'cityXplorer\controllers\ListController:createList')->setName("createList");
+//Non testé
+$app->delete('/list', 'cityXplorer\controllers\ListController:supprimerList')->setName("deleteList");
+//Testé
 $app->post('/postList', 'cityXplorer\controllers\ListController:enregistrerPostList')->setName("insertPostToList");
+//Testé
 $app->delete('/postList', 'cityXplorer\controllers\ListController:supprimerPostList')->setName("deletePostToList");
+//Non testé
+$app->post('/likeList', 'cityXplorer\controllers\ListController:likeList')->setName("likeList");
+//Non testé
+$app->delete('/likeList', 'cityXplorer\controllers\ListController:dislikeList')->setName("dislikeList");
+
+
 
 
 //Test
