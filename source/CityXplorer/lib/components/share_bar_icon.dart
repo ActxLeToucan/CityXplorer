@@ -60,6 +60,7 @@ class _ShareBarState extends State<ShareBar> {
   }
 
   Future<void> likePost() async {
+    bool fav = _isFavorited;
     if (user.isEmpty()) {
       Fluttertoast.showToast(
           msg: "Vous devez être connecté pour liker un post.");
@@ -73,7 +74,7 @@ class _ShareBarState extends State<ShareBar> {
     };
 
     try {
-      var response = _isFavorited
+      var response = fav
           ? await http.delete(Uri.parse(url),
               body: json.encode(body),
               headers: {'content-type': 'application/json'})
@@ -87,7 +88,7 @@ class _ShareBarState extends State<ShareBar> {
       if (data['result'] == 1) {
         await reloadUser();
         setState(() {
-          _isFavorited = !_isFavorited;
+          _isFavorited = !fav;
         });
       }
     } catch (e) {

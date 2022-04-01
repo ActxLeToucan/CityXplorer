@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Conf {
   // TODO utiliser la version publique de l'api
   // uniquement pour le développement, laisser à false sinon
-  static const bool _apiDev = true;
+  static const bool _apiDev = false;
 
   static const String domainServer = "https://cityxplorer.streamlor.io";
   static const String apiPath = _apiDev ? apiDevPath : "/api";
