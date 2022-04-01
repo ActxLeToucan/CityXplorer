@@ -129,6 +129,114 @@ class ListController{
         }
         return $rs->withJSON($tab, 200);
     }
-    
+    public function supprimerPostList(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('deletePostToList');
+        $url = $base . $route_uri;
+        $content = $rq->getQueryParams();
 
+        $idPost=$content['idPost'];
+        $idList=$content['idList'];
+        $tab = [
+            "result" => 0,
+            "message" => "Erreur lors de l'insertion",
+            "list/post" => null
+        ];
+        if (isset($content['token'])) {
+            $user = User::where("token", "=", $content['token'])->first();
+            $tab = [
+                "result" => 0,
+                "message" => "Erreur : token invalide",
+                "token" => $content['token'],
+            ];
+            if(!is_null($user)){
+                $doesItExist=Contient::where(["idListe" => $idList,"idPost"=>$idPost])->first();
+                $tab = [
+                    "result" => 0,
+                    "message" => "Erreur :le post n'est pas dans la list",
+                    "Post" => null ,
+                ];
+                if (!is_null($doesItExist)){
+                    $doesItExist->delete();
+                    $list=Liste::where("idListe","=",$idList)->first();
+                    $nomList=$list->nomListe;
+                    $tab = [
+                        "result" => 1,
+                        "message" => "Post supprimé de la liste {$nomList}",
+                        "Post" => null ,
+                    ];
+                }
+            }
+
+        }
+        return $rs->withJSON($tab, 200);
+    }
+    public function supprimerList(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('deleteList');
+        $url = $base . $route_uri;
+        $content = $rq->getQueryParams();
+        $idList=$content["idList"];
+        $tab = [
+            "result" => 0,
+            "message" => "Erreur lors de la suppression",
+            "list/post" => null
+        ];
+        if(isset($content['token'])){
+            $user = User::where("token", "=", $content['token'])->first();
+            $tab = [
+                "result" => 0,
+                "message" => "Erreur : token invalide",
+                "token" => $content['token'],
+            ];
+            if(!is_null($user)){
+                $doesItExist= Liste::where("idList","=",$idList)->first();
+                $tab = [
+                    "result" => 0,
+                    "message" => "La liste n'existe pas",
+                    "Post" => null ,
+                ];
+                if(!is_null($doesItExist)){
+                    $temp=$doesItExist;
+                    $doesItExist->delete();
+                    $this->supprimerTouteLiaisonListPost($rq, $rs, $args, $temp);
+                    $this->supprimerListEnregistrees($rq,$rs,$args,$temp);
+                    $tab = [
+                        "result" => 1,
+                        "message" => "La liste à été supprimée",
+                        "Post" => null ,
+                    ];
+                }
+            }
+        }
+        return $rs->withJSON($tab, 200);
+    }
+
+    private function supprimerTouteLiaisonListPost(Request $rq, Response $rs, array $args, Liste $temp){
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('deleteAllLinkListPost');
+        $url = $base . $route_uri;
+        $content = $rq->getQueryParams();
+        //Je le laisse ici si besoin plus tard, mais il y a peu de chance
+        $AllPostFromList=Contient::where("idList","=",$temp->id)->get;
+        foreach ($AllPostFromList as $postToUnlink){
+            $postToUnlink->delete();
+        }
+    }
+
+    private function supprimerListEnregistrees(Request $rq, Response $rs, array $args, Liste $temp){
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('deleteAllLinkListPost');
+        $url = $base . $route_uri;
+        $content = $rq->getQueryParams();
+        //Je le laisse ici si besoin plus tard, mais il y a peu de chance
+        $AllPostFromList=EnregistreListe::where("idList","=",$temp->id)->get;
+        foreach ($AllPostFromList as $listToUnlink){
+            $listToUnlink->delete();
+        }
+    }
 }

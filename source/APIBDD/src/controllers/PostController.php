@@ -140,8 +140,8 @@ class PostController {
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('postId');
         $url = $base . $route_uri;
-
-        $id = $_GET['id'];
+        $content=$rq->getQueryParams();
+        $id = $content['id'];
 
         $postExist = Post::where("idPost", "=", $id)->count();
         if ($postExist == 1) {
@@ -170,8 +170,8 @@ class PostController {
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('postsUser');
         $url = $base . $route_uri;
-
-        $pseudo = $_GET['pseudo'];
+        $content = $rq->getQueryParams();
+        $pseudo = $content['pseudo'];
 
         $userNameExist = User::where("pseudo", "=", $pseudo)->count();
 
@@ -193,8 +193,9 @@ class PostController {
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('delete');
         $url = $base . $route_uri;
-        $token = $_GET["token"];
-        $idPost = $_GET["id"];
+        $content= $rq->getQueryParams();
+        $token = $content["token"];
+        $idPost = $content["id"];
         $userExist = User::where("token", "=", $token)->count();
         $post = Post::where("idPost", "=", $idPost)->first();
 
@@ -226,9 +227,9 @@ class PostController {
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('likeUser');
         $url = $base . $route_uri;
-
-        $token = $_GET["token"];
-        $idPost = $_GET["id"];
+        $content = $rq->getQueryParams();
+        $token = $content["token"];
+        $idPost = $content["id"];
         $userExist = User::where("token", "=", $token)->first();
         $post = Post::where("idPost", "=", $idPost)->first();
 
@@ -261,8 +262,9 @@ class PostController {
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('dislike');
         $url = $base . $route_uri;
-        $token = $_GET["token"];
-        $idPost = $_GET["id"];
+        $content=$rq->getQueryParams();
+        $token = $content["token"];
+        $idPost = $content["id"];
         $userExist = User::where("token", "=", $token)->count();
         $post = Post::where("idPost", "=", $idPost)->first();
 
