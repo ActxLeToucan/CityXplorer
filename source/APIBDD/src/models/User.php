@@ -42,4 +42,16 @@ class User extends Model {
             "description" => $this->description
         ];
     }
+
+    public function listDl(): BelongsToMany{
+        return $this->belongsToMany(
+            'cityXplorer\models\Liste',
+            'listeEnregistrees',
+            'User_id',
+        'ListeId'
+        );
+    }
+    public function createdLists(): HasMany {
+        return $this->hasMany('cityXplorer\models\Listes', 'idUtilisateur');
+    }
 }
