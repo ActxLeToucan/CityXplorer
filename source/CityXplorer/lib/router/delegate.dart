@@ -1,3 +1,4 @@
+import 'package:cityxplorer/pages/change_password.dart';
 import 'package:cityxplorer/pages/edit_profile.dart';
 import 'package:cityxplorer/pages/login_screen.dart';
 import 'package:cityxplorer/pages/main_interface.dart';
@@ -114,6 +115,9 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
         break;
       case '/edit_profile':
         child = const EditProfilePage();
+        break;
+      case '/change_password':
+        child = const ChangePassword();
         break;
       case '/search':
         child = const SearchPage();

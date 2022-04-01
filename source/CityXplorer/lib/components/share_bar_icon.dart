@@ -13,9 +13,9 @@ class ShareBar extends StatefulWidget {
   State<ShareBar> createState() => _ShareBarState();
 }
 
-// TODO: lier des actions aux boutons
 class _ShareBarState extends State<ShareBar> {
   bool _isFavorited = false;
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -39,6 +39,7 @@ class _ShareBarState extends State<ShareBar> {
           iconSize: 28,
           color: Colors.red[400],
           onPressed: () {
+            // TODO
             setState(() {
               _isFavorited = !_isFavorited;
               if (_isFavorited) {

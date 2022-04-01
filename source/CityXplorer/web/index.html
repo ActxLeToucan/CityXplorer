@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <title>CityXplorer</title>
     <link rel="shortcut icon" type="image/png" href="icon.png">
-    <link href="css/loading.css" rel="stylesheet" />
+  <script src="splash/splash.js"></script>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <link rel="stylesheet" type="text/css" href="splash/style.css">
 </head>
 <body>
-    <div id="splash">
-        <img id="logo" src="assets/logo/animated.gif" alt="logo CityXplorer"/>
-        <p id="loading-message">Chargement en cours<span class="loading-dots dot-1">.</span><span class="loading-dots dot-2">.</span><span class="loading-dots dot-3">.</span></p>
-
-        <a href="https://github.com/univ-lorraine-iut-charlemagne/S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ/releases">Téléchargez CityXplorer sur votre appareil pour profiter au maximum des fonctionnalités de l'application !</a>
-    </div>
-
+  <picture id="splash">
+    <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
+    <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
+    <img class="center" aria-hidden="true" src="splash/img/light-1x.png" />
+  </picture>
     <script defer src="main.dart.js" type="application/javascript"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCoZ5pkSaTZk3rpiGrm3yuTIj48y7NdncU"></script>
 </body>

@@ -1,22 +1,20 @@
 import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cityxplorer/components/description.dart';
 import 'package:cityxplorer/components/icon_menu_post_profil.dart';
 import 'package:cityxplorer/components/share_bar_icon.dart';
 import 'package:cityxplorer/models/user.dart';
 import 'package:flutter/material.dart';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../router/delegate.dart';
 import '../main.dart';
-import '../pages/map-screen.dart';
 import '../styles.dart';
 
 class Post {
@@ -309,11 +307,12 @@ class Post {
         GestureDetector(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
-            child: Text("@$userPseudo", style: Styles.textStyleLink),
+            child: Text("@$userPseudo",
+                style: const TextStyle(color: Styles.linkColor)),
           ),
           onTap: () => navigateToCreatorPage(context),
         ),
-        Text(description)
+        Description(description: description)
       ],
     );
   }
