@@ -14,15 +14,15 @@ class Liste extends Model {
 
     public function creator():BelongsTo{
         return $this->belongsTo(
-            'cityXplorer\models\User', 'id');
+            'cityXplorer\models\User', 'idCreateur');
     }
 
     public function likers(): BelongsToMany{
         return $this->belongsToMany(
             'cityXplorer\models\User',
             'listeEnregistrees',
-            'ListeId',
-            'User_id'
+            'IdListe',
+            'idUtilisateur'
 
         );
     }

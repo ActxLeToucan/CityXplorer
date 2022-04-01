@@ -24,6 +24,17 @@ class User extends Model {
             "idPost"
         );
     }
+    public function createdLists(): HasMany {
+    return $this->hasMany('cityXplorer\models\Listes', 'idUtilisateur');
+}
+    public function listLikes(): BelongsToMany{
+        return $this->belongsToMany(
+            'cityXplorer\models\Liste',
+            'listeEnregistrees',
+            'idUtilisateur',
+            'IdListe'
+        );
+    }
 
     public function toArray(bool $userConnected = false): array {
         $tabLikes = [];
@@ -50,15 +61,5 @@ class User extends Model {
         ];
     }
 
-    public function listDl(): BelongsToMany{
-        return $this->belongsToMany(
-            'cityXplorer\models\Liste',
-            'listeEnregistrees',
-            'User_id',
-        'ListeId'
-        );
-    }
-    public function createdLists(): HasMany {
-        return $this->hasMany('cityXplorer\models\Listes', 'idUtilisateur');
-    }
+
 }

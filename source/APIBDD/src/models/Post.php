@@ -28,7 +28,14 @@ class Post extends Model{
             "idUtilisateur"
         );
     }
-
+    public function lists(): BelongsToMany{
+        return $this->belongsToMany(
+            "cityXplorer\models\Liste",
+            "contient",
+            "idPost",
+            "idListe"
+        );
+    }
     public function toArray(): array {
         $tabPhotos = [];
         foreach ($this->photos as $photo) {
@@ -54,12 +61,5 @@ class Post extends Model{
             "adresse_longue" => $this->adresse_longue
         ];
     }
-    public function lists(): BelongsToMany{
-        return $this->belongsToMany(
-            'cityXplorer\models\Liste',
-            'contient',
-            'idPost',
-            'idListe'
-        );
-    }
+
 }
