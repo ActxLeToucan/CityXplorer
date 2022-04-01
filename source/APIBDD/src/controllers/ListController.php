@@ -2,15 +2,11 @@
 
 namespace cityXplorer\controllers;
 use cityXplorer\models\Contient;
-use cityXplorer\models\CreateurList;
 use cityXplorer\models\EnregistreListe;
 use cityXplorer\models\Like;
 use cityXplorer\models\User;
-use cityXplorer\models\Partage;
-use cityXplorer\models\Photo;
 use cityXplorer\models\Post;
 use cityXplorer\models\Liste;
-use cityXplorer\Conf;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -47,6 +43,7 @@ class ListController{
             "message" => "Erreur lors de l'insertion",
             "list" => null
         ];
+
         if (isset($content['token'])) {
             $user = User::where("token", "=", $content['token'])->first();
             $tab = [
@@ -60,8 +57,8 @@ class ListController{
                 $newList = new Liste();
                 $newList->nomListe=$titre;
                 $newList->descrListe=$desc;
-                $newList->save();
                 $newList->creator()->associate($user);
+                $newList->save();
                 $tab = [
                     "result" => 1,
                     "message" => "Insertion effectuée",
@@ -98,21 +95,19 @@ class ListController{
                 "token" => $content['token'],
             ];
             if (!is_null($user) && isset($content['idPost']) && isset($content['idList'])) {
-                $checkPost= Contient::where(["idListe" => $idList,"idPost"=>$idPost])->first();
-                if(is_null($checkPost)){
-                    $list=Liste::where("idListe","=",$idList);
-                    $post=Post::find($idPost);
+                $list=Liste::where("idliste","=",$idList)->first();
+                $post=Post::where("idPost","=",$idPost)->first();
+                $nb = $list->posts->where('idPost', '=', $post->idPost)->count();
+                if($nb == 0){
                     $list->posts()->save($post);
-                    //Tab retour
                     $tab = [
                         "result" => 1,
-                        "message" => "Insertion effectuée",
+                        "message" => "Insertion effectuée"
                     ];
                 }else{
                     $tab = [
                         "result" => 1,
-                        "message" => "Post déja présent dans la liste",
-                        "post"=>$checkPost->toArray()
+                        "message" => "Post déja présent dans la liste"
                     ];
                 }
 
@@ -143,7 +138,6 @@ class ListController{
 
 
 
-        $list=Liste::where("idListe","=",$idList)->first();
         $tab = [
             "result" => 0,
             "message" => "Erreur lors de l'insertion",
@@ -157,17 +151,15 @@ class ListController{
                 "token" => $content['token'],
             ];
             if(!is_null($user)){
-                $doesItExist=Contient::where(["idListe" => $idList,"idPost"=>$idPost])->count();
+                $list=Liste::where("idliste","=",$idList)->first();
+                $post=Post::where("idPost","=",$idPost)->first();
+                $nb = $list->posts->where('idPost', '=', $post->idPost)->count();
                 $tab = [
                     "result" => 0,
                     "message" => "Erreur :le post n'est pas dans la list",
                 ];
-                if ($doesItExist==1){
-                    $postToDelete=Contient::where(["idListe" => $idList,"idPost"=>$idPost])->first();
-                    echo ("\n\n\n");
-                    echo($postToDelete->toArray());
-                    echo ("\n\n\n\n Id du Post à supprimer" .$postToDelete->idPost." \n Combien de poste à supprimer :$doesItExist");
-                    $postToDelete->delete();
+                if ($nb != 0){
+                    $list->posts()->detach($post->idPost);
                     $nomList=$list->nomListe;
                     $tab = [
                         "result" => 1,
@@ -231,11 +223,12 @@ class ListController{
     }
 
     private function supprimerTouteLiaisonListPost(Request $rq, Response $rs, array $args, Liste $temp){
-        $AllPostFromList=Contient::where("idListe","=",$temp->id)->get();
+        $AllPostFromList=$temp->posts()->get();
         $res="La liste ne contiens aucun post";
         if(!is_null($AllPostFromList)){
             foreach ($AllPostFromList as $postToUnlink){
-                $postToUnlink->delete();
+                echo $postToUnlink."\n\n";
+                $temp->posts()->detach($postToUnlink->idPost);
                 echo("\n Suppression");
             }
             $res= "Tout les éléments on étés supprimés";
@@ -244,18 +237,18 @@ class ListController{
     }
 
     private function supprimerListEnregistrees(Request $rq, Response $rs, array $args, Liste $temp){
-        $AllPostFromList=EnregistreListe::where("idListe","=",$temp->id)->get();
+        $AllUserThatLikedList=$temp->likers()->get();
         $res="Personne n'a enregistré la list";
-        if(!is_null($AllPostFromList)){
-            foreach ($AllPostFromList as $listToUnlink){
-                $listToUnlink->delete();
+        if(!is_null($AllUserThatLikedList)){
+            foreach ($AllUserThatLikedList as $User){
+                echo $User."\n\n";
+                $temp->likers()->detach($User->id);
                 echo("\n Suppression");
             }
-            $res= "La liste a été suppriméed de chez tout le monde";
+            $res= "La liste a été supprimées de chez tout le monde";
         }
         return $res;
     }
-    //DoesItExist
     public function likeList(Request $rq,Response $rs, array $args){
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
@@ -265,7 +258,7 @@ class ListController{
         $idList=$content["idList"];
         $tab = [
             "result" => 0,
-            "message" => "Erreur lors de la suppression",
+            "message" => "Erreur lors du like de la list",
             "list/post" => null
         ];
         if(isset($content['token'])){
@@ -276,15 +269,21 @@ class ListController{
                 "token" => $content['token'],
             ];
             if(!is_null($user)){
-                $newEnregistrementList=new EnregistreListe();
-                $newEnregistrementList->idListe=$idList;
-                $newEnregistrementList->idUtilisateur=$user->id;
-                $newEnregistrementList->save();
-                $tab = [
-                    "result" => 1,
-                    "message" => "Insertion effectuée",
-                    "sauvegarde"=> $newEnregistrementList->toArray()
-                ];
+                $list=Liste::where("idliste","=",$idList)->first();
+                $nb = $list->likers->where('idUtilisateur', '=', $user->idUtilisateur)->count();
+                $nb2=$user->listLikes->where('idListe',"=",$list->id)->count();
+                if($nb == 0){ //Rentre quand même
+                    $list->likers()->save($user);
+                    $tab = [
+                        "result" => 1,
+                        "message" => "Insertion effectuée"
+                    ];
+                }else{
+                    $tab = [
+                        "result" => 1,
+                        "message" => "List Déjà likée"
+                    ];
+                }
             }
         }
         return $rs->withJSON($tab, 200);
@@ -310,13 +309,20 @@ class ListController{
                 "token" => $content['token'],
             ];
             if(!is_null($user)){
-                $EnregistrementList=EnregistreListe::where(["idListe" => $idList,"idUtilisateur"=>$user->id]);
-                $EnregistrementList->delete();
-                $tab = [
-                    "result" => 1,
-                    "message" => "Suppression effectuée",
-                    "sauvegarde"=> null
-                ];
+                $list=Liste::where("idliste","=",$idList)->first();
+                $nb = $list->likers->where('idUtilisateur', '=', $user->idUtilisateur)->count();
+                if($nb != 0){ //nb==0
+                    $list->likers()->detach($user->id);
+                    $tab = [
+                        "result" => 1,
+                        "message" => "Suppression effectuées"
+                    ];
+                }else{ //rentre toujours ici
+                    $tab = [
+                        "result" => 1,
+                        "message" => "List Déjà disliké"
+                    ];
+                }
             }
         }
         return $rs->withJSON($tab, 200);
