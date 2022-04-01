@@ -16,6 +16,15 @@ class User extends Model {
         return $this->hasMany('cityXplorer\models\Post',"idUser");
     }
 
+    public function likes(): BelongsToMany {
+        return $this->belongsToMany(
+            "cityXplorer\models\Post",
+            "avotepour",
+            "idUtilisateur",
+            "idPost"
+        );
+    }
+
     public function toArray(bool $userConnected = false): array {
         if ($userConnected) return [
             "pseudo" => $this->pseudo,

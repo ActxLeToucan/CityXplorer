@@ -20,6 +20,15 @@ class Post extends Model{
         return $this->belongsTo('cityXplorer\models\User', 'idUser');
     }
 
+    public function likedByUsers(): BelongsToMany {
+        return $this->belongsToMany(
+            "cityXplorer\models\User",
+            "avotepour",
+            "idPost",
+            "idUtilisateur"
+        );
+    }
+
     public function toArray(): array {
         $tabPhotos = [];
         foreach ($this->photos as $photo) {

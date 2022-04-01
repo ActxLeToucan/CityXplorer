@@ -62,7 +62,7 @@ $app->delete('/post', 'cityXplorer\controllers\PostController:delete')->setName(
 // obtention de tous les posts d'un user
 $app->get('/postsUser', 'cityXplorer\controllers\PostController:getUserPosts')->setName("postsUser");
 //Like d'un post
-$app->post('/like', 'cityXplorer\controllers\PostController:like')->setName("likeUser");
+$app->post('/like', 'cityXplorer\controllers\PostController:like')->setName("like");
 
 $app->delete('/like', 'cityXplorer\controllers\PostController:dislike')->setName("dislike");;
 
