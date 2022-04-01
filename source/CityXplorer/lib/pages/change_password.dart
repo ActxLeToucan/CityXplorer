@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 import '../components/appbar.dart';
 import '../components/input_field.dart';
@@ -26,6 +30,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   UserConneted _user = UserConneted.empty();
   bool _initialized = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -107,12 +112,18 @@ class _ChangePasswordState extends State<ChangePassword> {
                         }
                         return null;
                       },
+                      onSubmitted: (_) async {
+                        setState(() => isLoading = true);
+                        await changePass();
+                        setState(() => isLoading = false);
+                      },
                     ),
                     Button(
                       type: ButtonType.big,
                       text: "Changer le mot de passe",
                       withLoadingAnimation: true,
                       onPressed: changePass,
+                      parentState: isLoading,
                     ),
                   ],
                 ),
@@ -127,8 +138,33 @@ class _ChangePasswordState extends State<ChangePassword> {
     }
   }
 
-  // TODO
   Future<void> changePass() async {
-    if (_formKey.currentState!.validate()) {}
+    if (_formKey.currentState!.validate()) {
+      String url = Conf.domainServer + Conf.apiPath + "/change_password";
+      Map<String, dynamic> body = {
+        'token': _user.token,
+        'oldPassword': oldPassword.text,
+        'newPassword': newPassword.text,
+      };
+
+      try {
+        var response = await http.post(Uri.parse(url),
+            body: json.encode(body),
+            headers: {'content-type': 'application/json'});
+        print(response.body);
+        final Map<String, dynamic> data = json.decode(response.body);
+
+        var res = data['result'];
+        if (res == 1) {
+          routerDelegate.popRoute();
+        }
+
+        Fluttertoast.showToast(msg: data['message']);
+      } catch (e) {
+        print(e);
+        Fluttertoast.showToast(
+            msg: "Impossible d'accéder à la base de données.");
+      }
+    }
   }
 }

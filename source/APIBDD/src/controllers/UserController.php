@@ -340,4 +340,61 @@ class UserController {
 
         return $rs->withJSON($tab, 200);
     }
+
+    public function changePass(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('change_pass');
+        $url = $base . $route_uri;
+
+        $content = $rq->getParsedBody();
+
+        $token = $content['token'];
+        $oldPassword = $content['oldPassword'];
+        $newPassword = $content['newPassword'];
+        $options = ['cost' => 12];
+
+        if (!isset($content['token']) || $token == '') {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Token invalide"
+            ], 200);
+        }
+
+        $user = User::where('token', '=', $token)->first();
+        if (!isset($user)) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Token invalide"
+            ], 200);
+        }
+        if (!password_verify($oldPassword, $user->password)) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Mot de passe invalide"
+            ], 200);
+        }
+
+
+        if (strlen($newPassword) < self::TAILLE_MDP_MIN) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Ce mot de passe est trop court. Réessayez."
+            ], 200);
+        } else if (strlen($newPassword) > self::TAILLE_MDP_MAX) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Ce mot de passe est trop long. Réessayez."
+            ], 200);
+        } else {
+            $password = password_hash($newPassword, PASSWORD_DEFAULT, $options);
+            $user->password = $password;
+            $user->save();
+
+            return $rs->withJSON([
+                "result" => 1,
+                "message" => "Votre mot de passe été modifié."
+            ], 200);
+        }
+    }
 }

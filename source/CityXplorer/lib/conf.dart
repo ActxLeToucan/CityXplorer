@@ -13,7 +13,7 @@ class Conf {
       "https://github.com/univ-lorraine-iut-charlemagne/S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ/releases";
   static const List downloadable = [TargetPlatform.android];
 
-  // regles champs
+  // inputs rules
   static const int taillePseudoMin = 4;
   static const int taillePseudoMax = 50;
   static final RegExp regexPseudo = RegExp(r'^[\w\-]*$');

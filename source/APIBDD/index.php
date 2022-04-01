@@ -46,6 +46,9 @@ $app->delete('/user', 'cityXplorer\controllers\UserController:deleteUser')->setN
 // ajout avatar
 $app->post('/avatar', 'cityXplorer\controllers\UserController:avatar')->setName("avatar");
 
+// changer mdp
+$app->post('/change_password', 'cityXplorer\controllers\UserController:changePass')->setName("change_pass");
+
 
 /**
  * POST
