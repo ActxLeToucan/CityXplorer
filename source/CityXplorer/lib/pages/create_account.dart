@@ -58,7 +58,7 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                               inputAction: TextInputAction.next,
                               withBottomSpace: true,
                               validator: (value) {
-                                if (value == null || value.isEmpty) {
+                                if (value == null || value.trim().isEmpty) {
                                   return 'Entrez un pseudo';
                                 }
                                 if (value.length < Conf.taillePseudoMin) {
@@ -80,7 +80,7 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                               inputAction: TextInputAction.next,
                               withBottomSpace: true,
                               validator: (value) {
-                                if (value == null || value.isEmpty) {
+                                if (value == null || value.trim().isEmpty) {
                                   return 'Entrez un nom';
                                 }
                                 if (value.length < Conf.tailleNameMin) {

@@ -79,7 +79,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     autoFocus: true,
                     inputAction: TextInputAction.next,
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
+                      if (value == null || value.trim().isEmpty) {
                         return 'Remplissez ce champ pour continuer';
                       }
                       return null;

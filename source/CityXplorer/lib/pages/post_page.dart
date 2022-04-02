@@ -1,3 +1,5 @@
+import 'package:cityxplorer/main.dart';
+import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 
 import '../components/appbar.dart';
@@ -14,14 +16,18 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   Post _post = Post.empty();
+  UserConneted _user = UserConneted.empty();
   bool _loaded = false;
 
   @override
   void initState() {
     Post.fromId(widget.arguments['id'].toString()).then((post) {
-      setState(() {
-        _post = post;
-        _loaded = true;
+      getUser().then((u) {
+        setState(() {
+          _user = u;
+          _post = post;
+          _loaded = true;
+        });
       });
     });
     super.initState();
@@ -44,7 +50,7 @@ class _PostPageState extends State<PostPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                    child: _post.elementsBeforeImageOnPage(),
+                    child: _post.elementsBeforeImageOnPage(_user),
                     padding: const EdgeInsets.fromLTRB(12, 12, 12, 0)),
                 _post.renderImageOnPage(),
                 Padding(
