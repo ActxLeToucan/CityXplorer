@@ -217,6 +217,9 @@ class PostController {
         foreach ($post->likedByUsers as $user) {
             $post->likedByUsers()->detach($user);
         }
+        foreach ($post->lists as $list) {
+            $post->lists()->detach($list);
+        }
 
         $post->delete();
 
