@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 setState(() => isLoading = false);
                               },
                               validator: (value) {
-                                if (value == null || value.isEmpty) {
+                                if (value == null || value.trim().isEmpty) {
                                   return 'Entrez votre pseudo';
                                 }
                                 return null;

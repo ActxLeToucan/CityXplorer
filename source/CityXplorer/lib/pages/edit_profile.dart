@@ -80,7 +80,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       hintPosition: HintPosition.above,
                       withBottomSpace: true,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value == null || value.trim().isEmpty) {
                           return 'Entrez un nom';
                         }
                         if (value.length < Conf.tailleNameMin) {
@@ -172,8 +172,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
   }
 
-  Future<bool> alertDelete(BuildContext context) async {
-    final result = await showDialog<bool>(
+  void alertDelete(BuildContext context) {
+    showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -183,20 +183,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
             actions: [
               TextButton(
                 child: const Text('Annuler'),
-                onPressed: () => Navigator.pop(context, true),
+                onPressed: () => routerDelegate.popRoute(),
               ),
               TextButton(
-                child: const Text(
-                  'Supprimer',
-                  style: TextStyle(color: Styles.darkred),
-                ),
+                child: const Text('Supprimer',
+                    style: TextStyle(color: Colors.red)),
                 onPressed: deleteAccount,
               ),
             ],
           );
         });
-
-    return result ?? true;
   }
 
   Future<void> editProfile() async {

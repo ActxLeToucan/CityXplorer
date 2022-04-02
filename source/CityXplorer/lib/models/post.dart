@@ -5,6 +5,7 @@ import 'package:cityxplorer/components/description.dart';
 import 'package:cityxplorer/components/icon_menu_post_profil.dart';
 import 'package:cityxplorer/components/share_bar_icon.dart';
 import 'package:cityxplorer/models/user.dart';
+import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
@@ -238,7 +239,7 @@ class Post {
     routerDelegate.pushPage(name: '/post', arguments: {'id': id.toString()});
   }
 
-  Widget elementsBeforeImageOnPage() {
+  Widget elementsBeforeImageOnPage(UserConneted userConneted) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -255,7 +256,7 @@ class Post {
                       fontWeight: FontWeight.bold, fontSize: 24),
                 ),
               )),
-              const IconMenuPost(),
+              IconMenuPost(user: userConneted, post: this),
             ]),
         Text(
           "$adresseLongue\nle ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} à ${date.hour}:${date.minute.toString().padLeft(2, '0')}",
