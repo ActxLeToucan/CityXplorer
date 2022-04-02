@@ -21,4 +21,5 @@ class Conf {
   static const int tailleNameMax = 50;
   static const int tailleMdpMin = 8;
   static const int tailleMdpMax = 256;
+  static const int tailleTitreMax = 100;
 }

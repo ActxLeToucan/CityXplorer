@@ -12,6 +12,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class PostController {
+    const TAILLE_TITRE_MAX = 100;
+
     /**
      * @var object container
      */
@@ -75,6 +77,14 @@ class PostController {
             "message" => "Erreur lors de l'insertion",
             "post" => null
         ];
+
+        if (strlen($titre) > self::TAILLE_TITRE_MAX) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Ce titre est trop long. Réessayez.",
+                "post" => null
+            ], 200);
+        }
         if (isset($content['token'])) {
             $user = User::where("token", "=", $content['token'])->first();
             $tab = [
@@ -324,6 +334,13 @@ class PostController {
                 "post" => null
             ], 200);
         } else {
+            if (strlen($titre) > self::TAILLE_TITRE_MAX) {
+                return $rs->withJSON([
+                    "result" => 0,
+                    "message" => "Ce titre est trop long. Réessayez.",
+                    "post" => null
+                ], 200);
+            }
             $post->titre = $titre;
             $post->description = $description;
             $post->save();

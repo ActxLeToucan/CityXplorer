@@ -83,6 +83,9 @@ class _PostEditState extends State<PostEdit> {
                         if (value == null || value.trim().isEmpty) {
                           return 'Donnez un titre à votre post';
                         }
+                        if (value.length >= Conf.tailleTitreMax) {
+                          return 'Ce titre est trop long';
+                        }
                         return null;
                       },
                     ),

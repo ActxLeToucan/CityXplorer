@@ -80,7 +80,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     inputAction: TextInputAction.next,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Remplissez ce champ pour continuer';
+                        return 'Donnez un titre à votre post';
+                      }
+                      if (value.length >= Conf.tailleTitreMax) {
+                        return 'Ce titre est trop long';
                       }
                       return null;
                     },
