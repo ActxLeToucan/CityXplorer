@@ -1,15 +1,15 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cityxplorer/components/custom_alert_post.dart';
 import 'package:cityxplorer/models/user_connected.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
+import 'package:path/path.dart' as path;
 
 import '../conf.dart';
 import '../main.dart';
@@ -43,6 +43,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
   @override
   void initState() {
     super.initState();
+    var photosString = widget.arguments['photos'] ?? "";
+    if (photosString != "") {
+      photos = photosString.split(",");
+    }
     imagePath = widget.arguments['imagePath'] ?? "";
     latitude = double.parse(widget.arguments['latitude'] ?? "0.0");
     longitude = double.parse(widget.arguments['longitude'] ?? "0.0");
@@ -101,12 +105,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   ),
                 ),
                 const SizedBox(height: 15),
-                Container(
-                  constraints: const BoxConstraints.expand(height: 250),
-                  child: kIsWeb
-                      ? Image.network(imagePath)
-                      : Image.file(File(imagePath)),
-                ),
+                carouselBuild(),
                 const SizedBox(height: 5),
                 Text("Prise le : " + getCurrentDate(),
                     style: const TextStyle(fontSize: 16)),
@@ -177,13 +176,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     ),
                   ),
                 ),
-                /**
-                    carouselBuild(),
-                    ElevatedButton(
-                    onPressed: () {},
-                    child: Text('NOUVELLE PHOTO', style: TextStyle(fontSize: 20)),
-
-                    ),**/
               ],
             ),
           ),
@@ -241,6 +233,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
       request.fields['date'] = getCurrentDateBDD();
 
       UserConneted user = await getUser();
+
       if (!user.isEmpty()) {
         request.fields['token'] = user.token;
       } else {
@@ -251,12 +244,19 @@ class _NewPostScreenState extends State<NewPostScreen> {
       request.fields['adresse-longue'] = adresses[0] ?? "";
       request.fields['adresse-courte'] = adresses[1] ?? "";
 
-      ///ajout de la photo a la requete
-      request.files.add(await http.MultipartFile.fromPath("photo", imagePath,
-          contentType: MediaType("image", "jpeg")));
+      ///ajout des photos a la requete
+      for (var i = 0; i < photos.length; i++) {
+        request.files.add(http.MultipartFile(
+            'photo',
+            File(photos[i]).readAsBytes().asStream(),
+            File(photos[i]).lengthSync(),
+            filename: path.basename(photos[i].split("/").last)));
+      }
+      //request.files.add(await http.MultipartFile.fromPath("photo", photos[0],
+      //  contentType: MediaType("image", "jpeg")));
 
       var response = await http.Response.fromStream(await request.send());
-      // print(response.body);
+      //print(response.body);
       final Map<String, dynamic> data = json.decode(response.body);
       String res = data['message'];
       int code = data['result'];
@@ -294,7 +294,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
       var response = await http.get(Uri.parse(url));
       print(response.statusCode);
       final Map<String, dynamic> data = json.decode(response.body);
-
+      print(data);
       if (data["status"] == "OK") {
         if (data["results"].length > 0) {
           Map firstResult = data["results"][0];
@@ -306,6 +306,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
           adresses.add(city);
         }
       }
+      print(adresses);
       return adresses;
     } catch (e) {
       print(e);
@@ -314,21 +315,15 @@ class _NewPostScreenState extends State<NewPostScreen> {
     }
   }
 
-  /// inutilisee pour le moment
+  /// construit le caroussel d affichage des photos
   Widget carouselBuild() {
-    photos.add(imagePath);
     return CarouselSlider(
-      items: photos.map((i) {
-        return Builder(
-          builder: (BuildContext context) {
-            return SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Image.network(photos[i]));
-          },
-        );
-      }).toList(),
+      items: photos
+          .map((item) => Center(
+              child: Image.file(File(item), fit: BoxFit.cover, width: 1000)))
+          .toList(),
       options: CarouselOptions(
-        height: 400,
+        height: 300,
         aspectRatio: 16 / 9,
         viewportFraction: 0.8,
         initialPage: 0,

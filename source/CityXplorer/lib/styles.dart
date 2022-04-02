@@ -17,4 +17,6 @@ class Styles {
       TextStyle(color: Styles.loginTextColor, fontSize: Styles.loginTextSize);
   static const double widthElementLogin = 0.8;
   static const double heightElementLogin = 0.08;
+  // camera
+  static const int maxPhotos = 5;
 }
