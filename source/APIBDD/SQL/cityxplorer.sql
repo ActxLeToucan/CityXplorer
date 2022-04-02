@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.5deb2
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- Hôte : localhost:3306
--- Généré le : ven. 25 fév. 2022 à 22:20
--- Version du serveur :  10.3.32-MariaDB-0ubuntu0.20.04.1
--- Version de PHP : 7.4.3
+-- Hôte : localhost
+-- Généré le : sam. 02 avr. 2022 à 18:01
+-- Version du serveur : 10.3.34-MariaDB-0ubuntu0.20.04.1
+-- Version de PHP : 8.1.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -25,25 +24,21 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Structure de la table `administrateur`
---
-
-CREATE TABLE `administrateur` (
-  `login` varchar(50) NOT NULL,
-  `email` varchar(200) DEFAULT NULL,
-  `motDePasse` varchar(250) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `avotepour`
 --
 
 CREATE TABLE `avotepour` (
-  `idUtilisateur` int(5) NOT NULL,
-  `idPost` int(5) NOT NULL
+  `idUtilisateur` int(11) NOT NULL,
+  `idPost` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `avotepour`
+--
+
+INSERT INTO `avotepour` (`idUtilisateur`, `idPost`) VALUES
+(1, 1),
+(1, 2);
 
 -- --------------------------------------------------------
 
@@ -52,42 +47,32 @@ CREATE TABLE `avotepour` (
 --
 
 CREATE TABLE `contient` (
-  `idListe` int(5) NOT NULL,
-  `idPost` int(5) NOT NULL
+  `idListe` int(11) NOT NULL,
+  `idPost` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `listeaffichable`
+-- Structure de la table `liste`
 --
 
-CREATE TABLE `listeaffichable` (
-  `idliste` int(5) NOT NULL,
-  `nomListe` varchar(50) DEFAULT NULL,
-  `descriptionListe` varchar(200) DEFAULT NULL
+CREATE TABLE `liste` (
+  `idListe` int(11) NOT NULL,
+  `nomListe` varchar(100) NOT NULL,
+  `descrList` text NOT NULL,
+  `idCreateur` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `listeenregistrées`
+-- Structure de la table `listeEnregistrees`
 --
 
-CREATE TABLE `listeenregistrées` (
-  `idListe` int(5) NOT NULL,
-  `idUtilisateur` int(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `partage`
---
-
-CREATE TABLE `partage` (
-  `idUtilisateur` int(5) NOT NULL,
-  `idPost` int(5) NOT NULL
+CREATE TABLE `listeEnregistrees` (
+  `idListe` int(11) NOT NULL,
+  `idUtilisateur` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -97,8 +82,8 @@ CREATE TABLE `partage` (
 --
 
 CREATE TABLE `photo` (
-  `idPhoto` int(5) NOT NULL,
-  `idPost` int(5) NOT NULL,
+  `idPhoto` int(11) NOT NULL,
+  `idPost` int(11) NOT NULL,
   `url` varchar(256) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -122,7 +107,7 @@ INSERT INTO `photo` (`idPhoto`, `idPost`, `url`) VALUES
 --
 
 CREATE TABLE `post` (
-  `idPost` int(5) NOT NULL,
+  `idPost` int(11) NOT NULL,
   `latitude` double NOT NULL DEFAULT 0,
   `longitude` double NOT NULL DEFAULT 0,
   `description` text NOT NULL DEFAULT '',
@@ -168,25 +153,19 @@ CREATE TABLE `utilisateur` (
 --
 
 INSERT INTO `utilisateur` (`id`, `pseudo`, `name`, `password`, `avatar`, `niveauAcces`, `token`, `description`) VALUES
-(1, 'antoine54', 'Antoine CONTOUX', '$2y$12$eKIPYSrDDdmop8a7sOWIAu5EKNJdZLvdKY33kyIQd/QfGCg6l8ZIa', 'antoine.jpg', 1, '1645012186aeb999b417f2802b8341d8df60e6f303daf5b9c875a84b803eb145d8e3d8e2b649e54102141d1c8835bc8a7f0bfa3eb54189a08a4240ca1aaf8e99f9c89d0bce', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur nisi odio, ullamcorper ac metus vel, hendrerit varius dolor. Nullam lacinia eleifend sapien, quis dignissim leo tempor eu. Integer egestas ipsum eu dolor rhoncus, sit amet dapibus enim consectetur. Nam scelerisque a tortor sodales iaculis. Nulla ut quam in augue iaculis laoreet eget vehicula justo. In augue arcu, dapibus quis magna sed, faucibus scelerisque nibh. Etiam accumsan id libero facilisis accumsan. Nam malesuada at nisl nec convallis. Nunc maximus dui ut justo sodales malesuada. '),
-(2, 'L_ipsum', 'L. Ipsum', '$2y$12$Va1y9BKWkoj3nbUxFUCituJe/I1eZQ2hjj50Qcf1wjBfJgKheksHm', 'avatar.png', 2, '164582581805eab74e442667887a95dc9bb23b8a549f4a8fa78dd45e4df7154f9e9ed6d388d9486f14d3277ed08523ca90987047db53ef4ce28ce17be535506395a04b4133', '');
+(1, 'antoine54', 'Antoine CONTOUX ', '$2y$12$..kCLAsL72YnrhzEX8s3w.1U82HpOTGZ5ByXVXPkGzIxApv1JwFn6', '1648737607e86f882fc9d9a218aa8269aaf51c0d24d6bfe7fd.jpg', 1, '1645012186aeb999b417f2802b8341d8df60e6f303daf5b9c875a84b803eb145d8e3d8e2b649e54102141d1c8835bc8a7f0bfa3eb54189a08a4240ca1aaf8e99f9c89d0bce', '@L_ipsum Lorem ipsum @antoine54 dolor sit amet, consectetur adipiscing elit. Phasellus venenatis, sem a bibendum imperdiet, neque est maximus mi, ac cursus orci risus vel libero. Etiam sit amet tortor bibendum, volutpat diam ac, cursus purus. Nam ut sem rutrum, auctor dui vitae, facilisis leo. Pellentesque congue lorem gravida, consectetur sem id. '),
+(2, 'L_ipsum', 'L. Ipsum', '$2y$12$Va1y9BKWkoj3nbUxFUCituJe/I1eZQ2hjj50Qcf1wjBfJgKheksHm', 'avatar.png', 2, '164582581805eab74e442667887a95dc9bb23b8a549f4a8fa78dd45e4df7154f9e9ed6d388d9486f14d3277ed08523ca90987047db53ef4ce28ce17be535506395a04b4133', ''),
+(3, 'nepasoublier', 'Alexis', '$2y$12$sHXSt3Wdt8KtKVJPFMXfE.Lm9AZSmyOa4hA2uNzAU/6QOiS4auQPK', 'avatar.png', 2, '1647089887991b172a3d8e1393ea82454fb6b7643e38b07a339d94bab04d63d11586a5747bb8688553c5f3bee457a8362d065706d82498b30bb713d3a3f6cc1a1a4d2cefe7', '');
 
 --
 -- Index pour les tables déchargées
 --
 
 --
--- Index pour la table `administrateur`
---
-ALTER TABLE `administrateur`
-  ADD PRIMARY KEY (`login`);
-
---
 -- Index pour la table `avotepour`
 --
 ALTER TABLE `avotepour`
-  ADD PRIMARY KEY (`idUtilisateur`,`idPost`),
-  ADD KEY `idpostvote_Foreign_key` (`idPost`);
+  ADD PRIMARY KEY (`idUtilisateur`,`idPost`);
 
 --
 -- Index pour la table `contient`
@@ -195,17 +174,16 @@ ALTER TABLE `contient`
   ADD PRIMARY KEY (`idListe`,`idPost`);
 
 --
--- Index pour la table `listeaffichable`
+-- Index pour la table `liste`
 --
-ALTER TABLE `listeaffichable`
-  ADD PRIMARY KEY (`idliste`);
+ALTER TABLE `liste`
+  ADD PRIMARY KEY (`idListe`);
 
 --
--- Index pour la table `partage`
+-- Index pour la table `listeEnregistrees`
 --
-ALTER TABLE `partage`
-  ADD PRIMARY KEY (`idUtilisateur`,`idPost`),
-  ADD KEY `idPost_Foreign_key` (`idPost`);
+ALTER TABLE `listeEnregistrees`
+  ADD PRIMARY KEY (`idListe`,`idUtilisateur`);
 
 --
 -- Index pour la table `photo`
@@ -230,46 +208,28 @@ ALTER TABLE `utilisateur`
 --
 
 --
--- AUTO_INCREMENT pour la table `listeaffichable`
+-- AUTO_INCREMENT pour la table `liste`
 --
-ALTER TABLE `listeaffichable`
-  MODIFY `idliste` int(5) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `liste`
+  MODIFY `idListe` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `photo`
 --
 ALTER TABLE `photo`
-  MODIFY `idPhoto` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `idPhoto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT pour la table `post`
 --
 ALTER TABLE `post`
-  MODIFY `idPost` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `idPost` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- Contraintes pour les tables déchargées
---
-
---
--- Contraintes pour la table `avotepour`
---
-ALTER TABLE `avotepour`
-  ADD CONSTRAINT `idpostvote_Foreign_key` FOREIGN KEY (`idPost`) REFERENCES `post` (`idPost`),
-  ADD CONSTRAINT `loginuser_vote_foreign_key` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`);
-
---
--- Contraintes pour la table `partage`
---
-ALTER TABLE `partage`
-  ADD CONSTRAINT `idPost_Foreign_key` FOREIGN KEY (`idPost`) REFERENCES `post` (`idPost`),
-  ADD CONSTRAINT `login_utilisateur_foreign_key` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`);
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
