@@ -94,9 +94,15 @@ $app->post('/likeList', 'cityXplorer\controllers\ListController:likeList')->setN
 //Non testé
 $app->delete('/likeList', 'cityXplorer\controllers\ListController:dislikeList')->setName("dislikeList");
 
+/**
+ * Post from a list
+ */
+$app->get('/postFromList', 'cityXplorer\controllers\ListController:getPostList')->setName("postFromList");
 
-
-
+/**
+ * List of a user
+ */
+$app->get('/listUser', 'cityXplorer\controllers\ListController:getListUser')->setName("ListFromUser");
 //Test
 $app->get('/hello/{name}', function ($rq,$rs,$args) {
     echo $args['name'] ;

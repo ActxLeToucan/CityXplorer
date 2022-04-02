@@ -25,7 +25,7 @@ class User extends Model {
         );
     }
     public function createdLists(): HasMany {
-    return $this->hasMany('cityXplorer\models\Listes', 'idUtilisateur');
+    return $this->hasMany('cityXplorer\models\Liste', 'idCreateur');
 }
     public function listLikes(): BelongsToMany{
         return $this->belongsToMany(
