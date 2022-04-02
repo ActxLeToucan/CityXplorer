@@ -327,4 +327,64 @@ class ListController{
         }
         return $rs->withJSON($tab, 200);
     }
+
+    public function getPostList(Request $rq,Response $rs, array $args){
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('postFromList');
+        $url = $base . $route_uri;
+        $content = $rq->getQueryParams();
+        $idList = $content["idList"];
+        if(isset($content['token'])){
+            $user = User::where("token", "=", $content['token'])->first();
+            $tab = [
+                "result" => 0,
+                "message" => "Erreur : token invalide",
+                "token" => $content['token'],
+            ];
+            if(!is_null($user)){
+                $list=Liste::where("idliste","=",$idList)->first();
+                $tab =[];
+                $tab["List"] = $list->nomListe;
+
+                foreach ($list->posts as $Post){
+                    //echo $Post;
+                    $tab[] = $Post->toArray();
+                }
+            }
+        }
+        return $rs->withJSON($tab, 200);
+    }
+
+    public function getListUser(Request $rq,Response $rs, array $args){
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('ListFromUser');
+        $url = $base . $route_uri;
+        $content = $rq->getQueryParams();
+        if(isset($content['token'])){
+            $user = User::where("token", "=", $content['token'])->first();
+            $tab = [
+                "result" => 0,
+                "message" => "Erreur : token invalide",
+                "token" => $content['token'],
+            ];
+            if(!is_null($user)){
+                $tab=[];
+                $tab["User"]=$user->id;
+                $tabCreated=[];
+                $tabLiked=[];
+                foreach ($user->createdLists as $list){
+                    $tabCreated[]=$list->toArray();
+                }
+                $tab["Created by user"]= $tabCreated;
+
+                foreach ($user->listLikes as $list){
+                    $tabLiked=$list->toArray();
+                }
+                $tab["Liked by user"]= $tabLiked;
+            }
+        }
+        return $rs->withJSON($tab, 200);
+    }
 }
