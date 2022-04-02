@@ -281,9 +281,12 @@ class UserController {
             }
             $post->delete();
         }
-        foreach ($user->likes as $like) {
-            $like->likedByUsers()->detach($user->id);
+        foreach ($user->createdLists as $createdList) {
+            $createdList->delete();
         }
+        $user->likes()->detach();
+        $user->listLikes()->detach();
+
         $user->delete();
 
         return $rs->withJSON([

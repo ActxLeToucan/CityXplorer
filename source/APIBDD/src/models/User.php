@@ -24,9 +24,11 @@ class User extends Model {
             "idPost"
         );
     }
+
     public function createdLists(): HasMany {
-    return $this->hasMany('cityXplorer\models\Liste', 'idCreateur');
-}
+        return $this->hasMany('cityXplorer\models\Liste', 'idCreateur');
+    }
+
     public function listLikes(): BelongsToMany{
         return $this->belongsToMany(
             'cityXplorer\models\Liste',

@@ -214,12 +214,8 @@ class PostController {
             $photo->deleteFile();
             $photo->delete();
         }
-        foreach ($post->likedByUsers as $user) {
-            $post->likedByUsers()->detach($user);
-        }
-        foreach ($post->lists as $list) {
-            $post->lists()->detach($list);
-        }
+        $post->likedByUsers()->detach();
+        $post->lists()->detach();
 
         $post->delete();
 
