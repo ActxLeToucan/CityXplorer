@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
+import '../conf.dart';
 import '../models/post.dart';
 import '../router/delegate.dart';
 
@@ -80,10 +85,7 @@ class _IconMenuPostState extends State<IconMenuPost> {
     );
     Widget continueButton = TextButton(
       child: const Text("Supprimer", style: TextStyle(color: Colors.red)),
-      onPressed: () {
-        // supprimer le post de la bdd + retourner à la liste en faisant disparaitre le post
-        //TODO
-      },
+      onPressed: deletePost,
     );
 
     AlertDialog alert = AlertDialog(
@@ -102,5 +104,25 @@ class _IconMenuPostState extends State<IconMenuPost> {
         return alert;
       },
     );
+  }
+
+  Future<void> deletePost() async {
+    String url = Conf.domainServer +
+        Conf.apiPath +
+        "/post?id=${widget.post.id}&token=${widget.user.token}";
+
+    try {
+      var response = await http.delete(Uri.parse(url));
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      Fluttertoast.showToast(msg: data['message']);
+
+      if (data["result"] == 1) {
+        routerDelegate.popRoute();
+      }
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
   }
 }

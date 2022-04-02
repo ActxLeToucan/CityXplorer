@@ -197,32 +197,33 @@ class PostController {
         $route_uri = $container->router->pathFor('delete');
         $url = $base . $route_uri;
 
-        $content= $rq->getQueryParams();
-        $token = $content["token"];
-        $idPost = $content["id"];
-        $userExist = User::where("token", "=", $token)->count();
-        $post = Post::where("idPost", "=", $idPost)->first();
-
-        if (!isset($rq->getQueryParams()['token']) || is_null($post) || !isset($rq->getQueryParams()['id']) || $userExist != 1) {
+        if (!isset($rq->getQueryParams()['token']) || is_null($user = User::where("token", "=", $rq->getQueryParam('token'))->first())) {
             return $rs->withJSON([
                 "result" => 0,
-                "message" => "Erreur : id ou token invalide",
-                "1" => $rq->getQueryParams()['token'],
-                "2" => is_null($post),
-                "3" => !isset($rq->getQueryParams()['id'])
-            ], 200);
-        } else {
-            $photos = Photo::where("idPost", "=", $idPost)->get();
-            foreach ($photos as $image) {
-                $image->deleteFile();
-                $image->delete();
-            }
-            $post->delete();
-            return $rs->withJSON([
-                "result" => 1,
-                "message" => "Post Supprimé"
+                "message" => "Token invalide."
             ], 200);
         }
+        if (!isset($rq->getQueryParams()['id']) || is_null($post = Post::where("idPost", "=", $rq->getQueryParam('id'))->first())) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Id du post invalide."
+            ], 200);
+        }
+
+        foreach ($post->photos as $photo) {
+            $photo->deleteFile();
+            $photo->delete();
+        }
+        foreach ($post->likedByUsers as $user) {
+            $post->likedByUsers()->detach($user);
+        }
+
+        $post->delete();
+
+        return $rs->withJSON([
+            "result" => 1,
+            "message" => "Post supprimé"
+        ], 200);
     }
 
 
