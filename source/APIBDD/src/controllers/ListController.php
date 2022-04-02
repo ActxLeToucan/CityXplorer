@@ -335,12 +335,12 @@ class ListController{
         $url = $base . $route_uri;
         $content = $rq->getQueryParams();
         $idList = $content["idList"];
-        if(isset($content['token'])){
-            $user = User::where("token", "=", $content['token'])->first();
+        if(isset($content['pseudo'])){
+            $user = User::where("pseudo", "=", $content['pseudo'])->first();
             $tab = [
                 "result" => 0,
                 "message" => "Erreur : token invalide",
-                "token" => $content['token'],
+                "pseudo" => $content['pseudo'],
             ];
             if(!is_null($user)){
                 $list=Liste::where("idliste","=",$idList)->first();
@@ -362,27 +362,26 @@ class ListController{
         $route_uri = $container->router->pathFor('ListFromUser');
         $url = $base . $route_uri;
         $content = $rq->getQueryParams();
-        if(isset($content['token'])){
-            $user = User::where("token", "=", $content['token'])->first();
+        if(isset($content['pseudo'])){
+            $user = User::where("pseudo", "=", $content['pseudo'])->first();
             $tab = [
                 "result" => 0,
                 "message" => "Erreur : token invalide",
-                "token" => $content['token'],
+                "user" => $content['pseudo'],
             ];
             if(!is_null($user)){
                 $tab=[];
-                $tab["User"]=$user->id;
                 $tabCreated=[];
                 $tabLiked=[];
                 foreach ($user->createdLists as $list){
                     $tabCreated[]=$list->toArray();
                 }
-                $tab["Created by user"]= $tabCreated;
+                $tab["createdByThisUser"]= $tabCreated;
 
                 foreach ($user->listLikes as $list){
                     $tabLiked=$list->toArray();
                 }
-                $tab["Liked by user"]= $tabLiked;
+                $tab["likedByThisUser"]= $tabLiked;
             }
         }
         return $rs->withJSON($tab, 200);
