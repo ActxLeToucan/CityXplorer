@@ -217,13 +217,10 @@ class UserController {
 
         $content = $rq->getParsedBody();
 
-        $token = $content['token'];
-        $name = filter_var($content['name'], FILTER_SANITIZE_STRING);
-        $description = filter_var($content['description'], FILTER_SANITIZE_STRING);
+        $name = filter_var($content['name'] ?? "name", FILTER_SANITIZE_STRING);
+        $description = filter_var($content['description'] ?? "", FILTER_SANITIZE_STRING);
 
-        $userNameExist = User::where("token", "=", $token)->count();
-
-        if ($userNameExist != 1) {
+        if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
             return $rs->withJSON([
                 "result" => 0,
                 "message" => "Token invalide",
@@ -236,7 +233,6 @@ class UserController {
                 "user" => null
             ], 200);
         } else {
-            $user = User::where('token', '=', $token)->first();
             $user->name = $name;
             $user->description = $description;
             $user->save();

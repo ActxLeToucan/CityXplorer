@@ -157,7 +157,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
       var request = http.MultipartRequest("POST", Uri.parse(url));
       try {
         request.fields['titre'] = controllerTitre.text;
-        request.fields['description'] = controllerDescription.text;
+        request.fields['description'] = controllerDescription.text.trim();
 
         request.fields['latitude'] = latitude.toString();
         request.fields['longitude'] = longitude.toString();

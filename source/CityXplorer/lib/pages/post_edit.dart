@@ -113,13 +113,14 @@ class _PostEditState extends State<PostEdit> {
 
   Future<void> editPost() async {
     if (_formKey.currentState!.validate()) {
-      String url = Conf.domainServer + Conf.apiPath + "/edit_post";
+      String url = Conf.domainServer + Conf.apiPath + "/post";
       Map<String, dynamic> body = {
         "token": _user.token,
+        "id": _post.id,
         "titre": titre.text,
-        "description": description.text,
+        "description": description.text.trim(),
       };
-/*
+
       try {
         var response = await http.put(Uri.parse(url),
             body: json.encode(body),
@@ -127,15 +128,11 @@ class _PostEditState extends State<PostEdit> {
         final Map<String, dynamic> data = json.decode(response.body);
 
         Fluttertoast.showToast(msg: data['message']);
-
-        if (data["result"] == 1) {
-          await updateUser(_user);
-        }
       } catch (e) {
         print(e);
         Fluttertoast.showToast(
             msg: "Impossible d'accéder à la base de données.");
-      }*/
+      }
     }
   }
 }

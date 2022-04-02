@@ -293,4 +293,46 @@ class PostController {
             "message" => "Post disliké"
         ], 200);
     }
+
+    public function editPost(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('edit_post');
+        $url = $base . $route_uri;
+
+        $content = $rq->getParsedBody();
+
+        $titre = filter_var($content['titre'] ?? "Sans titre", FILTER_SANITIZE_STRING);
+        $description = filter_var($content['description'] ?? "", FILTER_SANITIZE_STRING);
+
+        if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Token invalide",
+                "post" => null
+            ], 200);
+        } else if (!isset($content['id']) || is_null($post = Post::find($content['id']))) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Id du post invalide",
+                "post" => null
+            ], 200);
+        } else if ($post->user != $user) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Vous devez être le propriétaire de post pour le modifier.",
+                "post" => null
+            ], 200);
+        } else {
+            $post->titre = $titre;
+            $post->description = $description;
+            $post->save();
+
+            return $rs->withJSON([
+                "result" => 1,
+                "message" => "Modifications enregistrées.",
+                "post" => $post->toArray(true)
+            ], 200);
+        }
+    }
 }
