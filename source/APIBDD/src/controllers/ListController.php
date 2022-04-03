@@ -356,10 +356,10 @@ class ListController{
         return $rs->withJSON($tab, 200);
     }
 
-    public function getListUser(Request $rq,Response $rs, array $args){
+    public function getLikedListUser(Request $rq,Response $rs, array $args){
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('ListFromUser');
+        $route_uri = $container->router->pathFor('ListLikedFromUser');
         $url = $base . $route_uri;
         $content = $rq->getQueryParams();
         if(isset($content['pseudo'])){
@@ -371,21 +371,39 @@ class ListController{
             ];
             if(!is_null($user)){
                 $tab=[];
-                $tabCreated=[];
-                $tabLiked=[];
-                foreach ($user->createdLists as $list){
-                    $tabCreated[]=$list->toArray();
-                }
-                $tab["createdByThisUser"]= $tabCreated;
 
                 foreach ($user->listLikes as $list){
-                    $tabLiked=$list->toArray();
+                    $tab=$list->toArray();
                 }
-                $tab["likedByThisUser"]= $tabLiked;
             }
         }
         return $rs->withJSON($tab, 200);
     }
+
+    public function getCreatedListUser(Request $rq,Response $rs, array $args){
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('ListCreatedByUser');
+        $url = $base . $route_uri;
+        $content = $rq->getQueryParams();
+        if(isset($content['pseudo'])){
+            $user = User::where("pseudo", "=", $content['pseudo'])->first();
+            $tab = [
+                "result" => 0,
+                "message" => "Erreur : token invalide",
+                "user" => $content['pseudo'],
+            ];
+            if(!is_null($user)){
+                $tab=[];
+                foreach ($user->createdLists as $list){
+                    $tab[]=$list->toArray();
+                }
+            }
+        }
+        return $rs->withJSON($tab, 200);
+    }
+
+    
     public function getAllPostList(Request $rq,Response $rs, array $args)
     {
         $container = $this->c;
