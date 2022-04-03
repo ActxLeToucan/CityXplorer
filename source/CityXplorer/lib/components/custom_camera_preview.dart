@@ -101,6 +101,8 @@ class _CustomCameraPreviewState extends State<CustomCameraPreview> {
               height: 80,
               width: context.width,
               child: ListView.builder(
+                physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
                   return Container(
@@ -108,7 +110,7 @@ class _CustomCameraPreviewState extends State<CustomCameraPreview> {
                     decoration: BoxDecoration(
                         border: Border.all(width: 2.0, color: Colors.white)),
                     child: index >= imageFiles.length
-                        ? Container(color: Colors.white, width: 100)
+                        ? Container(color: Colors.white30, width: 100)
                         : Stack(
                             children: [
                               Image.file(
