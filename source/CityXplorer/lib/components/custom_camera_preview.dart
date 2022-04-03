@@ -21,9 +21,11 @@ class CustomCameraPreview extends StatefulWidget {
 
 class _CustomCameraPreviewState extends State<CustomCameraPreview> {
   final routerDelegate = Get.find<MyRouterDelegate>();
-  // utilise ici pour laisser le temps a l application de calculer l adresse lorsqu il n y a qu une photo de prise
+  // isLoading est utilise ici pour laisser le temps a l application de calculer l adresse lorsqu il n y a qu une photo de prise
   // sinon l utilisateur pourrait prendre une photo et appuyer rapidement sur valider sans qu on est sa localisation
   bool isLoading = false;
+
+  /// affichage du  slider de zoom
   bool zoomON = true;
   double _sliderValue = 1.0;
   double _zoomMax = 1.0;
@@ -145,7 +147,7 @@ class _CustomCameraPreviewState extends State<CustomCameraPreview> {
             )),
         // slider de zoom
         Positioned(
-          left: 5,
+          right: 5,
           child: RotatedBox(
             quarterTurns: 3,
             child: SizedBox(
@@ -159,7 +161,6 @@ class _CustomCameraPreviewState extends State<CustomCameraPreview> {
                       activeColor: Colors.white,
                       inactiveColor: Colors.white30,
                       onChanged: (dynamic newValue) {
-                        print(_zoomMax);
                         setState(() {
                           _sliderValue = newValue;
                           widget.cameraController.setZoomLevel(newValue);
@@ -206,7 +207,6 @@ class _CustomCameraPreviewState extends State<CustomCameraPreview> {
             heroTag: "confirm",
             backgroundColor: Colors.black,
             onPressed: () async {
-              print(imageFiles.isEmpty);
               if (imageFiles.isEmpty) {
                 Fluttertoast.showToast(
                     msg: 'Prenez au moins une photo pour continuer',
@@ -218,7 +218,7 @@ class _CustomCameraPreviewState extends State<CustomCameraPreview> {
                 }
                 routerDelegate.pushPage(name: '/new_post', arguments: {
                   'photos': imagePaths.join(","),
-                  'imagePath': imageFiles[0].path,
+                  //'imagePath': imageFiles[0].path,
                   'latitude': (imageLocations.first[0]).toString(),
                   'longitude': (imageLocations.first[1]).toString(),
                 });

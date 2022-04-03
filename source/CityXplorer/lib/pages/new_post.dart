@@ -36,7 +36,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   bool isLoading = false;
   List photos = [];
 
-  String imagePath = "";
+  //String imagePath = "";
   double latitude = 0;
   double longitude = 0;
 
@@ -47,14 +47,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
     if (photosString != "") {
       photos = photosString.split(",");
     }
-    imagePath = widget.arguments['imagePath'] ?? "";
+    //imagePath = widget.arguments['imagePath'] ?? "";
     latitude = double.parse(widget.arguments['latitude'] ?? "0.0");
     longitude = double.parse(widget.arguments['longitude'] ?? "0.0");
   }
 
   @override
   Widget build(BuildContext context) {
-    if (imagePath != "") {
+    if (photos.isNotEmpty) {
       return Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -247,7 +247,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
       ///ajout des photos a la requete
       for (var i = 0; i < photos.length; i++) {
         request.files.add(http.MultipartFile(
-            'photo',
+            "photo",
+            //"'photo'$i",
             File(photos[i]).readAsBytes().asStream(),
             File(photos[i]).lengthSync(),
             filename: path.basename(photos[i].split("/").last)));
@@ -292,9 +293,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
     try {
       var response = await http.get(Uri.parse(url));
-      print(response.statusCode);
+      //print(response.statusCode);
       final Map<String, dynamic> data = json.decode(response.body);
-      print(data);
+      //print(data);
       if (data["status"] == "OK") {
         if (data["results"].length > 0) {
           Map firstResult = data["results"][0];
@@ -306,7 +307,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
           adresses.add(city);
         }
       }
-      print(adresses);
+      //print(adresses);
       return adresses;
     } catch (e) {
       print(e);
