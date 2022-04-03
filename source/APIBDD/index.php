@@ -91,7 +91,9 @@ $app->get('/postFromList', 'cityXplorer\controllers\ListController:getPostList')
 /**
  * List of a user
  */
-$app->get('/listUser', 'cityXplorer\controllers\ListController:getListUser')->setName("ListFromUser");
+$app->get('/listLikedUser', 'cityXplorer\controllers\ListController:getLikedListUser')->setName("ListLikedFromUser");
+
+$app->get('/listCreatedUser', 'cityXplorer\controllers\ListController:getCreatedListUser')->setName("ListCreatedByUser");
 //Test
 $app->get('/hello/{name}', function ($rq,$rs,$args) {
     echo $args['name'] ;
