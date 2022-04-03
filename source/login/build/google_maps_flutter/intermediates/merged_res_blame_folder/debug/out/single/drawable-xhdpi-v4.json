@@ -1,0 +1,50 @@
+[
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\common_google_signin_btn_text_light_normal_background.9.png",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\9f5c6f191655c7bada472ffcf09699af\\jetified-play-services-base-17.0.0\\res\\drawable-xhdpi-v4\\common_google_signin_btn_text_light_normal_background.9.png"
+    },
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\notification_bg_normal.9.png",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\77297e1b1b8e10b1a00e495fab519f61\\core-1.1.0\\res\\drawable-xhdpi-v4\\notification_bg_normal.9.png"
+    },
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\common_google_signin_btn_icon_dark_normal_background.9.png",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\9f5c6f191655c7bada472ffcf09699af\\jetified-play-services-base-17.0.0\\res\\drawable-xhdpi-v4\\common_google_signin_btn_icon_dark_normal_background.9.png"
+    },
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\googleg_disabled_color_18.png",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\9f5c6f191655c7bada472ffcf09699af\\jetified-play-services-base-17.0.0\\res\\drawable-xhdpi-v4\\googleg_disabled_color_18.png"
+    },
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\googleg_standard_color_18.png",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\9f5c6f191655c7bada472ffcf09699af\\jetified-play-services-base-17.0.0\\res\\drawable-xhdpi-v4\\googleg_standard_color_18.png"
+    },
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\notification_bg_low_normal.9.png",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\77297e1b1b8e10b1a00e495fab519f61\\core-1.1.0\\res\\drawable-xhdpi-v4\\notification_bg_low_normal.9.png"
+    },
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\common_google_signin_btn_icon_light_normal_background.9.png",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\9f5c6f191655c7bada472ffcf09699af\\jetified-play-services-base-17.0.0\\res\\drawable-xhdpi-v4\\common_google_signin_btn_icon_light_normal_background.9.png"
+    },
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\notify_panel_notification_icon_bg.png",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\77297e1b1b8e10b1a00e495fab519f61\\core-1.1.0\\res\\drawable-xhdpi-v4\\notify_panel_notification_icon_bg.png"
+    },
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\notification_bg_low_pressed.9.png",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\77297e1b1b8e10b1a00e495fab519f61\\core-1.1.0\\res\\drawable-xhdpi-v4\\notification_bg_low_pressed.9.png"
+    },
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\common_full_open_on_phone.png",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\9f5c6f191655c7bada472ffcf09699af\\jetified-play-services-base-17.0.0\\res\\drawable-xhdpi-v4\\common_full_open_on_phone.png"
+    },
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\notification_bg_normal_pressed.9.png",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\77297e1b1b8e10b1a00e495fab519f61\\core-1.1.0\\res\\drawable-xhdpi-v4\\notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\common_google_signin_btn_text_dark_normal_background.9.png",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\9f5c6f191655c7bada472ffcf09699af\\jetified-play-services-base-17.0.0\\res\\drawable-xhdpi-v4\\common_google_signin_btn_text_dark_normal_background.9.png"
+    }
+]

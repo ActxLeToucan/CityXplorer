@@ -1,0 +1,4 @@
+io/flutter/plugins/GeneratedPluginRegistrant.java
+ io.flutter.plugins.GeneratedPluginRegistrant
+com/loginmysqlbyottoman/login_tutorial/BuildConfig.java
+ com.loginmysqlbyottoman.login_tutorial.BuildConfig

@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\color\\common_google_signin_btn_text_light.xml",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\9f5c6f191655c7bada472ffcf09699af\\jetified-play-services-base-17.0.0\\res\\color\\common_google_signin_btn_text_light.xml"
+    },
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\color\\common_google_signin_btn_tint.xml",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\9f5c6f191655c7bada472ffcf09699af\\jetified-play-services-base-17.0.0\\res\\color\\common_google_signin_btn_tint.xml"
+    },
+    {
+        "merged": "C:\\Users\\paul2\\Desktop\\flutter\\S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ\\source\\login\\build\\google_maps_flutter\\intermediates\\res\\merged\\debug\\color\\common_google_signin_btn_text_dark.xml",
+        "source": "C:\\Users\\paul2\\.gradle\\caches\\transforms-2\\files-2.1\\9f5c6f191655c7bada472ffcf09699af\\jetified-play-services-base-17.0.0\\res\\color\\common_google_signin_btn_text_dark.xml"
+    }
+]
