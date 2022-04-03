@@ -128,7 +128,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
               'Créer un post',
             ),
           ),
-          body: const Center(child: Text("Photo invalide.")));
+          body: const Center(
+              child: Text("Photo invalide.", textAlign: TextAlign.center)));
     }
   }
 

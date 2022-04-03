@@ -92,7 +92,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
               }
             });
       } else {
-        return const Center(child: Text("Erreur camera"));
+        return const Center(
+            child: Text("Erreur camera", textAlign: TextAlign.center));
       }
     } else {
       return const Center(child: CircularProgressIndicator());

@@ -59,14 +59,13 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
     if (uri.pathSegments.isEmpty) {
       setNewRoutePath([const RouteSettings(name: '/')]);
     } else {
-      setNewRoutePath(uri.pathSegments
-          .map((pathSegment) => RouteSettings(
-                name: '/$pathSegment',
-                arguments: pathSegment == uri.pathSegments.last
-                    ? uri.queryParameters
-                    : null,
-              ))
-          .toList());
+      String path =
+          uri.pathSegments.reduce((value, element) => "$value/$element");
+      setNewRoutePath([
+        RouteSettings(
+            name: '/$path',
+            arguments: uri.queryParameters.isEmpty ? null : uri.queryParameters)
+      ]);
     }
   }
 
@@ -140,9 +139,21 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
             arguments: routeSettings.arguments as Map<String, String>);
         break;
       default:
+        if (routeSettings.name != null &&
+            routeSettings.name!.startsWith("/download")) {
+          child = Scaffold(
+            appBar: AppBar(title: const Text("CityXplorer"), centerTitle: true),
+            body: const Center(
+                child: Text(
+                    "Vous possédez déjà cette application.\nPour mettre à jour l'application, désinstallez la et relancez le fichier d'installation.",
+                    textAlign: TextAlign.center)),
+          );
+          break;
+        }
         child = Scaffold(
           appBar: AppBar(title: const Text('404')),
-          body: const Center(child: Text('Page introuvable')),
+          body: const Center(
+              child: Text('Page introuvable', textAlign: TextAlign.center)),
         );
     }
 

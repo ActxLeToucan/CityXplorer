@@ -56,13 +56,15 @@ class _PostEditState extends State<PostEdit> {
       if (_post.isEmpty()) {
         return Scaffold(
             appBar: defaultAppBar(context),
-            body: const Center(child: Text("Post invalide.")));
+            body: const Center(
+                child: Text("Post invalide.", textAlign: TextAlign.center)));
       } else if (_user.isEmpty() || _user.pseudo != _post.userPseudo) {
         return Scaffold(
             appBar: defaultAppBar(context),
             body: const Center(
                 child: Text(
-                    "Vous devez être le propriétaire du post pour accéder à cette page")));
+                    "Vous devez être le propriétaire du post pour accéder à cette page",
+                    textAlign: TextAlign.center)));
       } else {
         return Scaffold(
             appBar: defaultAppBar(context),

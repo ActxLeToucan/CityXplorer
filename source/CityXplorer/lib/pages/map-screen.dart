@@ -147,7 +147,8 @@ class _GeolocationMapState extends State<GeolocationMap> {
                 ),
               ),
             ),
-            body: const Center(child: Text("Post invalide.")));
+            body: const Center(
+                child: Text("Post invalide.", textAlign: TextAlign.center)));
       } else {
         return Scaffold(
           appBar: AppBar(
