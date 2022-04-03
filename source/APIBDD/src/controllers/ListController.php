@@ -386,4 +386,35 @@ class ListController{
         }
         return $rs->withJSON($tab, 200);
     }
+    public function getAllPostList(Request $rq,Response $rs, array $args)
+    {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('likeList');
+        $url = $base . $route_uri;
+        $content = $rq->getQueryParams();
+        $idList=$content["idList"];
+        $tab = [
+            "result" => 0,
+            "message" => "Erreur lors de la suppression",
+            "list/post" => null
+        ];
+        if(isset($content['token'])){
+            $user = User::where("token", "=", $content['token'])->first();
+            $tab = [
+                "result" => 0,
+                "message" => "Erreur : token invalide",
+                "token" => $content['token'],
+            ];
+            if(!is_null($user)){
+                $list=Liste::where("idliste","=",$idList)->first();
+                $AllPost=$list->posts()->get();
+                $tab=[];
+                foreach ($AllPost as $Post){
+                    $tab[] = $Post->toArray();
+                }
+            }
+        }
+        return $rs->withJSON($tab, 200);
+    }
 }
