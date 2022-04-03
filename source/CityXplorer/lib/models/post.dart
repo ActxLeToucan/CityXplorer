@@ -7,15 +7,14 @@ import 'package:cityxplorer/components/share_bar_icon.dart';
 import 'package:cityxplorer/models/user.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
-
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 
 import '../conf.dart';
-import '../router/delegate.dart';
 import '../main.dart';
+import '../router/delegate.dart';
 import '../styles.dart';
 
 class Post {
@@ -115,6 +114,29 @@ class Post {
 
   bool isValid() {
     return etat == postEtatValide;
+  }
+
+  /// construit l'icone de l'etat du post en fonction de sa valeur
+  Widget iconValidation() {
+    if (etat == postEtatBloque) {
+      return const Icon(
+        Icons.cancel_outlined,
+        color: Colors.red,
+        size: 24,
+      );
+    } else if (etat == postEtatValide) {
+      return const Icon(
+        Icons.verified_user,
+        color: Colors.green,
+        size: 24,
+      );
+    } else {
+      return const Icon(
+        Icons.lock_clock,
+        color: Colors.orangeAccent,
+        size: 24,
+      );
+    }
   }
 
   Widget toWidget(BuildContext context) {
@@ -338,36 +360,22 @@ class Post {
     routerDelegate.pushPage(name: '/map', arguments: {'id': id.toString()});
   }
 
-  /// construit l'icone de verification d'un post en fonction de son etat et des droits de l'utilisateur
+  /// construit l'icone de verification d'un post en fonction de son etat
   Widget buildVerif() {
     return FutureBuilder<User>(
       future: getUser(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return GestureDetector(
-            onTap: () {
-              /// si l utilisateur est un admin, au clic on inverse la validation du post
-              /// ou on affiche a l'utilisateur un message pour l'informer de l'utilite de cette icone
-              (snapshot.requireData.niveauAcces >= 2)
-                  ? changeValidation()
-                  : showValidation();
-            },
-            child: Container(
+              onTap: () {
+                showValidation();
+              },
+              child: Container(
                 padding: const EdgeInsets.all(3),
-                child: isValid()
-                    ? const Icon(
-                        Icons.verified_user,
-                        color: Colors.green,
-                        size: 24,
-                      )
-                    : const Icon(
-                        Icons.cancel_outlined,
-                        color: Colors.red,
-                        size: 24,
-                      )),
-          );
+                child: iconValidation(),
+              ));
         } else {
-          return CircularProgressIndicator(
+          return const CircularProgressIndicator(
             strokeWidth: 1.5,
             color: Colors.black,
           );
@@ -376,21 +384,17 @@ class Post {
     );
   }
 
-  /// fonction appelée lorsque qu'un admin clique sur le bouton de validation
-  void changeValidation() {
-    // envoyer la requete pour changer d'etat le post
-    // TODO
-    isValid()
-        ? Fluttertoast.showToast(msg: 'Post validé 👌!')
-        : Fluttertoast.showToast(msg: 'Post invalidé 👌!');
-  }
-
   /// fonction appelée lorsque qu'un utilsateur classique clique sur le bouton de validation
   void showValidation() {
-    isValid()
-        ? Fluttertoast.showToast(
-            msg: 'Le post a été validé par un administrateur ✌!')
-        : Fluttertoast.showToast(
-            msg: 'Le post n\'est pas encore validé par un administeur 😶!');
+    if (etat == postEtatBloque) {
+      Fluttertoast.showToast(
+          msg: 'Le post a été bloqué par un administrateur 😦!');
+    } else if (etat == postEtatValide) {
+      Fluttertoast.showToast(
+          msg: 'Le post a été validé par un administrateur ✌!');
+    } else {
+      Fluttertoast.showToast(
+          msg: 'Le post n\'est pas encore validé par un administeur 😶!');
+    }
   }
 }
