@@ -92,14 +92,7 @@ class PostController {
                 "post" => null
             ];
             if (!is_null($user)) {
-                if (sizeof($_FILES) == 1 && $_FILES['photo']['error'] == 0) {
-                    // upload image
-                    $cheminServeur = $_FILES['photo']['tmp_name'];
-                    $extension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
-                    $fileName = time() . bin2hex(openssl_random_pseudo_bytes(20)) . '.' . $extension;
-                    $uploadFile = Conf::PATH_IMAGE_POSTS . "/$fileName";
-                    move_uploaded_file($cheminServeur, $uploadFile);
-
+                if (sizeof($_FILES) >= 1) {
                     // creation post
                     $newPost = new Post();
                     $newPost->latitude = $latitude;
@@ -114,10 +107,27 @@ class PostController {
                     $newPost->save();
 
                     // creation photo
-                    $newPhoto = new Photo();
-                    $newPhoto->idPost = $newPost->idPost;
-                    $newPhoto->url = $fileName;
-                    $newPhoto->save();
+                    foreach ($_FILES as $file) {
+                        if ($file['error'] != 0) {
+                            return $rs->withJSON([
+                                "result" => 0,
+                                "message" => "Fichier invalide",
+                                "post" => null
+                            ], 200);
+                        }
+
+                        // upload image
+                        $cheminServeur = $file['tmp_name'];
+                        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                        $fileName = time() . bin2hex(openssl_random_pseudo_bytes(20)) . '.' . $extension;
+                        $uploadFile = Conf::PATH_IMAGE_POSTS . "/$fileName";
+                        move_uploaded_file($cheminServeur, $uploadFile);
+
+                        $newPhoto = new Photo();
+                        $newPhoto->idPost = $newPost->idPost;
+                        $newPhoto->url = $fileName;
+                        $newPhoto->save();
+                    }
 
                     // résultats
                     $tab = [
