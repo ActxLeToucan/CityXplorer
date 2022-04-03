@@ -3,6 +3,7 @@ import 'package:cityxplorer/models/post.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import '../components/appbar.dart';
 import '../models/directionsM.dart';
 import '../models/directionsR.dart';
 
@@ -189,15 +190,7 @@ class _GeolocationMapState extends State<GeolocationMap> {
       }
     } else {
       return Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              'Chargement...',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+          appBar: namedAppBar(context, "Chargement...", centerTitle: false),
           body: const Center(child: CircularProgressIndicator()));
     }
   }
