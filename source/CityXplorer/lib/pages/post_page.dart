@@ -39,7 +39,8 @@ class _PostPageState extends State<PostPage> {
       if (_post.isEmpty()) {
         return Scaffold(
             appBar: defaultAppBar(context),
-            body: const Center(child: Text("Post invalide.")));
+            body: const Center(
+                child: Text("Post invalide.", textAlign: TextAlign.center)));
       } else {
         return Scaffold(
             appBar: defaultAppBar(context),

@@ -44,7 +44,9 @@ class _UserProfileState extends State<UserProfile> {
         return Scaffold(
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
-            body: const Center(child: Text("Utilisateur invalide.")));
+            body: const Center(
+                child: Text("Utilisateur invalide.",
+                    textAlign: TextAlign.center)));
       } else {
         return Scaffold(
             extendBodyBehindAppBar: true,
@@ -157,7 +159,8 @@ class _UserProfileState extends State<UserProfile> {
     bool isCurrent = await isCurrentUser(_user.pseudo);
     if (posts.isEmpty) {
       return const Center(
-        child: Text("Aucun post n'a été publié par cet utilisateur."),
+        child: Text("Aucun post n'a été publié par cet utilisateur.",
+            textAlign: TextAlign.center),
       );
     } else {
       List<Widget> list = [];

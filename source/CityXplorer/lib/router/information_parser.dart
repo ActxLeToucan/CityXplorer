@@ -13,14 +13,13 @@ class MyRouteInformationParser
       return Future.value([const RouteSettings(name: '/')]);
     }
 
-    final routeSettings = uri.pathSegments
-        .map((pathSegment) => RouteSettings(
-              name: '/$pathSegment',
-              arguments: pathSegment == uri.pathSegments.last
-                  ? uri.queryParameters
-                  : null,
-            ))
-        .toList();
+    String path =
+        uri.pathSegments.reduce((value, element) => "$value/$element");
+    final routeSettings = [
+      RouteSettings(
+          name: '/$path',
+          arguments: uri.queryParameters.isEmpty ? null : uri.queryParameters)
+    ];
 
     return Future.value(routeSettings);
   }
@@ -40,6 +39,8 @@ class MyRouteInformationParser
       case '/post':
         return '?id=${(routeSettings.arguments as Map)['id'].toString()}';
       case '/map':
+        return '?id=${(routeSettings.arguments as Map)['id'].toString()}';
+      case '/post/edit':
         return '?id=${(routeSettings.arguments as Map)['id'].toString()}';
       default:
         return '';

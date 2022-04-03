@@ -52,7 +52,8 @@ class _ChangePasswordState extends State<ChangePassword> {
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
             body: const Center(
-                child: Text("Connectez-vous pour accéder à cette page")));
+                child: Text("Connectez-vous pour accéder à cette page",
+                    textAlign: TextAlign.center)));
       } else {
         return Scaffold(
             extendBodyBehindAppBar: true,
