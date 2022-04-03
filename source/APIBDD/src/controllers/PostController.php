@@ -391,7 +391,6 @@ class PostController {
                 "post" => null
             ], 200);
         } else {
-            echo $etat;
             if ($etat != Post::ETAT_VALIDE && $etat != Post::ETAT_BLOQUE && $etat != Post::ETAT_EN_ATTENTE) {
                 return $rs->withJSON([
                     "result" => 0,

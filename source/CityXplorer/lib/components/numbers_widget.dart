@@ -41,7 +41,7 @@ class _NumbersWidgetState extends State<NumbersWidget> {
 
   Widget buildDivider() => const SizedBox(
         height: 24,
-        child: VerticalDivider(),
+        child: VerticalDivider(color: Colors.grey),
       );
 
   Widget buildButton(BuildContext context, String value, String text) =>
@@ -68,7 +68,10 @@ class _NumbersWidgetState extends State<NumbersWidget> {
 
   void _load() async {
     List<Post> posts = await widget.user.getPosts();
-    nbPosts = posts.length;
+    nbPosts = posts.fold(
+        0,
+        (previousValue, element) =>
+            previousValue + (element.isValid() ? 1 : 0));
     likes = posts.fold(
         0,
         (previousValue, element) =>

@@ -171,16 +171,19 @@ class Post {
           padding: const EdgeInsets.only(bottom: 4),
           child: Row(
             children: [
-              Text(
-                titre,
+              Expanded(
+                  child: Text(
+                "$titre $titre $titre $titre",
                 overflow: TextOverflow.fade,
                 softWrap: false,
                 maxLines: 1,
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              )),
+              Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: buildVerif(),
               ),
-              const Spacer(),
-              buildVerif(),
             ],
           ),
         ),
@@ -282,7 +285,10 @@ class Post {
                       fontWeight: FontWeight.bold, fontSize: 24),
                 ),
               )),
-              buildVerif(),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
+                child: buildVerif(),
+              ),
               IconMenuPost(user: userConneted, post: this),
             ]),
         Text(
@@ -389,13 +395,13 @@ class Post {
   void showValidation() {
     if (etat == postEtatBloque) {
       Fluttertoast.showToast(
-          msg: 'Le post a été bloqué par un administrateur 😦!');
+          msg: "Le post a été bloqué par un administrateur 😦 !");
     } else if (etat == postEtatValide) {
       Fluttertoast.showToast(
-          msg: 'Le post a été validé par un administrateur ✌!');
+          msg: "Le post a été validé par un administrateur ✌ !");
     } else {
       Fluttertoast.showToast(
-          msg: 'Le post n\'est pas encore validé par un administeur 😶!');
+          msg: "Le post n'a pas encore été validé par un administeur 😶 !");
     }
   }
 }
