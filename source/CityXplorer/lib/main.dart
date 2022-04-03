@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
+import 'models/user.dart';
 import 'my_http_overrides.dart';
 
 Future<void> main() async {
@@ -105,4 +106,26 @@ Future<UserConneted> getUser() async {
 Future<bool> isCurrentUser(String pseudo) async {
   UserConneted user = await getUser();
   return user.pseudo.compareTo(pseudo) == 0;
+}
+
+/// mise a jour de l'utilisateur stocké dans les SharedPreferences
+/// retourne le meme utilisateur, potentiellement modifié
+Future<User> updateUser(User user) async {
+  if ((!user.isEmpty() && user is UserConneted) ||
+      await isCurrentUser(user.pseudo)) {
+    UserConneted oldUser = await getUser();
+    User newUser = await User.fromPseudo(user.pseudo);
+    UserConneted userUpdated = oldUser.updateWith(newUser);
+    connexion(userUpdated);
+    return userUpdated;
+  }
+  return user;
+}
+
+Future<User> reloadUser() async {
+  UserConneted oldUser = await getUser();
+  User newUser = await User.fromPseudo(oldUser.pseudo);
+  UserConneted userUpdated = oldUser.updateWith(newUser);
+  connexion(userUpdated);
+  return userUpdated;
 }

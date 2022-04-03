@@ -17,6 +17,13 @@ defaultAppBar(BuildContext context) {
   );
 }
 
+namedAppBar(BuildContext context, String titre, {bool centerTitle = true}) {
+  return AppBar(
+    title: Text(titre),
+    centerTitle: centerTitle,
+  );
+}
+
 transparentAppBar(BuildContext context) {
   return AppBar(
     backgroundColor: Colors.transparent,

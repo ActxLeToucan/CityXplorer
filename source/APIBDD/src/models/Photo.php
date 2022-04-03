@@ -2,9 +2,9 @@
 
 namespace cityXplorer\models;
 
+use cityXplorer\Conf;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Photo extends Model{
     protected $table = 'photo';
@@ -17,5 +17,10 @@ class Photo extends Model{
 
     public function user(): BelongsTo {
         return $this->belongsTo('cityXplorer\models\User', 'idUser');
+    }
+
+    public function deleteFile() {
+        $url = $this->url;
+        if ($url != "" && file_exists(Conf::PATH_IMAGE_POSTS . "/$url")) unlink(Conf::PATH_IMAGE_POSTS . "/$url");
     }
 }

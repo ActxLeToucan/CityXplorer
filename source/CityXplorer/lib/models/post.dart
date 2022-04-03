@@ -1,33 +1,36 @@
 import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cityxplorer/components/description.dart';
 import 'package:cityxplorer/components/icon_menu_post_profil.dart';
 import 'package:cityxplorer/components/share_bar_icon.dart';
 import 'package:cityxplorer/models/user.dart';
+import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
-
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 
 import '../conf.dart';
-import '../router/delegate.dart';
 import '../main.dart';
-import '../pages/map-screen.dart';
+import '../router/delegate.dart';
 import '../styles.dart';
 
 class Post {
+  static const postEtatValide = 1;
+  static const postEtatEnAttente = 0;
+  static const postEtatBloque = -1;
+
   final int id;
   final String titre;
   final double latitude;
   final double longitude;
   final String description;
   final DateTime date;
-  final String etat;
+  final int etat;
   final List<String?> photos;
+  final List<String?> likedByUsers;
   final String userPseudo;
   final String adresseCourte;
   final String adresseLongue;
@@ -41,6 +44,7 @@ class Post {
       required this.date,
       required this.etat,
       required this.photos,
+      required this.likedByUsers,
       required this.userPseudo,
       required this.adresseCourte,
       required this.adresseLongue});
@@ -60,8 +64,9 @@ class Post {
         date: (json['date'] != null
             ? DateTime.parse(json['date'])
             : DateTime.now()),
-        etat: (json['etat'] as String).toLowerCase(),
+        etat: json['etat'],
         photos: List<String>.from(json['photos']),
+        likedByUsers: List<String>.from(json['likedBy']),
         userPseudo: unescape.convert(json['user-pseudo']),
         adresseCourte: unescape.convert(json['adresse_courte']),
         adresseLongue: unescape.convert(json['adresse_longue']));
@@ -75,8 +80,9 @@ class Post {
         longitude: .0,
         description: "",
         date: DateTime.now(),
-        etat: "empty",
+        etat: postEtatEnAttente,
         photos: [],
+        likedByUsers: [],
         userPseudo: "",
         adresseCourte: "",
         adresseLongue: "");
@@ -103,11 +109,34 @@ class Post {
   }
 
   bool isEmpty() {
-    return (etat == "empty");
+    return (id == -1);
   }
 
   bool isValid() {
-    return etat.compareTo("valide") == 0;
+    return etat == postEtatValide;
+  }
+
+  /// construit l'icone de l'etat du post en fonction de sa valeur
+  Widget iconValidation() {
+    if (etat == postEtatBloque) {
+      return const Icon(
+        Icons.cancel_outlined,
+        color: Colors.red,
+        size: 26,
+      );
+    } else if (etat == postEtatValide) {
+      return const Icon(
+        Icons.verified_user,
+        color: Colors.green,
+        size: 26,
+      );
+    } else {
+      return const Icon(
+        Icons.lock_clock,
+        color: Colors.orangeAccent,
+        size: 26,
+      );
+    }
   }
 
   Widget toWidget(BuildContext context) {
@@ -236,7 +265,7 @@ class Post {
     routerDelegate.pushPage(name: '/post', arguments: {'id': id.toString()});
   }
 
-  Widget elementsBeforeImageOnPage() {
+  Widget elementsBeforeImageOnPage(UserConneted userConneted) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -253,7 +282,8 @@ class Post {
                       fontWeight: FontWeight.bold, fontSize: 24),
                 ),
               )),
-              const IconMenuPost(),
+              buildVerif(),
+              IconMenuPost(user: userConneted, post: this),
             ]),
         Text(
           "$adresseLongue\nle ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} à ${date.hour}:${date.minute.toString().padLeft(2, '0')}",
@@ -309,11 +339,12 @@ class Post {
         GestureDetector(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
-            child: Text("@$userPseudo", style: Styles.textStyleLink),
+            child: Text("@$userPseudo",
+                style: const TextStyle(color: Styles.linkColor)),
           ),
           onTap: () => navigateToCreatorPage(context),
         ),
-        Text(description)
+        Description(description: description)
       ],
     );
   }
@@ -330,36 +361,22 @@ class Post {
     routerDelegate.pushPage(name: '/map', arguments: {'id': id.toString()});
   }
 
-  /// construit l'icone de verification d'un post en fonction de son etat et des droits de l'utilisateur
+  /// construit l'icone de verification d'un post en fonction de son etat
   Widget buildVerif() {
     return FutureBuilder<User>(
       future: getUser(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return GestureDetector(
-            onTap: () {
-              /// si l utilisateur est un admin, au clic on inverse la validation du post
-              /// ou on affiche a l'utilisateur un message pour l'informer de l'utilite de cette icone
-              (snapshot.requireData.niveauAcces == 2)
-                  ? changeValidation()
-                  : showValidation();
-            },
-            child: Container(
+              onTap: () {
+                showValidation();
+              },
+              child: Container(
                 padding: const EdgeInsets.all(3),
-                child: isValid()
-                    ? const Icon(
-                        Icons.verified_user,
-                        color: Colors.green,
-                        size: 24,
-                      )
-                    : const Icon(
-                        Icons.cancel_outlined,
-                        color: Colors.red,
-                        size: 24,
-                      )),
-          );
+                child: iconValidation(),
+              ));
         } else {
-          return CircularProgressIndicator(
+          return const CircularProgressIndicator(
             strokeWidth: 1.5,
             color: Colors.black,
           );
@@ -368,21 +385,17 @@ class Post {
     );
   }
 
-  /// fonction appelée lorsque qu'un admin clique sur le bouton de validation
-  void changeValidation() {
-    // envoyer la requete pour changer d'etat le post
-    // TODO
-    isValid()
-        ? Fluttertoast.showToast(msg: 'Post validé 👌!')
-        : Fluttertoast.showToast(msg: 'Post invalidé 👌!');
-  }
-
   /// fonction appelée lorsque qu'un utilsateur classique clique sur le bouton de validation
   void showValidation() {
-    isValid()
-        ? Fluttertoast.showToast(
-            msg: 'Le post a été validé par un administrateur ✌!')
-        : Fluttertoast.showToast(
-            msg: 'Le post n\'est pas encore validé par un administeur 😶!');
+    if (etat == postEtatBloque) {
+      Fluttertoast.showToast(
+          msg: 'Le post a été bloqué par un administrateur 😦!');
+    } else if (etat == postEtatValide) {
+      Fluttertoast.showToast(
+          msg: 'Le post a été validé par un administrateur ✌!');
+    } else {
+      Fluttertoast.showToast(
+          msg: 'Le post n\'est pas encore validé par un administeur 😶!');
+    }
   }
 }

@@ -1,6 +1,8 @@
 import 'package:cityxplorer/models/user.dart';
 import 'package:flutter/material.dart';
 
+import '../models/post.dart';
+
 class NumbersWidget extends StatefulWidget {
   final User user;
 
@@ -65,7 +67,13 @@ class _NumbersWidgetState extends State<NumbersWidget> {
       );
 
   void _load() async {
-    nbPosts = (await widget.user.getPosts()).length;
+    List<Post> posts = await widget.user.getPosts();
+    nbPosts = posts.length;
+    likes = posts.fold(
+        0,
+        (previousValue, element) =>
+            previousValue + element.likedByUsers.length);
+
     setState(() {});
   }
 }

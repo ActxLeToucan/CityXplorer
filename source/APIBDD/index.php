@@ -2,8 +2,6 @@
 
 ini_set('display_errors', 1);
 
-use cityXplorer\controllers\PostController;
-use cityXplorer\controllers\RegisterController;
 use cityXplorer\dbInit;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -31,71 +29,85 @@ $app->get('/doc', function (Request $rq, Response $rs, array $args): Response {
  * USER
  */
 // connexion
-$app->post('/login',
-    function (Request $rq, Response $rs, array $args): Response{
-        $controller=new RegisterController($this);
-        return $rs->withJson($controller->login($rq,$rs,$args),200);
-    })->setName("login");
+$app->post('/login', 'cityXplorer\controllers\UserController:login')->setName("login");
+
 // inscription
-$app->post('/register',
-    function (Request $rq, Response $rs, array $args): Response{
-        $controller=new RegisterController($this);
-        return $rs->withJson($controller->register($rq,$rs,$args),200);
-    })->setName("register");
+$app->post('/register', 'cityXplorer\controllers\UserController:register')->setName("register");
+
 // obtention d'un utilisateur
-$app->get('/user',
-    function (Request $rq, Response $rs, array $args): Response{
-        $controller=new RegisterController($this);
-        return $rs->withJson($controller->user($rq,$rs,$args),200);
-    })->setName("user");
+$app->get('/user', 'cityXplorer\controllers\UserController:user')->setName("user");
+
 // recherche d'utilisateurs
-$app->get('/users',
-    function (Request $rq, Response $rs, array $args): Response{
-        $controller=new RegisterController($this);
-        return $rs->withJson($controller->searchUsers($rq,$rs,$args),200);
-    })->setName("users");
+$app->get('/users', 'cityXplorer\controllers\UserController:searchUsers')->setName("users");
+
+// modification utilisateur
+$app->put('/user', 'cityXplorer\controllers\UserController:editUser')->setName("edit_user");
+
+// suppression utilisateur
+$app->delete('/user', 'cityXplorer\controllers\UserController:deleteUser')->setName("del_user");
+
+// ajout avatar
+$app->post('/avatar', 'cityXplorer\controllers\UserController:avatar')->setName("avatar");
+
+// changer mdp
+$app->post('/change_password', 'cityXplorer\controllers\UserController:changePass')->setName("change_pass");
 
 
 /**
  * POST
  */
 // création d'un post
-$app->post('/post',
-    function (Request $rq, Response $rs, array $args): Response {
-        $controller = new PostController($this);
-        return $rs->withJson($controller->addPost($rq,$rs,$args),200);
-    })->setName("createPost");
+$app->post('/post', 'cityXplorer\controllers\PostController:addPost')->setName("createPost");
+
 // obtention d'un post par son id
-$app->get('/post',
-    function (Request $rq, Response $rs, array $args): Response{
-        $controller=new PostController($this);
-        return $rs->withJson($controller->getPostById($rq,$rs,$args),200);
-    })->setName("postId");
-$app->delete('/post',
-    //Suppression d'un post
-    function (Request $rq, Response $rs,array $args):Response{
-        $controller=new PostController($this);
-        return $rs->withJson($controller->delete($rq,$rs,$args),200);
-    })->setName("delete");
+$app->get('/post', 'cityXplorer\controllers\PostController:getPostById')->setName("postId");
+
+// suppression d'un post
+$app->delete('/post', 'cityXplorer\controllers\PostController:delete')->setName("delete");
+
 // obtention de tous les posts d'un user
-$app->get('/postsUser',
-    function (Request $rq, Response $rs, array $args): Response{
-        $controller=new PostController($this);
-        return $rs->withJson($controller->getUserPosts($rq,$rs,$args),200);
-    })->setName("postsUser");
+$app->get('/postsUser', 'cityXplorer\controllers\PostController:getUserPosts')->setName("postsUser");
+
 //Like d'un post
-$app->post('/like',
-    function (Request $rq, Response $rs, array $args): Response{
-        $controller=new PostController($this);
-        return $rs->withJson($controller->like($rq,$rs,$args),200);
-    })->setName("likeUser");;
-$app->delete('/like',
-    function (Request $rq, Response $rs, array $args): Response{
-        $controller=new PostController($this);
-        return $rs->withJson($controller->dislike($rq,$rs,$args),200);
-    })->setName("dislike");;
+$app->post('/like', 'cityXplorer\controllers\PostController:like')->setName("like");
+
+// dislike d'un post
+$app->delete('/like', 'cityXplorer\controllers\PostController:dislike')->setName("dislike");
+
+// modification d'un post
+$app->put('/post', 'cityXplorer\controllers\PostController:editPost')->setName("edit_post");
+
+// changement etat post
+$app->patch('/post', 'cityXplorer\controllers\PostController:setEtat')->setName("set_etat_post");
 
 
+/**
+ * LIST
+ */
+//Testé
+$app->post('/list', 'cityXplorer\controllers\ListController:createList')->setName("createList");
+//Non testé
+$app->delete('/list', 'cityXplorer\controllers\ListController:supprimerList')->setName("deleteList");
+//Testé
+$app->post('/postList', 'cityXplorer\controllers\ListController:enregistrerPostList')->setName("insertPostToList");
+//Testé
+$app->delete('/postList', 'cityXplorer\controllers\ListController:supprimerPostList')->setName("deletePostToList");
+//Non testé
+$app->post('/likeList', 'cityXplorer\controllers\ListController:likeList')->setName("likeList");
+//Non testé
+$app->delete('/likeList', 'cityXplorer\controllers\ListController:dislikeList')->setName("dislikeList");
+
+/**
+ * Post from a list
+ */
+$app->get('/postFromList', 'cityXplorer\controllers\ListController:getPostList')->setName("postFromList");
+
+/**
+ * List of a user
+ */
+$app->get('/listLikedUser', 'cityXplorer\controllers\ListController:getLikedListUser')->setName("ListLikedFromUser");
+
+$app->get('/listCreatedUser', 'cityXplorer\controllers\ListController:getCreatedListUser')->setName("ListCreatedByUser");
 //Test
 $app->get('/hello/{name}', function ($rq,$rs,$args) {
     echo $args['name'] ;

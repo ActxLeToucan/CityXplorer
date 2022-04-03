@@ -15,13 +15,15 @@ class User {
   final String avatar;
   final int niveauAcces;
   final String description;
+  final List<int?> likes;
 
   const User(
       {required this.pseudo,
       required this.name,
       required this.avatar,
       required this.niveauAcces,
-      required this.description});
+      required this.description,
+      required this.likes});
 
   factory User.fromJson(Map<String, dynamic> json) {
     var unescape = HtmlUnescape();
@@ -30,12 +32,18 @@ class User {
         name: unescape.convert(json['name']),
         avatar: json['avatar'],
         niveauAcces: json['niveauAcces'],
-        description: unescape.convert(json['description']));
+        description: unescape.convert(json['description']),
+        likes: List<int>.from(json['likes']));
   }
 
   factory User.empty() {
     return const User(
-        pseudo: "", name: "", avatar: "", niveauAcces: 0, description: "");
+        pseudo: "",
+        name: "",
+        avatar: "",
+        niveauAcces: 0,
+        description: "",
+        likes: []);
   }
 
   static Future<User> fromPseudo(String pseudo) async {
@@ -64,7 +72,8 @@ class User {
       "name": this.name,
       "avatar": this.avatar,
       "niveauAcces": this.niveauAcces,
-      "description": this.description
+      "description": this.description,
+      "likes": this.likes
     };
   }
 

@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/components/custom_alert_post.dart';
+import 'package:cityxplorer/components/input_field.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -14,7 +16,6 @@ import 'package:path/path.dart' as path;
 import '../conf.dart';
 import '../main.dart';
 import '../router/delegate.dart';
-import '../styles.dart';
 
 /// formulaire de creation d'un post avec gestion de la requete envoyee et de son resultat
 class NewPostScreen extends StatefulWidget {
@@ -30,10 +31,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
   final routerDelegate = Get.find<MyRouterDelegate>();
 
   final _formKey = GlobalKey<FormState>();
-  final controllerTitre = TextEditingController();
+  final controllerTitre = TextEditingController(text: "Sans titre");
   final controllerDescription = TextEditingController();
   DateTime now = DateTime.now();
-  bool isLoading = false;
   List photos = [];
 
   //String imagePath = "";
@@ -56,124 +56,50 @@ class _NewPostScreenState extends State<NewPostScreen> {
   Widget build(BuildContext context) {
     if (photos.isNotEmpty) {
       return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => routerDelegate.popRoute(),
-          ),
-          title: const Text(
-            'Créer un post',
-          ),
-        ),
+        appBar: namedAppBar(context, "Créer un post"),
         body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Form(
             key: _formKey,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 15),
+              child: Column(
+                children: [
+                  carouselBuild(),
+                  const SizedBox(height: 5),
+                  Text("Prise le : " + getCurrentDate(),
+                      style: const TextStyle(fontSize: 16)),
+                  const SizedBox(height: 10),
+                  InputField(
                     controller: controllerTitre,
-                    textInputAction: TextInputAction.next,
-                    autofocus: true,
-                    decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Styles.mainColor, width: 2.5),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Styles.mainColor, width: 1.5),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      border: OutlineInputBorder(),
-                      helperText: "Obligatoire",
-                      hintText: 'Ajouter un titre',
-                    ),
+                    hintText: "Titre",
+                    hintPosition: HintPosition.swap,
+                    withBottomSpace: true,
+                    autoFocus: true,
+                    inputAction: TextInputAction.next,
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Remplissez ce champ pour continuer ';
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Donnez un titre à votre post';
+                      }
+                      if (value.length >= Conf.tailleTitreMax) {
+                        return 'Ce titre est trop long';
                       }
                       return null;
                     },
                   ),
-                ),
-                const SizedBox(height: 15),
-                carouselBuild(),
-                const SizedBox(height: 5),
-                Text("Prise le : " + getCurrentDate(),
-                    style: const TextStyle(fontSize: 16)),
-                const SizedBox(height: 5),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
+                  InputField(
+                    controller: controllerDescription,
+                    hintText: "Description",
+                    hintPosition: HintPosition.swap,
                     minLines: 2,
                     maxLines: 5,
-                    keyboardType: TextInputType.multiline,
-                    controller: controllerDescription,
-                    decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Styles.mainColor, width: 2.5),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Styles.mainColor, width: 1.5),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      helperText: "Optionnel",
-                      border: OutlineInputBorder(),
-                      hintText: 'Ajouter une description',
-                    ),
+                    withBottomSpace: true,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 60.0,
-                    child: IgnorePointer(
-                      /// rend le bouton non cliquable si il est en train d envoyer la requete
-                      ignoring: isLoading ? true : false,
-                      child: ElevatedButton(
-                        style: TextButton.styleFrom(
-                          primary: Colors.black,
-                        ),
-                        onPressed: () async {
-                          // Validate returns true if the form is valid, or false otherwise.
-                          if (_formKey.currentState!.validate()) {
-                            try {
-                              setState(() {
-                                isLoading = true;
-                              });
-                              await postLePost();
-                            } catch (e) {
-                              setState(() {
-                                isLoading = false;
-                              });
-                              Fluttertoast.showToast(msg: '$e');
-                            }
-                          }
-                        },
-                        child: (isLoading)
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 1.5,
-                                  color: Colors.white,
-                                ))
-                            : const Text('Valider',
-                                style: TextStyle(fontSize: 20)),
-                      ),
-                    ),
+                  Button(
+                    type: ButtonType.big,
+                    text: "Valider",
+                    withLoadingAnimation: true,
+                    onPressed: postLePost,
                   ),
                 ),
               ],
@@ -194,7 +120,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
               'Créer un post',
             ),
           ),
-          body: const Center(child: Text("Photo invalide.")));
+          body: const Center(
+              child: Text("Photo invalide.", textAlign: TextAlign.center)));
     }
   }
 
@@ -220,68 +147,77 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   /// methode appelee lors de la creation du post dans la BDD
   Future postLePost() async {
-    String url = Conf.domainServer + Conf.apiPath + "/post";
+    if (_formKey.currentState!.validate()) {
+      String url = Conf.domainServer + Conf.apiPath + "/post";
 
-    var request = http.MultipartRequest("POST", Uri.parse(url));
-    try {
-      request.fields['titre'] = controllerTitre.text;
-      request.fields['description'] = controllerDescription.text;
+      var request = http.MultipartRequest("POST", Uri.parse(url));
+      try {
+        request.fields['titre'] = controllerTitre.text;
+        request.fields['description'] = controllerDescription.text.trim();
 
-      request.fields['latitude'] = latitude.toString();
-      request.fields['longitude'] = longitude.toString();
+        request.fields['latitude'] = latitude.toString();
+        request.fields['longitude'] = longitude.toString();
 
-      request.fields['date'] = getCurrentDateBDD();
+        request.fields['date'] = getCurrentDateBDD();
 
-      UserConneted user = await getUser();
+        UserConneted user = await getUser();
+        if (!user.isEmpty()) {
+          request.fields['token'] = user.token;
+        } else {
+          throw Exception('Erreur : session !');
+        }
 
-      if (!user.isEmpty()) {
-        request.fields['token'] = user.token;
-      } else {
-        throw Exception('Erreur : session !');
+        List adresses = await getAdresse();
+        request.fields['adresse-longue'] = adresses[0] ?? "";
+        request.fields['adresse-courte'] = adresses[1] ?? "";
+
+        ///ajout des photos a la requete
+        for (int i = 0; i < photos.length; i++) {
+          request.files.add(http.MultipartFile(
+              "photo$i",
+              File(photos[i]).readAsBytes().asStream(),
+              File(photos[i]).lengthSync(),
+              filename: path.basename(photos[i].split("/").last)));
+        }
+        //request.files.add(await http.MultipartFile.fromPath("photo", photos[0],
+        //  contentType: MediaType("image", "jpeg")));
+
+        var response = await http.Response.fromStream(await request.send());
+        //print(response.body);
+        final Map<String, dynamic> data = json.decode(response.body);
+        String res = data['message'];
+        int code = data['result'];
+        
+        /*
+        ///ajout de la photo a la requete
+        request.files.add(await http.MultipartFile.fromPath("photo", imagePath,
+            contentType: MediaType("image", "jpeg")));
+
+        var response = await http.Response.fromStream(await request.send());
+        // print(response.body);
+        final Map<String, dynamic> data = json.decode(response.body);
+        String res = data['message'];
+        int code = data['result'];
+        */
+
+        /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
+        /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul
+        if (code == 1) {
+          Navigator.pop(context);
+        }
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AdvanceCustomAlert(
+                message: res,
+                code: code,
+              );
+            });
+      } catch (e) {
+        print(e);
+        Fluttertoast.showToast(
+            msg: "Impossible d'accéder à la base de données.");
       }
-
-      List adresses = await getAdresse();
-      request.fields['adresse-longue'] = adresses[0] ?? "";
-      request.fields['adresse-courte'] = adresses[1] ?? "";
-
-      ///ajout des photos a la requete
-      for (var i = 0; i < photos.length; i++) {
-        request.files.add(http.MultipartFile(
-            "photo",
-            //"'photo'$i",
-            File(photos[i]).readAsBytes().asStream(),
-            File(photos[i]).lengthSync(),
-            filename: path.basename(photos[i].split("/").last)));
-      }
-      //request.files.add(await http.MultipartFile.fromPath("photo", photos[0],
-      //  contentType: MediaType("image", "jpeg")));
-
-      var response = await http.Response.fromStream(await request.send());
-      //print(response.body);
-      final Map<String, dynamic> data = json.decode(response.body);
-      String res = data['message'];
-      int code = data['result'];
-
-      /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
-      /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul
-      if (code == 1) {
-        Navigator.pop(context);
-      }
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AdvanceCustomAlert(
-              message: res,
-              code: code,
-            );
-          });
-    } catch (e) {
-      print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
-
-      setState(() {
-        isLoading = false;
-      });
     }
   }
 

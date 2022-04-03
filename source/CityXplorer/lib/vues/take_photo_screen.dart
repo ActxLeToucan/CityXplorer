@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:cityxplorer/components/input_field.dart';
 import 'package:cityxplorer/pages/new_post.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -91,7 +92,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
               }
             });
       } else {
-        return const Center(child: Text("Erreur camera"));
+        return const Center(
+            child: Text("Erreur camera", textAlign: TextAlign.center));
       }
     } else {
       return const Center(child: CircularProgressIndicator());
@@ -104,47 +106,41 @@ class TakePictureScreenState extends State<TakePictureScreen> {
           decoration: const BoxDecoration(
               boxShadow: [BoxShadow(color: Colors.black54, spreadRadius: 10)]),
           child: Column(children: [
-            TextButton(
-              onPressed: () async {
-                setState(() {
-                  isLoading = true;
-                });
-
-                // Take the Picture in a try / catch block. If anything goes wrong,
-                // catch the error.
-                try {
-                  // Ensure that the camera is initialized.
-                  await _initializeControllerFuture;
-
-                  // Attempt to take a picture and get the file `image`
-                  // where it was saved.
-                  final image = await _controller.takePicture();
-                  final location = await _getLocation();
-
-                  // If the picture was taken, display it on a new screen.
-                  routerDelegate.pushPage(name: '/new_post', arguments: {
-                    'imagePath': image.path,
-                    'latitude': (location[0] ?? 0).toString(),
-                    'longitude': (location[1] ?? 0).toString()
+            Button(
+                type: ButtonType.small,
+                icon: Icons.camera_alt,
+                contentColor: Colors.white,
+                withLoadingAnimation: true,
+                onPressed: () async {
+                  setState(() {
+                    isLoading = true;
                   });
-                } catch (e) {
-                  print(e);
-                }
 
-                setState(() {
-                  isLoading = false;
-                });
-              },
-              child: (isLoading)
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 1.5,
-                        color: Colors.white,
-                      ))
-                  : const Icon(Icons.camera_alt, color: Colors.white),
-            ),
+                  // Take the Picture in a try / catch block. If anything goes wrong,
+                  // catch the error.
+                  try {
+                    // Ensure that the camera is initialized.
+                    await _initializeControllerFuture;
+
+                    // Attempt to take a picture and get the file `image`
+                    // where it was saved.
+                    final image = await _controller.takePicture();
+                    final location = await _getLocation();
+
+                    // If the picture was taken, display it on a new screen.
+                    routerDelegate.pushPage(name: '/new_post', arguments: {
+                      'imagePath': image.path,
+                      'latitude': (location[0] ?? 0).toString(),
+                      'longitude': (location[1] ?? 0).toString()
+                    });
+                  } catch (e) {
+                    print(e);
+                  }
+
+                  setState(() {
+                    isLoading = false;
+                  });
+                }),
             Slider(
                 value: _sliderValue,
                 onChanged: (dynamic newValue) {

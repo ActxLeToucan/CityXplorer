@@ -71,7 +71,7 @@ class _MenuState extends State<Menu> {
     return GestureDetector(
         child: avatarUrl != ""
             ? CircleAvatar(
-                backgroundImage: const AssetImage('assets/avatar.png'),
+                backgroundColor: Styles.mainColor,
                 foregroundImage: NetworkImage(avatarUrl),
               )
             : (_initialized

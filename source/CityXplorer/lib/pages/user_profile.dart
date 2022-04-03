@@ -1,4 +1,5 @@
 import 'package:cityxplorer/components/appbar.dart';
+import 'package:cityxplorer/components/description.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,6 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  bool loading = false;
   Widget postsLoaded = Container();
   Widget userInfos = Container();
 
@@ -30,7 +30,6 @@ class _UserProfileState extends State<UserProfile> {
     User.fromPseudo(widget.arguments['pseudo'].toString()).then((user) {
       setState(() {
         _user = user;
-        _initialized = true;
       });
       _load();
     });
@@ -44,9 +43,10 @@ class _UserProfileState extends State<UserProfile> {
         return Scaffold(
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
-            body: const Center(child: Text("Utilisateur invalide.")));
+            body: const Center(
+                child: Text("Utilisateur invalide.",
+                    textAlign: TextAlign.center)));
       } else {
-        _updateUser();
         return Scaffold(
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
@@ -73,11 +73,15 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> _load() async {
-    setState(() => loading = true);
+    setState(() => _initialized = false);
     Widget posts = await _renderPosts(context);
+
+    User u = await updateUser(_user);
+
     setState(() {
+      _user = u;
       postsLoaded = posts;
-      loading = false;
+      _initialized = true;
     });
   }
 
@@ -132,18 +136,19 @@ class _UserProfileState extends State<UserProfile> {
             ),
             const SizedBox(height: 16),
             user.description == ""
-                ? const Text(
+                ? Text(
                     "Aucune description.",
                     style: TextStyle(
                         fontSize: 16,
                         height: 1.4,
-                        color: Colors.grey,
+                        color: Colors.black.withOpacity(0.65),
                         fontStyle: FontStyle.italic),
                   )
-                : Text(
-                    user.description,
-                    style: const TextStyle(fontSize: 16, height: 1.4),
-                  ),
+                : Description(
+                    description: user.description,
+                    fontSize: 16,
+                    height: 1.4,
+                    defaultColor: Colors.black.withOpacity(0.65)),
           ],
         ),
       );
@@ -151,30 +156,20 @@ class _UserProfileState extends State<UserProfile> {
   Future<Widget> _renderPosts(BuildContext context) async {
     List<Post> posts = await _user.getPosts();
     bool isCurrent = await isCurrentUser(_user.pseudo);
+    UserConneted _currentUser = await getUser();
     if (posts.isEmpty) {
       return const Center(
-        child: Text("Aucun post n'a été publié par cet utilisateur."),
+        child: Text("Aucun post n'a été publié par cet utilisateur.",
+            textAlign: TextAlign.center),
       );
     } else {
       List<Widget> list = [];
       for (Post post in posts) {
-        if (post.isValid() || _user.niveauAcces >= 2 || isCurrent) {
+        if (post.isValid() || _currentUser.niveauAcces >= 2 || isCurrent) {
           list.add(post.toWidget(context));
         }
       }
       return Column(children: list.reversed.toList());
-    }
-  }
-
-  // mise a jour de l'utilisateur stocké dans les SharedPreferences
-  void _updateUser() async {
-    if ((!_user.isEmpty() && _user is UserConneted) ||
-        await isCurrentUser(_user.pseudo)) {
-      UserConneted userConneted = await getUser();
-      User newUser = await User.fromPseudo(_user.pseudo);
-      UserConneted userUpdated = userConneted.updateWith(newUser);
-      _user = userUpdated;
-      connexion(userUpdated);
     }
   }
 }
