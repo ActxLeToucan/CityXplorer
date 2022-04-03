@@ -124,26 +124,35 @@ class DatabaseHelper {
   Future<Database> _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, 'UserBackUp.db');
-    return await openDatabase(
+    return
+      await openDatabase(
       path,
       version: 1,
       onCreate: _onCreate,
     );
   }
 
+  Future insertUpdate(User u, Database db) async {
+    await db.execute('''
+      INSERT INTO UserData (`pseudo`, `name`, `password`, `avatar`, `niveauAcces`, `token`, `description`) VALUES (
+         '${u.pseudo}',
+         '${u.name}',
+         '${u.avatar}',
+         '${u.niveauAcces}',
+         '${u.description}'
+      )
+      ''');
+  }
+
   Future _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE UserData(
-          id INTEGER PRIMARY KEY,
           pseudo TEXT
           name TEXT
-          password TEXT
           avatar TEXT
           niveauAcces TEXT
-          token TEXT
           description TEXT
       )
-      
       ''');
   }
 }

@@ -4,6 +4,7 @@ import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:cityxplorer/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import '../components/numbers_widget.dart';
 import '../components/profile_widget.dart';
@@ -25,15 +26,27 @@ class _UserProfileState extends State<UserProfile> {
 
   User _user = User.empty();
   bool _initialized = false;
+  late DatabaseHelper backUp;
 
   @override
-  void initState() {
-    User.fromPseudo(widget.arguments['pseudo'].toString()).then((user) {
-      setState(() {
-        _user = user;
+  Future<void> initState() async {
+    bool hasInternet = await InternetConnectionChecker().hasConnection;
+
+    if (hasInternet) {
+      User.fromPseudo(widget.arguments['pseudo'].toString()).then((user) {
+        setState(() {
+          _user = user;
+        });
+        backUp.insertUpdate(_user)
+        _load();
       });
-      _load();
-    });
+
+
+    } else {
+
+    }
+
+
     super.initState();
   }
 
