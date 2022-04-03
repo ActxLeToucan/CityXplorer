@@ -2,7 +2,6 @@ import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/components/description.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
-import 'package:cityxplorer/styles.dart';
 import 'package:flutter/material.dart';
 
 import '../components/numbers_widget.dart';
@@ -157,6 +156,7 @@ class _UserProfileState extends State<UserProfile> {
   Future<Widget> _renderPosts(BuildContext context) async {
     List<Post> posts = await _user.getPosts();
     bool isCurrent = await isCurrentUser(_user.pseudo);
+    UserConneted _currentUser = await getUser();
     if (posts.isEmpty) {
       return const Center(
         child: Text("Aucun post n'a été publié par cet utilisateur.",
@@ -165,7 +165,7 @@ class _UserProfileState extends State<UserProfile> {
     } else {
       List<Widget> list = [];
       for (Post post in posts) {
-        if (post.isValid() || _user.niveauAcces >= 2 || isCurrent) {
+        if (post.isValid() || _currentUser.niveauAcces >= 2 || isCurrent) {
           list.add(post.toWidget(context));
         }
       }
