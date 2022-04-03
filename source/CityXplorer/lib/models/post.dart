@@ -19,13 +19,17 @@ import '../main.dart';
 import '../styles.dart';
 
 class Post {
+  static const postEtatValide = 1;
+  static const postEtatEnAttente = 0;
+  static const postEtatBlocke = -1;
+
   final int id;
   final String titre;
   final double latitude;
   final double longitude;
   final String description;
   final DateTime date;
-  final String etat;
+  final int etat;
   final List<String?> photos;
   final List<String?> likedByUsers;
   final String userPseudo;
@@ -61,7 +65,7 @@ class Post {
         date: (json['date'] != null
             ? DateTime.parse(json['date'])
             : DateTime.now()),
-        etat: (json['etat'] as String).toLowerCase(),
+        etat: json['etat'],
         photos: List<String>.from(json['photos']),
         likedByUsers: List<String>.from(json['likedBy']),
         userPseudo: unescape.convert(json['user-pseudo']),
@@ -77,7 +81,7 @@ class Post {
         longitude: .0,
         description: "",
         date: DateTime.now(),
-        etat: "empty",
+        etat: postEtatEnAttente,
         photos: [],
         likedByUsers: [],
         userPseudo: "",
@@ -106,11 +110,11 @@ class Post {
   }
 
   bool isEmpty() {
-    return (etat == "empty");
+    return (id == -1);
   }
 
   bool isValid() {
-    return etat.compareTo("valide") == 0;
+    return etat == postEtatValide;
   }
 
   Widget toWidget(BuildContext context) {
@@ -344,7 +348,7 @@ class Post {
             onTap: () {
               /// si l utilisateur est un admin, au clic on inverse la validation du post
               /// ou on affiche a l'utilisateur un message pour l'informer de l'utilite de cette icone
-              (snapshot.requireData.niveauAcces == 2)
+              (snapshot.requireData.niveauAcces >= 2)
                   ? changeValidation()
                   : showValidation();
             },
