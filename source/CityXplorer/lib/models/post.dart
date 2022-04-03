@@ -173,7 +173,7 @@ class Post {
             children: [
               Expanded(
                   child: Text(
-                "$titre $titre $titre $titre",
+                titre,
                 overflow: TextOverflow.fade,
                 softWrap: false,
                 maxLines: 1,
