@@ -155,6 +155,13 @@ class DatabaseHelper {
       )
       ''');
   }
+
+  Future getProfile() async {
+    Database bd = await instance.database;
+    
+    var res = bd.rawQuery('select * from UserData');
+    return res;
+  }
 }
 
 

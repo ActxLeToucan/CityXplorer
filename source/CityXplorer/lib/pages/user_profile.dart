@@ -3,8 +3,10 @@ import 'package:cityxplorer/components/description.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:cityxplorer/styles.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../components/numbers_widget.dart';
 import '../components/profile_widget.dart';
@@ -27,6 +29,7 @@ class _UserProfileState extends State<UserProfile> {
   User _user = User.empty();
   bool _initialized = false;
   late DatabaseHelper backUp;
+  static Database? database;
 
   @override
   Future<void> initState() async {
@@ -37,13 +40,12 @@ class _UserProfileState extends State<UserProfile> {
         setState(() {
           _user = user;
         });
-        backUp.insertUpdate(_user)
+        backUp.insertUpdate(_user, database!);
         _load();
       });
 
-
     } else {
-
+      _user = backUp.getProfile() as User;
     }
 
 
@@ -181,5 +183,10 @@ class _UserProfileState extends State<UserProfile> {
       }
       return Column(children: list.reversed.toList());
     }
+  }
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<Database>('database', database));
   }
 }
