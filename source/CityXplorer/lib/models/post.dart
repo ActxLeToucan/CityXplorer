@@ -21,7 +21,7 @@ import '../styles.dart';
 class Post {
   static const postEtatValide = 1;
   static const postEtatEnAttente = 0;
-  static const postEtatBlocke = -1;
+  static const postEtatBloque = -1;
 
   final int id;
   final String titre;

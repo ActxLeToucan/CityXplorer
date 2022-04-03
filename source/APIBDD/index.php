@@ -77,6 +77,9 @@ $app->delete('/like', 'cityXplorer\controllers\PostController:dislike')->setName
 // modification d'un post
 $app->put('/post', 'cityXplorer\controllers\PostController:editPost')->setName("edit_post");
 
+// changement etat post
+$app->patch('/post', 'cityXplorer\controllers\PostController:setEtat')->setName("set_etat_post");
+
 
 /**
  * LIST

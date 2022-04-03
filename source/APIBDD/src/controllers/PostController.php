@@ -2,7 +2,6 @@
 
 namespace cityXplorer\controllers;
 
-use cityXplorer\models\Like;
 use cityXplorer\models\User;
 use cityXplorer\models\Partage;
 use cityXplorer\models\Photo;
@@ -108,7 +107,7 @@ class PostController {
                     $newPost->description = $descr;
                     $newPost->titre = $titre;
                     $newPost->datePost = $datePost;
-                    $newPost->etat = 'Invalide';
+                    $newPost->etat = Post::ETAT_EN_ATTENTE;
                     $newPost->idUser = $user->id;
                     $newPost->adresse_courte = $adresse_courte;
                     $newPost->adresse_longue = $adresse_longue;
@@ -348,6 +347,54 @@ class PostController {
             return $rs->withJSON([
                 "result" => 1,
                 "message" => "Modifications enregistrées.",
+                "post" => $post->toArray(true)
+            ], 200);
+        }
+    }
+
+    public function setEtat(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('set_etat_post');
+        $url = $base . $route_uri;
+
+        $content = $rq->getParsedBody();
+
+        $etat = filter_var($content['etat'] ?? Post::ETAT_EN_ATTENTE, FILTER_SANITIZE_NUMBER_INT);
+
+        if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Token invalide",
+                "post" => null
+            ], 200);
+        } else if (!isset($content['id']) || is_null($post = Post::find($content['id']))) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Id du post invalide",
+                "post" => null
+            ], 200);
+        } else if ($user->niveauAcces < 2) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Vous devez être administrateur pour effectuer cette action.",
+                "post" => null
+            ], 200);
+        } else {
+            echo $etat;
+            if ($etat != Post::ETAT_VALIDE && $etat != Post::ETAT_BLOQUE && $etat != Post::ETAT_EN_ATTENTE) {
+                return $rs->withJSON([
+                    "result" => 0,
+                    "message" => "Etat invalide",
+                    "post" => null
+                ], 200);
+            }
+            $post->etat = $etat;
+            $post->save();
+
+            return $rs->withJSON([
+                "result" => 1,
+                "message" => "Etat modifié",
                 "post" => $post->toArray(true)
             ], 200);
         }
