@@ -43,7 +43,7 @@ class _IconMenuPostState extends State<IconMenuPost> {
       options.add(const PopupMenuItem(
         child:
             Text('Changer la visibilité', style: TextStyle(color: Colors.blue)),
-        value: optionDelete,
+        value: optionVisibility,
       ));
     }
 
@@ -73,6 +73,7 @@ class _IconMenuPostState extends State<IconMenuPost> {
               alertDelete(context);
               break;
             case optionVisibility:
+              alertVisibility(context);
               break;
           }
         });
@@ -106,6 +107,37 @@ class _IconMenuPostState extends State<IconMenuPost> {
     );
   }
 
+  void alertVisibility(BuildContext context) {
+    Widget cancelButton = TextButton(
+      child: const Text("Annuler"),
+      onPressed: () => Navigator.pop(context),
+    );
+    Widget blockButton = TextButton(
+      child: const Text("Bloquer", style: TextStyle(color: Colors.red)),
+      onPressed: () => changeState("-1"),
+    );
+    Widget validateButton = TextButton(
+      child: const Text("Valider", style: TextStyle(color: Colors.green)),
+      onPressed: () => changeState("1"),
+    );
+    AlertDialog alert = AlertDialog(
+      title: const Text("Visibilité du post"),
+      content: const Text("Que voulez-vous faire ?"),
+      actions: [
+        cancelButton,
+        blockButton,
+        validateButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   Future<void> deletePost() async {
     String url = Conf.domainServer +
         Conf.apiPath +
@@ -124,5 +156,27 @@ class _IconMenuPostState extends State<IconMenuPost> {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
+  }
+
+  /// methode qui envoie une requete patch avec en parametre l etat final du post
+  /// affiche un toast pour l utilisateur l informant du resultat
+  Future<void> changeState(String newState) async {
+    String url = Conf.domainServer + Conf.apiPath + "/post";
+    Map<String, dynamic> body = {
+      "token": widget.user.token,
+      "id": widget.post.id,
+      "etat": newState.toString(),
+    };
+    try {
+      var response = await http.patch(Uri.parse(url),
+          body: json.encode(body),
+          headers: {'content-type': 'application/json'});
+      final Map<String, dynamic> data = json.decode(response.body);
+      Fluttertoast.showToast(msg: data['message']);
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
+    Navigator.pop(context);
   }
 }

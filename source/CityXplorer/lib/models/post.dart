@@ -122,19 +122,19 @@ class Post {
       return const Icon(
         Icons.cancel_outlined,
         color: Colors.red,
-        size: 24,
+        size: 26,
       );
     } else if (etat == postEtatValide) {
       return const Icon(
         Icons.verified_user,
         color: Colors.green,
-        size: 24,
+        size: 26,
       );
     } else {
       return const Icon(
         Icons.lock_clock,
         color: Colors.orangeAccent,
-        size: 24,
+        size: 26,
       );
     }
   }
@@ -282,6 +282,7 @@ class Post {
                       fontWeight: FontWeight.bold, fontSize: 24),
                 ),
               )),
+              buildVerif(),
               IconMenuPost(user: userConneted, post: this),
             ]),
         Text(
