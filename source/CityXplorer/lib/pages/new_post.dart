@@ -101,8 +101,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     withLoadingAnimation: true,
                     onPressed: postLePost,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -187,7 +187,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         final Map<String, dynamic> data = json.decode(response.body);
         String res = data['message'];
         int code = data['result'];
-        
+
         /*
         ///ajout de la photo a la requete
         request.files.add(await http.MultipartFile.fromPath("photo", imagePath,
