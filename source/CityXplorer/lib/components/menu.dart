@@ -1,5 +1,6 @@
 import 'package:cityxplorer/main.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../conf.dart';
@@ -39,45 +40,60 @@ class _MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-        child: ListView(padding: EdgeInsets.zero, children: [
-      UserAccountsDrawerHeader(
-          decoration: const BoxDecoration(color: Styles.mainColor),
-          accountName: Text(!_initialized
-              ? "chargement..."
-              : _user.name == ""
-                  ? "Utilisateur non connecté"
-                  : _user.name),
-          accountEmail: Text(!_initialized
-              ? "chargement..."
-              : _user.pseudo == ""
-                  ? ""
-                  : "@${_user.pseudo}"),
-          currentAccountPicture: _avatar(context)),
-      ListTile(
-        leading: Icon(_user.isEmpty() ? Icons.login : Icons.logout),
-        title: Text(_user.isEmpty() ? "Se connecter" : "Se déconnecter"),
-        onTap: () async {
-          if (!_user.isEmpty()) {
-            deconnexion();
-          }
-          routerDelegate.pushPageAndClear(name: '/login');
-        },
-      ),
-      (_user.niveauAcces >= 2)
-          ? ListTile(
-              leading: const Icon(Icons.verified_user),
-              title: const Text("Valider des posts"),
-              onTap: () => routerDelegate.pushPage(name: '/validationPost'),
-            )
-          : Container(),
-      ListTile(
-        leading: const Icon(Icons.people),
-        title: const Text("Crédits"),
-        onTap: () async {
-          routerDelegate.pushPage(name: '/credit');
-        },
-      ),
-    ]));
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ListView(padding: EdgeInsets.zero, shrinkWrap: true, children: [
+          UserAccountsDrawerHeader(
+              decoration: const BoxDecoration(color: Styles.mainColor),
+              accountName: Text(!_initialized
+                  ? "chargement..."
+                  : _user.name == ""
+                      ? "Utilisateur non connecté"
+                      : _user.name),
+              accountEmail: Text(!_initialized
+                  ? "chargement..."
+                  : _user.pseudo == ""
+                      ? ""
+                      : "@${_user.pseudo}"),
+              currentAccountPicture: _avatar(context)),
+          ListTile(
+            leading: Icon(_user.isEmpty() ? Icons.login : Icons.logout),
+            title: Text(_user.isEmpty() ? "Se connecter" : "Se déconnecter"),
+            onTap: () async {
+              if (!_user.isEmpty()) {
+                deconnexion();
+              }
+              routerDelegate.pushPageAndClear(name: '/login');
+            },
+          ),
+          (_user.niveauAcces >= 2)
+              ? ListTile(
+                  leading: const Icon(Icons.verified_user),
+                  title: const Text("Valider des posts"),
+                  onTap: () => routerDelegate.pushPage(name: '/validationPost'),
+                )
+              : Container(),
+          ListTile(
+            leading: const Icon(Icons.people),
+            title: const Text("Crédits"),
+            onTap: () async {
+              routerDelegate.pushPage(name: '/credit');
+            },
+          ),
+        ]),
+        _user.niveauAcces >= 2
+            ? IconButton(
+                icon: const Icon(Icons.verified_user),
+                color: Colors.blue,
+                iconSize: 40,
+                onPressed: () {
+                  Fluttertoast.showToast(msg: "Vous êtes administrateur💪.");
+                },
+              )
+            : Container(),
+      ],
+    ));
   }
 
   Widget _avatar(BuildContext context) {
