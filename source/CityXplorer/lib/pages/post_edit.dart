@@ -30,7 +30,7 @@ class _PostEditState extends State<PostEdit> {
   final TextEditingController titre = TextEditingController();
   final TextEditingController description = TextEditingController();
 
-  UserConneted _user = UserConneted.empty();
+  UserConnected _user = UserConnected.empty();
   Post _post = Post.empty();
   bool _initialized = false;
 

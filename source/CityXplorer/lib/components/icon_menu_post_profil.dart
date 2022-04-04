@@ -12,7 +12,7 @@ import '../router/delegate.dart';
 
 /// menu de boutons lorsque l on clique sur les 3 points dans le details d un post
 class IconMenuPost extends StatefulWidget {
-  final UserConneted user;
+  final UserConnected user;
   final Post post;
   const IconMenuPost({Key? key, required this.user, required this.post})
       : super(key: key);
@@ -28,6 +28,7 @@ class _IconMenuPostState extends State<IconMenuPost> {
   static const int optionEdit = 1;
   static const int optionDelete = 2;
   static const int optionVisibility = 3;
+  static const int optionBlockedToPending = 4;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +49,13 @@ class _IconMenuPostState extends State<IconMenuPost> {
     }
 
     if (widget.user.pseudo == widget.post.userPseudo) {
+      if (widget.post.etat == Post.postEtatBloque) {
+        options.add(const PopupMenuItem(
+          child: Text('Redemander validation',
+              style: TextStyle(color: Colors.orange)),
+          value: optionBlockedToPending,
+        ));
+      }
       options.add(const PopupMenuItem(
         child: Text('Modifier'),
         value: optionEdit,
@@ -74,6 +82,9 @@ class _IconMenuPostState extends State<IconMenuPost> {
               break;
             case optionVisibility:
               alertVisibility(context);
+              break;
+            case optionBlockedToPending:
+              blockedToPending();
               break;
           }
         });
@@ -178,5 +189,23 @@ class _IconMenuPostState extends State<IconMenuPost> {
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
     Navigator.pop(context);
+  }
+
+  Future<void> blockedToPending() async {
+    String url = Conf.domainServer + Conf.apiPath + "/post_pending";
+    Map<String, dynamic> body = {
+      "token": widget.user.token,
+      "id": widget.post.id
+    };
+    try {
+      var response = await http.patch(Uri.parse(url),
+          body: json.encode(body),
+          headers: {'content-type': 'application/json'});
+      final Map<String, dynamic> data = json.decode(response.body);
+      Fluttertoast.showToast(msg: data['message']);
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
   }
 }

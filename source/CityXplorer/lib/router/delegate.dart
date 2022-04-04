@@ -14,6 +14,7 @@ import '../pages/credit_page.dart';
 import '../pages/post_edit.dart';
 import '../pages/post_page.dart';
 import '../pages/search_page.dart';
+import '../pages/user_lists.dart';
 
 class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<List<RouteSettings>> {
@@ -140,10 +141,14 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
         child = CreditPage();
         break;
       case '/validationPost':
-        child = ValidationPost();
+        child = const ValidationPost();
         break;
       case '/new_post':
         child = NewPostScreen(
+            arguments: routeSettings.arguments as Map<String, String>);
+        break;
+      case '/lists':
+        child = UserLists(
             arguments: routeSettings.arguments as Map<String, String>);
         break;
       default:

@@ -30,7 +30,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController name = TextEditingController();
   final TextEditingController description = TextEditingController();
 
-  UserConneted _user = UserConneted.empty();
+  UserConnected _user = UserConnected.empty();
   bool _initialized = false;
 
   @override
@@ -158,7 +158,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       if (code == 1) {
         await updateUser(_user);
-        UserConneted newUser = await getUser();
+        UserConnected newUser = await getUser();
         setState(() {
           _user = newUser;
           _initialized = true;

@@ -16,7 +16,7 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   Post _post = Post.empty();
-  UserConneted _user = UserConneted.empty();
+  UserConnected _user = UserConnected.empty();
   bool _loaded = false;
 
   @override
@@ -42,7 +42,8 @@ class _PostPageState extends State<PostPage> {
             body: const Center(
                 child: Text("Post invalide.", textAlign: TextAlign.center)));
       } else if (_post.etat == Post.postEtatBloque &&
-          (_user.niveauAcces < 2 || _user.name != _post.userPseudo)) {
+          _user.niveauAcces < 2 &&
+          _user.pseudo != _post.userPseudo) {
         return Scaffold(
             appBar: defaultAppBar(context),
             body: const Center(

@@ -28,7 +28,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   final TextEditingController newPassword = TextEditingController();
   final TextEditingController newPasswordAgain = TextEditingController();
 
-  UserConneted _user = UserConneted.empty();
+  UserConnected _user = UserConnected.empty();
   bool _initialized = false;
   bool isLoading = false;
 

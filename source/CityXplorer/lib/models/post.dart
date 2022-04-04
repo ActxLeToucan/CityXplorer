@@ -139,7 +139,7 @@ class Post {
     }
   }
 
-  Widget toWidget(BuildContext context) {
+  Widget toWidget() {
     return Container(
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -268,7 +268,7 @@ class Post {
     routerDelegate.pushPage(name: '/post', arguments: {'id': id.toString()});
   }
 
-  Widget elementsBeforeImageOnPage(UserConneted userConneted) {
+  Widget elementsBeforeImageOnPage(UserConnected userConneted) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

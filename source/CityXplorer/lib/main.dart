@@ -83,7 +83,7 @@ class _AppState extends State<App> {
   }
 }
 
-Future<void> connexion(UserConneted user) async {
+Future<void> connexion(UserConnected user) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString("user", jsonEncode(user));
 }
@@ -93,29 +93,29 @@ Future<void> deconnexion() async {
   prefs.remove("user");
 }
 
-Future<UserConneted> getUser() async {
+Future<UserConnected> getUser() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var userString = prefs.getString('user');
-  UserConneted user = UserConneted.empty();
+  UserConnected user = UserConnected.empty();
   if (userString != null) {
-    user = UserConneted.fromJson(jsonDecode(userString));
+    user = UserConnected.fromJson(jsonDecode(userString));
   }
   return user;
 }
 
 Future<bool> isCurrentUser(String pseudo) async {
-  UserConneted user = await getUser();
+  UserConnected user = await getUser();
   return user.pseudo.compareTo(pseudo) == 0;
 }
 
 /// mise a jour de l'utilisateur stocké dans les SharedPreferences
 /// retourne le meme utilisateur, potentiellement modifié
 Future<User> updateUser(User user) async {
-  if ((!user.isEmpty() && user is UserConneted) ||
+  if ((!user.isEmpty() && user is UserConnected) ||
       await isCurrentUser(user.pseudo)) {
-    UserConneted oldUser = await getUser();
+    UserConnected oldUser = await getUser();
     User newUser = await User.fromPseudo(user.pseudo);
-    UserConneted userUpdated = oldUser.updateWith(newUser);
+    UserConnected userUpdated = oldUser.updateWith(newUser);
     connexion(userUpdated);
     return userUpdated;
   }
@@ -123,9 +123,9 @@ Future<User> updateUser(User user) async {
 }
 
 Future<User> reloadUser() async {
-  UserConneted oldUser = await getUser();
+  UserConnected oldUser = await getUser();
   User newUser = await User.fromPseudo(oldUser.pseudo);
-  UserConneted userUpdated = oldUser.updateWith(newUser);
+  UserConnected userUpdated = oldUser.updateWith(newUser);
   connexion(userUpdated);
   return userUpdated;
 }
