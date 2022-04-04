@@ -34,7 +34,7 @@ class CreditPage extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 30, 20, 30),
                 child: Column(children: const [
                   Text(
-                      "L'application a été conçu par les étudiants de deuxième années de DUT Informatique Antoine CONTOUX, Lucas KEMMLER, Alexis LOPES VAZ et Paul TISSERANT dans le cadre de leur projet tutoré en 2021/2022.\n",
+                      "L'application a été conçu par les étudiants de deuxième année de DUT Informatique Antoine CONTOUX, Lucas KEMMLER, Alexis LOPES VAZ et Paul TISSERANT dans le cadre de leur projet tutoré en 2021/2022.\n",
                       textAlign: TextAlign.justify),
                   Text(
                       "Nous remercions Madame Isabelle Debled-Renesson et Monsieur Patrick Nourricier de nous avoir suivis pendant toute la  durée du projet 👍.\n",
@@ -44,12 +44,10 @@ class CreditPage extends StatelessWidget {
                       textAlign: TextAlign.justify),
                 ]),
               ),
-              Container(
-                child: Image.asset(
-                  'assets/logo.png',
-                  height: 160,
-                  width: 160,
-                ),
+              Image.asset(
+                'assets/logo.png',
+                height: 160,
+                width: 160,
               ),
             ],
           ),

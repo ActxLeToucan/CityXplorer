@@ -63,6 +63,15 @@ class _MenuState extends State<Menu> {
           routerDelegate.pushPageAndClear(name: '/login');
         },
       ),
+      (_user.niveauAcces >= 2)
+          ? ListTile(
+              leading: const Icon(Icons.verified_user),
+              title: const Text("Valider des posts"),
+              onTap: () async {
+                routerDelegate.pushPage(name: '/validationPost');
+              },
+            )
+          : Container(),
       ListTile(
         leading: const Icon(Icons.people),
         title: const Text("Crédits"),

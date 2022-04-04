@@ -5,6 +5,7 @@ import 'package:cityxplorer/pages/main_interface.dart';
 import 'package:cityxplorer/pages/map-screen.dart';
 import 'package:cityxplorer/pages/new_post.dart';
 import 'package:cityxplorer/pages/user_profile.dart';
+import 'package:cityxplorer/pages/validation_post.dart';
 import 'package:cityxplorer/router/transition_delegate.dart';
 import 'package:flutter/material.dart';
 
@@ -137,6 +138,9 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
         break;
       case '/credit':
         child = CreditPage();
+        break;
+      case '/validationPost':
+        child = ValidationPost();
         break;
       case '/new_post':
         child = NewPostScreen(
