@@ -1,18 +1,21 @@
 import 'package:cityxplorer/models/post.dart';
+import 'package:cityxplorer/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:cityxplorer/components/icon_menu_item_liste.dart';
 
 //contenu de la page dashboard
 class DashBoard extends StatelessWidget {
-  final Map<dynamic, dynamic> lists;
+  bool initialized = false;
+  User user = User.empty();
 
-  final Map<dynamic, dynamic> savedList;
 
-  const DashBoard({Key? key, required this.lists, required this.savedList})
+  const DashBoard({Key? key,required this.initialized, required this.user})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final Map<dynamic, dynamic> lists;
+    final Map<dynamic, dynamic> savedList;
     List<Widget> mesListes = [];
     lists.forEach((key, value) {
       List<Widget> items = [];
