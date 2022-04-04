@@ -4,8 +4,9 @@ import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:http/http.dart' as http;
+import 'package:like_button/like_button.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../conf.dart';
 import '../models/post.dart';
@@ -49,22 +50,32 @@ class _ShareBarState extends State<ShareBar> {
           color: Colors.black,
           onPressed: () => widget.post.pushMap(),
         ),
-        IconButton(
+        /*IconButton(
           icon: Icon(_isFavorited ? Icons.favorite : Icons.favorite_border),
           iconSize: 28,
           color: Colors.red[400],
           onPressed: likePost,
-        ),
+        ),*/
+        LikeButton(
+            size: 28,
+            onTap: likePost,
+            likeBuilder: (bool isLiked) {
+              return Icon(
+                Icons.favorite,
+                color: _isFavorited ? Colors.redAccent : Colors.grey,
+                size: 28,
+              );
+            })
       ],
     );
   }
 
-  Future<void> likePost() async {
+  Future<bool?> likePost(bool a) async {
     bool fav = _isFavorited;
     if (user.isEmpty()) {
       Fluttertoast.showToast(
           msg: "Vous devez être connecté pour liker un post.");
-      return;
+      return _isFavorited;
     }
 
     String url = Conf.domainServer + Conf.apiPath + "/like";
@@ -91,9 +102,11 @@ class _ShareBarState extends State<ShareBar> {
           _isFavorited = !fav;
         });
       }
+      return _isFavorited;
     } catch (e) {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      return _isFavorited;
     }
   }
 }
