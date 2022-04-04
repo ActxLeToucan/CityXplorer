@@ -17,10 +17,10 @@ defaultAppBar(BuildContext context) {
   );
 }
 
-namedAppBar(BuildContext context, String titre) {
+namedAppBar(BuildContext context, String titre, {bool centerTitle = true}) {
   return AppBar(
     title: Text(titre),
-    centerTitle: true,
+    centerTitle: centerTitle,
   );
 }
 

@@ -64,7 +64,7 @@ class ProfileWidget extends StatelessWidget {
     final color = Theme.of(context).colorScheme.primary;
 
     Widget icon = Container();
-    if (user is UserConneted || await isCurrentUser(user.pseudo)) {
+    if (user is UserConnected || await isCurrentUser(user.pseudo)) {
       icon = buildIcon(color, isEdit ? Icons.add_a_photo : Icons.edit);
     } else if (user.niveauAcces >= 2) {
       icon = buildIcon(color, Icons.shield);

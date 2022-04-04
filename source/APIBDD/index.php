@@ -30,10 +30,13 @@ $app->get('/doc', function (Request $rq, Response $rs, array $args): Response {
  */
 // connexion
 $app->post('/login', 'cityXplorer\controllers\UserController:login')->setName("login");
+
 // inscription
 $app->post('/register', 'cityXplorer\controllers\UserController:register')->setName("register");
+
 // obtention d'un utilisateur
 $app->get('/user', 'cityXplorer\controllers\UserController:user')->setName("user");
+
 // recherche d'utilisateurs
 $app->get('/users', 'cityXplorer\controllers\UserController:searchUsers')->setName("users");
 
@@ -55,16 +58,33 @@ $app->post('/change_password', 'cityXplorer\controllers\UserController:changePas
  */
 // création d'un post
 $app->post('/post', 'cityXplorer\controllers\PostController:addPost')->setName("createPost");
+
 // obtention d'un post par son id
 $app->get('/post', 'cityXplorer\controllers\PostController:getPostById')->setName("postId");
 
+// suppression d'un post
 $app->delete('/post', 'cityXplorer\controllers\PostController:delete')->setName("delete");
+
 // obtention de tous les posts d'un user
 $app->get('/postsUser', 'cityXplorer\controllers\PostController:getUserPosts')->setName("postsUser");
+
 //Like d'un post
 $app->post('/like', 'cityXplorer\controllers\PostController:like')->setName("like");
 
-$app->delete('/like', 'cityXplorer\controllers\PostController:dislike')->setName("dislike");;
+// dislike d'un post
+$app->delete('/like', 'cityXplorer\controllers\PostController:dislike')->setName("dislike");
+
+// modification d'un post
+$app->put('/post', 'cityXplorer\controllers\PostController:editPost')->setName("edit_post");
+
+// changement etat post
+$app->patch('/post', 'cityXplorer\controllers\PostController:setEtat')->setName("set_etat_post");
+
+// posts en attente
+$app->get('/pending_posts', 'cityXplorer\controllers\PostController:getPendingPosts')->setName("pending_posts");
+
+// passer un post en attente
+$app->patch('/post_pending', 'cityXplorer\controllers\PostController:setPostPending')->setName("set_post_pending");
 
 
 /**

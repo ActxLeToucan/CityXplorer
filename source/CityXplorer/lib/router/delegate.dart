@@ -6,13 +6,16 @@ import 'package:cityxplorer/pages/map-screen.dart';
 import 'package:cityxplorer/pages/new_list.dart';
 import 'package:cityxplorer/pages/new_post.dart';
 import 'package:cityxplorer/pages/user_profile.dart';
+import 'package:cityxplorer/pages/validation_post.dart';
 import 'package:cityxplorer/router/transition_delegate.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/create_account.dart';
+import '../pages/credit_page.dart';
 import '../pages/post_edit.dart';
 import '../pages/post_page.dart';
 import '../pages/search_page.dart';
+import '../pages/user_lists.dart';
 
 class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<List<RouteSettings>> {
@@ -60,14 +63,13 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
     if (uri.pathSegments.isEmpty) {
       setNewRoutePath([const RouteSettings(name: '/')]);
     } else {
-      setNewRoutePath(uri.pathSegments
-          .map((pathSegment) => RouteSettings(
-                name: '/$pathSegment',
-                arguments: pathSegment == uri.pathSegments.last
-                    ? uri.queryParameters
-                    : null,
-              ))
-          .toList());
+      String path =
+          uri.pathSegments.reduce((value, element) => "$value/$element");
+      setNewRoutePath([
+        RouteSettings(
+            name: '/$path',
+            arguments: uri.queryParameters.isEmpty ? null : uri.queryParameters)
+      ]);
     }
   }
 
@@ -136,19 +138,39 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
         child = GeolocationMap(
             arguments: routeSettings.arguments as Map<String, String>);
         break;
+      case '/credit':
+        child = CreditPage();
+        break;
+      case '/validationPost':
+        child = const ValidationPost();
+        break;
       case '/new_post':
         child = NewPostScreen(
             arguments: routeSettings.arguments as Map<String, String>);
         break;
       case '/new_list':
-        child = NewListScreen(
-
-        );
+        child = NewListScreen();
+        break;
+      case '/lists':
+        child = UserLists(
+            arguments: routeSettings.arguments as Map<String, String>);
         break;
       default:
+        if (routeSettings.name != null &&
+            routeSettings.name!.startsWith("/download")) {
+          child = Scaffold(
+            appBar: AppBar(title: const Text("CityXplorer"), centerTitle: true),
+            body: const Center(
+                child: Text(
+                    "Vous possédez déjà cette application.\nPour mettre à jour l'application, désinstallez la et relancez le fichier d'installation.",
+                    textAlign: TextAlign.center)),
+          );
+          break;
+        }
         child = Scaffold(
           appBar: AppBar(title: const Text('404')),
-          body: const Center(child: Text('Page introuvable')),
+          body: const Center(
+              child: Text('Page introuvable', textAlign: TextAlign.center)),
         );
     }
 

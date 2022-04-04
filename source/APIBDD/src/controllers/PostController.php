@@ -2,7 +2,6 @@
 
 namespace cityXplorer\controllers;
 
-use cityXplorer\models\Like;
 use cityXplorer\models\User;
 use cityXplorer\models\Partage;
 use cityXplorer\models\Photo;
@@ -12,6 +11,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class PostController {
+    const TAILLE_TITRE_MAX = 100;
+
     /**
      * @var object container
      */
@@ -75,6 +76,14 @@ class PostController {
             "message" => "Erreur lors de l'insertion",
             "post" => null
         ];
+
+        if (strlen($titre) > self::TAILLE_TITRE_MAX) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Ce titre est trop long. Réessayez.",
+                "post" => null
+            ], 200);
+        }
         if (isset($content['token'])) {
             $user = User::where("token", "=", $content['token'])->first();
             $tab = [
@@ -83,14 +92,7 @@ class PostController {
                 "post" => null
             ];
             if (!is_null($user)) {
-                if (sizeof($_FILES) == 1 && $_FILES['photo']['error'] == 0) {
-                    // upload image
-                    $cheminServeur = $_FILES['photo']['tmp_name'];
-                    $extension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
-                    $fileName = time() . bin2hex(openssl_random_pseudo_bytes(20)) . '.' . $extension;
-                    $uploadFile = Conf::PATH_IMAGE_POSTS . "/$fileName";
-                    move_uploaded_file($cheminServeur, $uploadFile);
-
+                if (sizeof($_FILES) >= 1) {
                     // creation post
                     $newPost = new Post();
                     $newPost->latitude = $latitude;
@@ -98,17 +100,34 @@ class PostController {
                     $newPost->description = $descr;
                     $newPost->titre = $titre;
                     $newPost->datePost = $datePost;
-                    $newPost->etat = 'Invalide';
+                    $newPost->etat = Post::ETAT_EN_ATTENTE;
                     $newPost->idUser = $user->id;
                     $newPost->adresse_courte = $adresse_courte;
                     $newPost->adresse_longue = $adresse_longue;
                     $newPost->save();
 
                     // creation photo
-                    $newPhoto = new Photo();
-                    $newPhoto->idPost = $newPost->idPost;
-                    $newPhoto->url = $fileName;
-                    $newPhoto->save();
+                    foreach ($_FILES as $file) {
+                        if ($file['error'] != 0) {
+                            return $rs->withJSON([
+                                "result" => 0,
+                                "message" => "Fichier invalide",
+                                "post" => null
+                            ], 200);
+                        }
+
+                        // upload image
+                        $cheminServeur = $file['tmp_name'];
+                        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                        $fileName = time() . bin2hex(openssl_random_pseudo_bytes(20)) . '.' . $extension;
+                        $uploadFile = Conf::PATH_IMAGE_POSTS . "/$fileName";
+                        move_uploaded_file($cheminServeur, $uploadFile);
+
+                        $newPhoto = new Photo();
+                        $newPhoto->idPost = $newPost->idPost;
+                        $newPhoto->url = $fileName;
+                        $newPhoto->save();
+                    }
 
                     // résultats
                     $tab = [
@@ -197,32 +216,32 @@ class PostController {
         $route_uri = $container->router->pathFor('delete');
         $url = $base . $route_uri;
 
-        $content= $rq->getQueryParams();
-        $token = $content["token"];
-        $idPost = $content["id"];
-        $userExist = User::where("token", "=", $token)->count();
-        $post = Post::where("idPost", "=", $idPost)->first();
-
-        if (!isset($rq->getQueryParams()['token']) || is_null($post) || !isset($rq->getQueryParams()['id']) || $userExist != 1) {
+        if (!isset($rq->getQueryParams()['token']) || is_null($user = User::where("token", "=", $rq->getQueryParam('token'))->first())) {
             return $rs->withJSON([
                 "result" => 0,
-                "message" => "Erreur : id ou token invalide",
-                "1" => $rq->getQueryParams()['token'],
-                "2" => is_null($post),
-                "3" => !isset($rq->getQueryParams()['id'])
-            ], 200);
-        } else {
-            $photos = Photo::where("idPost", "=", $idPost)->get();
-            foreach ($photos as $image) {
-                $image->deleteFile();
-                $image->delete();
-            }
-            $post->delete();
-            return $rs->withJSON([
-                "result" => 1,
-                "message" => "Post Supprimé"
+                "message" => "Token invalide."
             ], 200);
         }
+        if (!isset($rq->getQueryParams()['id']) || is_null($post = Post::where("idPost", "=", $rq->getQueryParam('id'))->first())) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Id du post invalide."
+            ], 200);
+        }
+
+        foreach ($post->photos as $photo) {
+            $photo->deleteFile();
+            $photo->delete();
+        }
+        $post->likedByUsers()->detach();
+        $post->lists()->detach();
+
+        $post->delete();
+
+        return $rs->withJSON([
+            "result" => 1,
+            "message" => "Post supprimé"
+        ], 200);
     }
 
 
@@ -292,5 +311,176 @@ class PostController {
             "result" => 1,
             "message" => "Post disliké"
         ], 200);
+    }
+
+    public function editPost(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('edit_post');
+        $url = $base . $route_uri;
+
+        $content = $rq->getParsedBody();
+
+        $titre = filter_var($content['titre'] ?? "Sans titre", FILTER_SANITIZE_STRING);
+        $description = filter_var($content['description'] ?? "", FILTER_SANITIZE_STRING);
+
+        if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Token invalide",
+                "post" => null
+            ], 200);
+        } else if (!isset($content['id']) || is_null($post = Post::find($content['id']))) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Id du post invalide",
+                "post" => null
+            ], 200);
+        } else if ($post->user != $user) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Vous devez être le propriétaire de post pour le modifier.",
+                "post" => null
+            ], 200);
+        } else {
+            if (strlen($titre) > self::TAILLE_TITRE_MAX) {
+                return $rs->withJSON([
+                    "result" => 0,
+                    "message" => "Ce titre est trop long. Réessayez.",
+                    "post" => null
+                ], 200);
+            }
+            $post->titre = $titre;
+            $post->description = $description;
+            $post->save();
+
+            return $rs->withJSON([
+                "result" => 1,
+                "message" => "Modifications enregistrées.",
+                "post" => $post->toArray(true)
+            ], 200);
+        }
+    }
+
+    public function setEtat(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('set_etat_post');
+        $url = $base . $route_uri;
+
+        $content = $rq->getParsedBody();
+
+        $etat = filter_var($content['etat'] ?? Post::ETAT_EN_ATTENTE, FILTER_SANITIZE_NUMBER_INT);
+
+        if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Token invalide",
+                "post" => null
+            ], 200);
+        } else if (!isset($content['id']) || is_null($post = Post::find($content['id']))) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Id du post invalide",
+                "post" => null
+            ], 200);
+        } else if ($user->niveauAcces < 2) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Permissions insuffisantes",
+                "post" => null
+            ], 200);
+        } else {
+            if ($etat != Post::ETAT_VALIDE && $etat != Post::ETAT_BLOQUE && $etat != Post::ETAT_EN_ATTENTE) {
+                return $rs->withJSON([
+                    "result" => 0,
+                    "message" => "Etat invalide",
+                    "post" => null
+                ], 200);
+            }
+            $post->etat = $etat;
+            $post->save();
+
+            return $rs->withJSON([
+                "result" => 1,
+                "message" => "Etat modifié",
+                "post" => $post->toArray(true)
+            ], 200);
+        }
+    }
+
+    public function getPendingPosts(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('pending_posts');
+        $url = $base . $route_uri;
+
+        $token = $rq->getQueryParam('token', '_');
+        if (is_null($user = User::where('token', '=', $token)->first())) {
+            return $rs->withJSON([
+                'result' => 0,
+                'message' => 'Token invalide',
+                'posts' => []
+            ], 200);
+        } else if ($user->niveauAcces < 2) {
+            return $rs->withJSON([
+                'result' => 0,
+                'message' => 'Permissions insuffisantes',
+                'posts' => []
+            ], 200);
+        }
+
+        $posts = Post::where('etat', '=', Post::ETAT_EN_ATTENTE)->get();
+
+        return $rs->withJSON([
+            'result' => 1,
+            'message' => sizeof($posts) . " posts en attente",
+            'posts' => $posts
+        ], 200);
+    }
+
+    public function setPostPending(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('set_post_pending');
+        $url = $base . $route_uri;
+
+        $content = $rq->getParsedBody();
+
+        if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Token invalide",
+                "post" => null
+            ], 200);
+        } else if (!isset($content['id']) || is_null($post = Post::find($content['id']))) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Id du post invalide",
+                "post" => null
+            ], 200);
+        } else if ($post->user != $user) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Vous devez être le propriétaire de post pour le modifier.",
+                "post" => null
+            ], 200);
+        } else {
+            if ($post->etat != Post::ETAT_BLOQUE) {
+                return $rs->withJSON([
+                    "result" => 0,
+                    "message" => "Etat invalide",
+                    "post" => null
+                ], 200);
+            }
+            $post->etat = Post::ETAT_EN_ATTENTE;
+            $post->save();
+
+            return $rs->withJSON([
+                "result" => 1,
+                "message" => "Etat modifié",
+                "post" => $post->toArray(true)
+            ], 200);
+        }
     }
 }

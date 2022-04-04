@@ -16,7 +16,7 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   Post _post = Post.empty();
-  UserConneted _user = UserConneted.empty();
+  UserConnected _user = UserConnected.empty();
   bool _loaded = false;
 
   @override
@@ -39,41 +39,53 @@ class _PostPageState extends State<PostPage> {
       if (_post.isEmpty()) {
         return Scaffold(
             appBar: defaultAppBar(context),
-            body: const Center(child: Text("Post invalide.")));
+            body: const Center(
+                child: Text("Post invalide.", textAlign: TextAlign.center)));
+      } else if (_post.etat == Post.postEtatBloque &&
+          _user.niveauAcces < 2 &&
+          _user.pseudo != _post.userPseudo) {
+        return Scaffold(
+            appBar: defaultAppBar(context),
+            body: const Center(
+                child: Text("Post bloqué.", textAlign: TextAlign.center)));
       } else {
         return Scaffold(
-          appBar: defaultAppBar(context),
-          body: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics()),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                    child: _post.elementsBeforeImageOnPage(_user),
-                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 0)),
-                _post.renderImageOnPage(),
-                Padding(
-                  child: _post.elementsAfterImageOnPage(context),
-                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-                )
-              ],
-            ),
-          ),
-        );
+            appBar: defaultAppBar(context),
+            body: RefreshIndicator(
+              onRefresh: _load,
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                        child: _post.elementsBeforeImageOnPage(_user),
+                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 0)),
+                    _post.renderImageOnPage(),
+                    Padding(
+                      child: _post.elementsAfterImageOnPage(context),
+                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                    )
+                  ],
+                ),
+              ),
+            ));
       }
     } else {
       return Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              'Chargement...',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+          appBar: namedAppBar(context, "Chargement..."),
           body: const Center(child: CircularProgressIndicator()));
     }
+  }
+
+  Future<void> _load() async {
+    setState(() => _loaded = false);
+    Post p = await Post.fromId(widget.arguments['id'].toString());
+
+    setState(() {
+      _post = p;
+      _loaded = true;
+    });
   }
 }

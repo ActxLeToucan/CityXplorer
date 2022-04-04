@@ -28,7 +28,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   final TextEditingController newPassword = TextEditingController();
   final TextEditingController newPasswordAgain = TextEditingController();
 
-  UserConneted _user = UserConneted.empty();
+  UserConnected _user = UserConnected.empty();
   bool _initialized = false;
   bool isLoading = false;
 
@@ -52,7 +52,8 @@ class _ChangePasswordState extends State<ChangePassword> {
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
             body: const Center(
-                child: Text("Connectez-vous pour accéder à cette page")));
+                child: Text("Connectez-vous pour accéder à cette page",
+                    textAlign: TextAlign.center)));
       } else {
         return Scaffold(
             extendBodyBehindAppBar: true,

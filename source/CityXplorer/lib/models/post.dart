@@ -139,7 +139,7 @@ class Post {
     }
   }
 
-  Widget toWidget(BuildContext context) {
+  Widget toWidget() {
     return Container(
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -173,13 +173,13 @@ class Post {
             children: [
               Expanded(
                   child: Text(
-                    titre,
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                    maxLines: 1,
-                    style:
+                titre,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+                maxLines: 1,
+                style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                  )),
+              )),
               Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: buildVerif(),
@@ -268,7 +268,7 @@ class Post {
     routerDelegate.pushPage(name: '/post', arguments: {'id': id.toString()});
   }
 
-  Widget elementsBeforeImageOnPage(UserConneted userConneted) {
+  Widget elementsBeforeImageOnPage(UserConnected userConneted) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,13 +278,13 @@ class Post {
             children: [
               Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Text(
-                      titre,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 24),
-                    ),
-                  )),
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text(
+                  titre,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 24),
+                ),
+              )),
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
                 child: buildVerif(),

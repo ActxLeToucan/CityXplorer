@@ -10,7 +10,7 @@ class Conf {
   static const String apiDevPath = "/api-dev";
   static const String googleApiKey = "AIzaSyCoZ5pkSaTZk3rpiGrm3yuTIj48y7NdncU";
   static const String downloadRelease =
-      "https://github.com/univ-lorraine-iut-charlemagne/S3B_S15_CONTOUX_KEMMLER_TISSERANT_LOPES-VAZ/releases";
+      "$domainServer/download/cityxplorer.apk";
   static const List downloadable = [TargetPlatform.android];
 
   // inputs rules
@@ -21,4 +21,5 @@ class Conf {
   static const int tailleNameMax = 50;
   static const int tailleMdpMin = 8;
   static const int tailleMdpMax = 256;
+  static const int tailleTitreMax = 100;
 }

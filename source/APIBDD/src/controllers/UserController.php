@@ -217,13 +217,10 @@ class UserController {
 
         $content = $rq->getParsedBody();
 
-        $token = $content['token'];
-        $name = filter_var($content['name'], FILTER_SANITIZE_STRING);
-        $description = filter_var($content['description'], FILTER_SANITIZE_STRING);
+        $name = filter_var($content['name'] ?? "name", FILTER_SANITIZE_STRING);
+        $description = filter_var($content['description'] ?? "", FILTER_SANITIZE_STRING);
 
-        $userNameExist = User::where("token", "=", $token)->count();
-
-        if ($userNameExist != 1) {
+        if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
             return $rs->withJSON([
                 "result" => 0,
                 "message" => "Token invalide",
@@ -236,7 +233,6 @@ class UserController {
                 "user" => null
             ], 200);
         } else {
-            $user = User::where('token', '=', $token)->first();
             $user->name = $name;
             $user->description = $description;
             $user->save();
@@ -285,9 +281,12 @@ class UserController {
             }
             $post->delete();
         }
-        foreach ($user->likes as $like) {
-            $like->likedByUsers()->detach($user->id);
+        foreach ($user->createdLists as $createdList) {
+            $createdList->delete();
         }
+        $user->likes()->detach();
+        $user->listLikes()->detach();
+
         $user->delete();
 
         return $rs->withJSON([
@@ -322,7 +321,7 @@ class UserController {
                     $uploadFile = Conf::PATH_IMAGE_AVATAR . "/$fileName";
                     move_uploaded_file($cheminServeur, $uploadFile);
 
-                    if ($user->avatar != "" && $user->avatar != 'avatar.png' && file_exists(Conf::PATH_IMAGE_AVATAR . "/$user->avatar")) unlink(Conf::PATH_IMAGE_AVATAR . "/$user->avatar");
+                    if ($user->avatar != "" && !str_starts_with($user->avatar, '_') && file_exists(Conf::PATH_IMAGE_AVATAR . "/$user->avatar")) unlink(Conf::PATH_IMAGE_AVATAR . "/$user->avatar");
 
                     $user->avatar = $fileName;
                     $user->save();

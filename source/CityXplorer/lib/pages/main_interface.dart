@@ -1,7 +1,7 @@
 import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/main.dart';
-//import 'package:cityxplorer/vues/camera.dart';
 import 'package:cityxplorer/vues/take_photo_screen.dart';
+import 'package:cityxplorer/vues/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -53,8 +53,7 @@ class _MainInterfaceState extends State<MainInterface> {
     List<Widget> pages = <Widget>[
       SingleChildScrollView(
           child: Home(initialized: _initialized, user: _user)),
-      const TakePictureScreen(),
-      //const Camera(),
+      const Camera(),
       Stack(
         children: [
         const SingleChildScrollView(
@@ -62,7 +61,7 @@ class _MainInterfaceState extends State<MainInterface> {
               parent: AlwaysScrollableScrollPhysics()),
             child:DashBoard(),),
         _renderFooter(context)
-    ],)
+      ],)
     ];
 
     return Scaffold(

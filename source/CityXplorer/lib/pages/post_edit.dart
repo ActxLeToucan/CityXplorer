@@ -30,7 +30,7 @@ class _PostEditState extends State<PostEdit> {
   final TextEditingController titre = TextEditingController();
   final TextEditingController description = TextEditingController();
 
-  UserConneted _user = UserConneted.empty();
+  UserConnected _user = UserConnected.empty();
   Post _post = Post.empty();
   bool _initialized = false;
 
@@ -56,13 +56,15 @@ class _PostEditState extends State<PostEdit> {
       if (_post.isEmpty()) {
         return Scaffold(
             appBar: defaultAppBar(context),
-            body: const Center(child: Text("Post invalide.")));
+            body: const Center(
+                child: Text("Post invalide.", textAlign: TextAlign.center)));
       } else if (_user.isEmpty() || _user.pseudo != _post.userPseudo) {
         return Scaffold(
             appBar: defaultAppBar(context),
             body: const Center(
                 child: Text(
-                    "Vous devez être le propriétaire du post pour accéder à cette page")));
+                    "Vous devez être le propriétaire du post pour accéder à cette page",
+                    textAlign: TextAlign.center)));
       } else {
         return Scaffold(
             appBar: defaultAppBar(context),
@@ -82,6 +84,9 @@ class _PostEditState extends State<PostEdit> {
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return 'Donnez un titre à votre post';
+                        }
+                        if (value.length >= Conf.tailleTitreMax) {
+                          return 'Ce titre est trop long';
                         }
                         return null;
                       },
@@ -113,13 +118,14 @@ class _PostEditState extends State<PostEdit> {
 
   Future<void> editPost() async {
     if (_formKey.currentState!.validate()) {
-      String url = Conf.domainServer + Conf.apiPath + "/edit_post";
+      String url = Conf.domainServer + Conf.apiPath + "/post";
       Map<String, dynamic> body = {
         "token": _user.token,
+        "id": _post.id,
         "titre": titre.text,
-        "description": description.text,
+        "description": description.text.trim(),
       };
-/*
+
       try {
         var response = await http.put(Uri.parse(url),
             body: json.encode(body),
@@ -127,15 +133,11 @@ class _PostEditState extends State<PostEdit> {
         final Map<String, dynamic> data = json.decode(response.body);
 
         Fluttertoast.showToast(msg: data['message']);
-
-        if (data["result"] == 1) {
-          await updateUser(_user);
-        }
       } catch (e) {
         print(e);
         Fluttertoast.showToast(
             msg: "Impossible d'accéder à la base de données.");
-      }*/
+      }
     }
   }
 }

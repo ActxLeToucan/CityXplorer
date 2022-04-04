@@ -1,7 +1,9 @@
 import 'package:cityxplorer/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../models/post.dart';
+import '../router/delegate.dart';
 
 class NumbersWidget extends StatefulWidget {
   final User user;
@@ -13,6 +15,8 @@ class NumbersWidget extends StatefulWidget {
 }
 
 class _NumbersWidgetState extends State<NumbersWidget> {
+  final routerDelegate = Get.find<MyRouterDelegate>();
+
   int nbPosts = 0;
   int nbListes = 0;
   int likes = 0;
@@ -28,26 +32,32 @@ class _NumbersWidgetState extends State<NumbersWidget> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        buildButton(
-            context, nbPosts.toString(), 'Post${nbPosts > 1 ? 's' : ''}'),
+        buildButton(context, nbPosts.toString(),
+            'Post${nbPosts > 1 ? 's' : ''}', () {}),
         buildDivider(),
         buildButton(
-            context, nbListes.toString(), 'Liste${nbListes > 1 ? 's' : ''}'),
+            context,
+            nbListes.toString(),
+            'Liste${nbListes > 1 ? 's' : ''}',
+            () => routerDelegate.pushPage(
+                name: '/lists', arguments: {'pseudo': widget.user.pseudo})),
         buildDivider(),
-        buildButton(context, likes.toString(), 'Like${likes > 1 ? 's' : ''}'),
+        buildButton(
+            context, likes.toString(), 'Like${likes > 1 ? 's' : ''}', () {}),
       ],
     );
   }
 
   Widget buildDivider() => const SizedBox(
         height: 24,
-        child: VerticalDivider(),
+        child: VerticalDivider(color: Colors.grey),
       );
 
-  Widget buildButton(BuildContext context, String value, String text) =>
+  Widget buildButton(BuildContext context, String value, String text,
+          VoidCallback function) =>
       MaterialButton(
         padding: const EdgeInsets.symmetric(vertical: 4),
-        onPressed: () {},
+        onPressed: function,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -68,7 +78,10 @@ class _NumbersWidgetState extends State<NumbersWidget> {
 
   void _load() async {
     List<Post> posts = await widget.user.getPosts();
-    nbPosts = posts.length;
+    nbPosts = posts.fold(
+        0,
+        (previousValue, element) =>
+            previousValue + (element.isValid() ? 1 : 0));
     likes = posts.fold(
         0,
         (previousValue, element) =>

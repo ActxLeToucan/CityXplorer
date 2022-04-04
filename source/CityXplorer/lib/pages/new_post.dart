@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -6,12 +7,11 @@ import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/components/custom_alert_post.dart';
 import 'package:cityxplorer/components/input_field.dart';
 import 'package:cityxplorer/models/user_connected.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
+import 'package:path/path.dart' as path;
 
 import '../conf.dart';
 import '../main.dart';
@@ -36,21 +36,25 @@ class _NewPostScreenState extends State<NewPostScreen> {
   DateTime now = DateTime.now();
   List photos = [];
 
-  String imagePath = "";
+  //String imagePath = "";
   double latitude = 0;
   double longitude = 0;
 
   @override
   void initState() {
     super.initState();
-    imagePath = widget.arguments['imagePath'] ?? "";
+    var photosString = widget.arguments['photos'] ?? "";
+    if (photosString != "") {
+      photos = photosString.split(",");
+    }
+    //imagePath = widget.arguments['imagePath'] ?? "";
     latitude = double.parse(widget.arguments['latitude'] ?? "0.0");
     longitude = double.parse(widget.arguments['longitude'] ?? "0.0");
   }
 
   @override
   Widget build(BuildContext context) {
-    if (imagePath != "") {
+    if (photos.isNotEmpty) {
       return Scaffold(
         appBar: namedAppBar(context, "Créer un post"),
         body: SingleChildScrollView(
@@ -61,12 +65,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 15),
               child: Column(
                 children: [
-                  Container(
-                    constraints: const BoxConstraints.expand(height: 250),
-                    child: kIsWeb
-                        ? Image.network(imagePath)
-                        : Image.file(File(imagePath)),
-                  ),
+                  carouselBuild(),
                   const SizedBox(height: 5),
                   Text("Prise le : " + getCurrentDate(),
                       style: const TextStyle(fontSize: 16)),
@@ -80,7 +79,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     inputAction: TextInputAction.next,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Remplissez ce champ pour continuer';
+                        return 'Donnez un titre à votre post';
+                      }
+                      if (value.length >= Conf.tailleTitreMax) {
+                        return 'Ce titre est trop long';
                       }
                       return null;
                     },
@@ -99,13 +101,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     withLoadingAnimation: true,
                     onPressed: postLePost,
                   ),
-                  /**
-                      carouselBuild(),
-                      ElevatedButton(
-                      onPressed: () {},
-                      child: Text('NOUVELLE PHOTO', style: TextStyle(fontSize: 20)),
-
-                      ),**/
                 ],
               ),
             ),
@@ -125,7 +120,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
               'Créer un post',
             ),
           ),
-          body: const Center(child: Text("Photo invalide.")));
+          body: const Center(
+              child: Text("Photo invalide.", textAlign: TextAlign.center)));
     }
   }
 
@@ -157,14 +153,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
       var request = http.MultipartRequest("POST", Uri.parse(url));
       try {
         request.fields['titre'] = controllerTitre.text;
-        request.fields['description'] = controllerDescription.text;
+        request.fields['description'] = controllerDescription.text.trim();
 
         request.fields['latitude'] = latitude.toString();
         request.fields['longitude'] = longitude.toString();
 
         request.fields['date'] = getCurrentDateBDD();
 
-        UserConneted user = await getUser();
+        UserConnected user = await getUser();
         if (!user.isEmpty()) {
           request.fields['token'] = user.token;
         } else {
@@ -175,6 +171,24 @@ class _NewPostScreenState extends State<NewPostScreen> {
         request.fields['adresse-longue'] = adresses[0] ?? "";
         request.fields['adresse-courte'] = adresses[1] ?? "";
 
+        ///ajout des photos a la requete
+        for (int i = 0; i < photos.length; i++) {
+          request.files.add(http.MultipartFile(
+              "photo$i",
+              File(photos[i]).readAsBytes().asStream(),
+              File(photos[i]).lengthSync(),
+              filename: path.basename(photos[i].split("/").last)));
+        }
+        //request.files.add(await http.MultipartFile.fromPath("photo", photos[0],
+        //  contentType: MediaType("image", "jpeg")));
+
+        var response = await http.Response.fromStream(await request.send());
+        //print(response.body);
+        final Map<String, dynamic> data = json.decode(response.body);
+        String res = data['message'];
+        int code = data['result'];
+
+        /*
         ///ajout de la photo a la requete
         request.files.add(await http.MultipartFile.fromPath("photo", imagePath,
             contentType: MediaType("image", "jpeg")));
@@ -184,6 +198,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         final Map<String, dynamic> data = json.decode(response.body);
         String res = data['message'];
         int code = data['result'];
+        */
 
         /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
         /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul
@@ -214,9 +229,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
     try {
       var response = await http.get(Uri.parse(url));
-      print(response.statusCode);
+      //print(response.statusCode);
       final Map<String, dynamic> data = json.decode(response.body);
-
+      //print(data);
       if (data["status"] == "OK") {
         if (data["results"].length > 0) {
           Map firstResult = data["results"][0];
@@ -228,6 +243,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
           adresses.add(city);
         }
       }
+      //print(adresses);
       return adresses;
     } catch (e) {
       print(e);
@@ -236,21 +252,15 @@ class _NewPostScreenState extends State<NewPostScreen> {
     }
   }
 
-  /// inutilisee pour le moment
+  /// construit le caroussel d affichage des photos
   Widget carouselBuild() {
-    photos.add(imagePath);
     return CarouselSlider(
-      items: photos.map((i) {
-        return Builder(
-          builder: (BuildContext context) {
-            return SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Image.network(photos[i]));
-          },
-        );
-      }).toList(),
+      items: photos
+          .map((item) => Center(
+              child: Image.file(File(item), fit: BoxFit.cover, width: 1000)))
+          .toList(),
       options: CarouselOptions(
-        height: 400,
+        height: 300,
         aspectRatio: 16 / 9,
         viewportFraction: 0.8,
         initialPage: 0,

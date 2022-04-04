@@ -20,7 +20,7 @@ class ShareBar extends StatefulWidget {
 
 class _ShareBarState extends State<ShareBar> {
   bool _isFavorited = false;
-  UserConneted user = UserConneted.empty();
+  UserConnected user = UserConnected.empty();
 
   @override
   void initState() {

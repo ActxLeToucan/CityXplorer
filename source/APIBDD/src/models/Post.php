@@ -12,6 +12,10 @@ class Post extends Model{
     protected $primaryKey='idPost';
     public $timestamps = false;
 
+    const ETAT_VALIDE = 1;
+    const ETAT_EN_ATTENTE = 0;
+    const ETAT_BLOQUE = -1;
+
     public function photos(): HasMany {
         return $this->hasMany('cityXplorer\models\Photo',"idPost");
     }

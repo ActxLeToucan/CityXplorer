@@ -2,8 +2,8 @@ import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/components/description.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
-import 'package:cityxplorer/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import '../components/numbers_widget.dart';
 import '../components/profile_widget.dart';
@@ -28,13 +28,8 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   void initState() {
-    User.fromPseudo(widget.arguments['pseudo'].toString()).then((user) {
-      setState(() {
-        _user = user;
-      });
-      _load();
-    });
     super.initState();
+    _load();
   }
 
   @override
@@ -44,7 +39,9 @@ class _UserProfileState extends State<UserProfile> {
         return Scaffold(
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
-            body: const Center(child: Text("Utilisateur invalide.")));
+            body: const Center(
+                child: Text("Utilisateur invalide.",
+                    textAlign: TextAlign.center)));
       } else {
         return Scaffold(
             extendBodyBehindAppBar: true,
@@ -73,12 +70,21 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> _load() async {
     setState(() => _initialized = false);
+
+    bool hasInternet = await InternetConnectionChecker().hasConnection;
+    User u = await getUser();
+    if (u.pseudo == widget.arguments['pseudo']) {
+      if (hasInternet) {
+        u = await updateUser(u);
+      }
+      setState(() => _user = u);
+    } else {
+      User user = await User.fromPseudo(widget.arguments['pseudo']);
+      setState(() => _user = user);
+    }
     Widget posts = await _renderPosts(context);
 
-    User u = await updateUser(_user);
-
     setState(() {
-      _user = u;
       postsLoaded = posts;
       _initialized = true;
     });
@@ -90,9 +96,9 @@ class _UserProfileState extends State<UserProfile> {
         ProfileWidget(
             user: _user,
             onClicked: () async {
-              UserConneted userConneted = UserConneted.empty();
-              if (_user is UserConneted) {
-                userConneted = (_user as UserConneted);
+              UserConnected userConneted = UserConnected.empty();
+              if (_user is UserConnected) {
+                userConneted = (_user as UserConnected);
               } else if (await isCurrentUser(_user.pseudo)) {
                 userConneted = await getUser();
               }
@@ -153,17 +159,20 @@ class _UserProfileState extends State<UserProfile> {
       );
 
   Future<Widget> _renderPosts(BuildContext context) async {
+    print(_user);
     List<Post> posts = await _user.getPosts();
     bool isCurrent = await isCurrentUser(_user.pseudo);
+    UserConnected _currentUser = await getUser();
     if (posts.isEmpty) {
       return const Center(
-        child: Text("Aucun post n'a été publié par cet utilisateur."),
+        child: Text("Aucun post n'a été publié par cet utilisateur.",
+            textAlign: TextAlign.center),
       );
     } else {
       List<Widget> list = [];
       for (Post post in posts) {
-        if (post.isValid() || _user.niveauAcces >= 2 || isCurrent) {
-          list.add(post.toWidget(context));
+        if (post.isValid() || _currentUser.niveauAcces >= 2 || isCurrent) {
+          list.add(post.toWidget());
         }
       }
       return Column(children: list.reversed.toList());
