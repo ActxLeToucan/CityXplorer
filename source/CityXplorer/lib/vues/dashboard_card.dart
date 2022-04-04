@@ -48,7 +48,6 @@ class _DashBoardState extends State<DashBoard> {
     if (_initialized) {
       List<Widget> mesListes = []; //Listes crées
       List<Widget> listeEnregistrees = []; //Listes enregistrées
-      print("For each ici, numéro 2");
       _mapCreatedList.forEach((key, value) {
         List<Widget> items = [];
         for (final item in value) {
@@ -57,7 +56,6 @@ class _DashBoardState extends State<DashBoard> {
         }
         mesListes.add(ExpansionTile(title: Text(key), children: items));
       });
-      print("For each la, num 3");
       _mapSavedList.forEach((key, value) {
         List<Widget> items = [];
         for (final item in value) {
