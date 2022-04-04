@@ -37,7 +37,7 @@ class ListController{
         $tab = [
             "result" => 0,
             "message" => "Erreur lors de l'insertion",
-            "list" => null
+            "listPost" =>[]
         ];
 
         if (isset($content['token'])) {
@@ -46,7 +46,7 @@ class ListController{
                 "result" => 0,
                 "message" => "Erreur : token invalide",
                 "token"=>$content['token'],
-                "list" => null
+                "listPost" => []
             ];
             if (!is_null($user)) {
                 // creation list
@@ -81,7 +81,7 @@ class ListController{
         $tab = [
             "result" => 0,
             "message" => "Erreur lors de l'insertion",
-            "list" => null
+            "listPost" => []
         ];
         if (isset($content['token'])) {
             $user = User::where("token", "=", $content['token'])->first();
@@ -137,7 +137,7 @@ class ListController{
         $tab = [
             "result" => 0,
             "message" => "Erreur lors de l'insertion",
-            "list/post" => null
+            "listPost" => []
         ];
         if (isset($content['token'])) {
             $user = User::where("token", "=", $content['token'])->first();
@@ -184,7 +184,7 @@ class ListController{
         $tab = [
             "result" => 0,
             "message" => "Erreur lors de la suppression",
-            "list/post" => null
+            "listPost" => []
         ];
         if(isset($content['token'])){
             $user = User::where("token", "=", $content['token'])->first();
@@ -198,7 +198,7 @@ class ListController{
                 $tab = [
                     "result" => 0,
                     "message" => "La liste n'existe pas",
-                    "Post" => null ,
+                    "Post" => [] ,
                 ];
                 if($doesItExist==1){
                     $listToDelete=Liste::where("idListe","=",$idList)->first();
@@ -208,7 +208,7 @@ class ListController{
                     $tab = [
                         "result" => 1,
                         "message" => "La liste à été supprimée",
-                        "Post" => null ,
+                        "Post" => [] ,
                         "Suppression Liaison" => $suppLink,
                         "Suppression Enregistrement " =>$suppEnr
                     ];
@@ -255,7 +255,7 @@ class ListController{
         $tab = [
             "result" => 0,
             "message" => "Erreur lors du like de la list",
-            "list/post" => null
+            "listPost" => null
         ];
         if(isset($content['token'])){
             $user = User::where("token", "=", $content['token'])->first();
@@ -295,7 +295,7 @@ class ListController{
         $tab = [
             "result" => 0,
             "message" => "Erreur lors de la suppression",
-            "list/post" => null
+            "listPost" => []
         ];
         if(isset($content['token'])){
             $user = User::where("token", "=", $content['token'])->first();
@@ -331,6 +331,11 @@ class ListController{
         $url = $base . $route_uri;
         $content = $rq->getQueryParams();
         $idList = $content["idList"];
+        $tab = [
+            "result" => 0,
+            "message" => "Erreur lors de la récupération des posts de la list",
+            "listPost" => []
+        ];
         if(isset($content['pseudo'])){
             $user = User::where("pseudo", "=", $content['pseudo'])->first();
             $tab = [
@@ -340,13 +345,15 @@ class ListController{
             ];
             if(!is_null($user)){
                 $list=Liste::where("idliste","=",$idList)->first();
-                $tab =[];
-                $tab["List"] = $list->nomListe;
-
+                $t = [];
                 foreach ($list->posts as $Post){
                     //echo $Post;
-                    $tab[] = $Post->toArray();
+                    $t[] = $Post->toArray();
                 }
+                $tab =["result" => 1,
+                    "message" => "Récupération des posts de la list {$idList}",
+                    "listPost" => $t];
+
             }
         }
         return $rs->withJSON($tab, 200);
@@ -358,6 +365,11 @@ class ListController{
         $route_uri = $container->router->pathFor('ListLikedFromUser');
         $url = $base . $route_uri;
         $content = $rq->getQueryParams();
+        $tab = [
+            "result" => 0,
+            "message" => "Erreur lors de la récupération des listes likées",
+            "listPost" => []
+        ];
         if(isset($content['pseudo'])){
             $user = User::where("pseudo", "=", $content['pseudo'])->first();
             $tab = [
@@ -382,6 +394,11 @@ class ListController{
         $route_uri = $container->router->pathFor('ListCreatedByUser');
         $url = $base . $route_uri;
         $content = $rq->getQueryParams();
+        $tab = [
+            "result" => 0,
+            "message" => "Erreur lors de la récupération des listes crées",
+            "listPost" => []
+        ];
         if(isset($content['pseudo'])){
             $user = User::where("pseudo", "=", $content['pseudo'])->first();
             $tab = [

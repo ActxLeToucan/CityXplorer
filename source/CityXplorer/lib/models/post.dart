@@ -7,25 +7,28 @@ import 'package:cityxplorer/components/share_bar_icon.dart';
 import 'package:cityxplorer/models/user.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
-
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 
 import '../conf.dart';
-import '../router/delegate.dart';
 import '../main.dart';
+import '../router/delegate.dart';
 import '../styles.dart';
 
 class Post {
+  static const postEtatValide = 1;
+  static const postEtatEnAttente = 0;
+  static const postEtatBloque = -1;
+
   final int id;
   final String titre;
   final double latitude;
   final double longitude;
   final String description;
   final DateTime date;
-  final String etat;
+  final int etat;
   final List<String?> photos;
   final List<String?> likedByUsers;
   final String userPseudo;
@@ -34,17 +37,17 @@ class Post {
 
   const Post(
       {required this.id,
-      required this.titre,
-      required this.latitude,
-      required this.longitude,
-      required this.description,
-      required this.date,
-      required this.etat,
-      required this.photos,
-      required this.likedByUsers,
-      required this.userPseudo,
-      required this.adresseCourte,
-      required this.adresseLongue});
+        required this.titre,
+        required this.latitude,
+        required this.longitude,
+        required this.description,
+        required this.date,
+        required this.etat,
+        required this.photos,
+        required this.likedByUsers,
+        required this.userPseudo,
+        required this.adresseCourte,
+        required this.adresseLongue});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     var unescape = HtmlUnescape();
@@ -61,7 +64,7 @@ class Post {
         date: (json['date'] != null
             ? DateTime.parse(json['date'])
             : DateTime.now()),
-        etat: (json['etat'] as String).toLowerCase(),
+        etat: json['etat'],
         photos: List<String>.from(json['photos']),
         likedByUsers: List<String>.from(json['likedBy']),
         userPseudo: unescape.convert(json['user-pseudo']),
@@ -77,7 +80,7 @@ class Post {
         longitude: .0,
         description: "",
         date: DateTime.now(),
-        etat: "empty",
+        etat: postEtatEnAttente,
         photos: [],
         likedByUsers: [],
         userPseudo: "",
@@ -106,11 +109,34 @@ class Post {
   }
 
   bool isEmpty() {
-    return (etat == "empty");
+    return (id == -1);
   }
 
   bool isValid() {
-    return etat.compareTo("valide") == 0;
+    return etat == postEtatValide;
+  }
+
+  /// construit l'icone de l'etat du post en fonction de sa valeur
+  Widget iconValidation() {
+    if (etat == postEtatBloque) {
+      return const Icon(
+        Icons.cancel_outlined,
+        color: Colors.red,
+        size: 26,
+      );
+    } else if (etat == postEtatValide) {
+      return const Icon(
+        Icons.verified_user,
+        color: Colors.green,
+        size: 26,
+      );
+    } else {
+      return const Icon(
+        Icons.lock_clock,
+        color: Colors.orangeAccent,
+        size: 26,
+      );
+    }
   }
 
   Widget toWidget(BuildContext context) {
@@ -145,27 +171,30 @@ class Post {
           padding: const EdgeInsets.only(bottom: 4),
           child: Row(
             children: [
-              Text(
-                titre,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-                maxLines: 1,
-                style:
+              Expanded(
+                  child: Text(
+                    titre,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                    maxLines: 1,
+                    style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                  )),
+              Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: buildVerif(),
               ),
-              const Spacer(),
-              buildVerif(),
             ],
           ),
         ),
         Row(children: [
           Expanded(
               child: Text(
-            adresseCourte,
-            style: const TextStyle(color: Colors.black45),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          )),
+                adresseCourte,
+                style: const TextStyle(color: Colors.black45),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              )),
           Text(
             "le ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}",
             style: const TextStyle(color: Colors.black45),
@@ -190,9 +219,9 @@ class Post {
                 child: (photos.isEmpty
                     ? Image.asset("assets/default.jpg", fit: BoxFit.cover)
                     : Image.network(
-                        "${Conf.domainServer}/img/posts/${photos[0]}",
-                        fit: BoxFit.cover,
-                      )),
+                  "${Conf.domainServer}/img/posts/${photos[0]}",
+                  fit: BoxFit.cover,
+                )),
               ),
             ),
             Positioned(
@@ -200,13 +229,13 @@ class Post {
               right: 5,
               child: (photos.length > 1
                   ? Container(
-                      child: Text("1/${photos.length}"),
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(4)),
-                        color: Color(0xBFFFFFFF),
-                      ),
-                    )
+                child: Text("1/${photos.length}"),
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(4)),
+                  color: Color(0xBFFFFFFF),
+                ),
+              )
                   : Container()),
             )
           ],
@@ -249,13 +278,17 @@ class Post {
             children: [
               Expanded(
                   child: Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Text(
-                  titre,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 24),
-                ),
-              )),
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Text(
+                      titre,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 24),
+                    ),
+                  )),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
+                child: buildVerif(),
+              ),
               IconMenuPost(user: userConneted, post: this),
             ]),
         Text(
@@ -334,36 +367,22 @@ class Post {
     routerDelegate.pushPage(name: '/map', arguments: {'id': id.toString()});
   }
 
-  /// construit l'icone de verification d'un post en fonction de son etat et des droits de l'utilisateur
+  /// construit l'icone de verification d'un post en fonction de son etat
   Widget buildVerif() {
     return FutureBuilder<User>(
       future: getUser(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return GestureDetector(
-            onTap: () {
-              /// si l utilisateur est un admin, au clic on inverse la validation du post
-              /// ou on affiche a l'utilisateur un message pour l'informer de l'utilite de cette icone
-              (snapshot.requireData.niveauAcces == 2)
-                  ? changeValidation()
-                  : showValidation();
-            },
-            child: Container(
+              onTap: () {
+                showValidation();
+              },
+              child: Container(
                 padding: const EdgeInsets.all(3),
-                child: isValid()
-                    ? const Icon(
-                        Icons.verified_user,
-                        color: Colors.green,
-                        size: 24,
-                      )
-                    : const Icon(
-                        Icons.cancel_outlined,
-                        color: Colors.red,
-                        size: 24,
-                      )),
-          );
+                child: iconValidation(),
+              ));
         } else {
-          return CircularProgressIndicator(
+          return const CircularProgressIndicator(
             strokeWidth: 1.5,
             color: Colors.black,
           );
@@ -372,21 +391,17 @@ class Post {
     );
   }
 
-  /// fonction appelée lorsque qu'un admin clique sur le bouton de validation
-  void changeValidation() {
-    // envoyer la requete pour changer d'etat le post
-    // TODO
-    isValid()
-        ? Fluttertoast.showToast(msg: 'Post validé 👌!')
-        : Fluttertoast.showToast(msg: 'Post invalidé 👌!');
-  }
-
   /// fonction appelée lorsque qu'un utilsateur classique clique sur le bouton de validation
   void showValidation() {
-    isValid()
-        ? Fluttertoast.showToast(
-            msg: 'Le post a été validé par un administrateur ✌!')
-        : Fluttertoast.showToast(
-            msg: 'Le post n\'est pas encore validé par un administeur 😶!');
+    if (etat == postEtatBloque) {
+      Fluttertoast.showToast(
+          msg: "Le post a été bloqué par un administrateur 😦 !");
+    } else if (etat == postEtatValide) {
+      Fluttertoast.showToast(
+          msg: "Le post a été validé par un administrateur ✌ !");
+    } else {
+      Fluttertoast.showToast(
+          msg: "Le post n'a pas encore été validé par un administeur 😶 !");
+    }
   }
 }

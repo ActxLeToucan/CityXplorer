@@ -111,8 +111,8 @@ class User {
 
     try{
       var response= await http.get(Uri.parse(url));
-      print("Problème dans Lists created");
-      print(response.body);
+      //print("Problème dans Lists created");
+      //print(response.body);
       final List<dynamic> data  = json.decode(response.body);
 
      lists = List<Listes>.from(data.map((model) => Listes.fromJson(model)));
@@ -132,8 +132,8 @@ class User {
 
     try{
       var response= await http.get(Uri.parse(url));
-      print("Problème dans Lists liked");
-      print(response.body);
+      //print("Problème dans Lists liked");
+      //print(response.body);
       final List<dynamic> data  = json.decode(response.body);
 
       lists = List<Listes>.from(data.map((model) => Listes.fromJson(model)));

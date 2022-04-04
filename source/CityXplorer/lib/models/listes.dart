@@ -32,9 +32,10 @@ class Listes {
 
   factory Listes.fromJson(Map<String, dynamic> json){
     var unescape = HtmlUnescape();
-    return Listes(id: json['id'],
-        nomListe: unescape.convert(json['nom']),
-        Description: json['description'],
+    return Listes(
+        id: json['idListe'],
+        nomListe: unescape.convert(json['nomListe']),
+        Description: json['descrListe'],
         idCreateur: json['idCreateur']);
   }
 
@@ -52,17 +53,22 @@ class Listes {
   Future<List<Post>> getPostsOfList(User user) async {
     List<Post> posts = [];
     String url = Conf.domainServer + Conf.apiPath +
-        "/postFromList?idList=${this.id}pseudo=${user.pseudo}";
+        "/postFromList?idList=${id}&pseudo=${user.pseudo}";
     try {
       var response = await http.get(Uri.parse(url));
-      print(response.body);
-      final List<dynamic> data = json.decode(response.body);
-
-      posts = List<Post>.from(data.map((model) => Post.fromJson(model)));
+      final Map<String,dynamic> data = json.decode(response.body);
+      //print("ForEach ici");
+      var res = data["listPost"];
+      print(res);
+      res.foreach ((e ) {
+        posts.add(Post.fromJson(e));
+      });
     } catch (e) {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données ici.");
     }
+    print("Tab des posts");
+    print(posts);
     return posts;
   }
 }

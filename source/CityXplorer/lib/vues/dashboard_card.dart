@@ -45,34 +45,39 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> mesListes = []; //Listes crées
-    List<Widget> listeEnregistrees = []; //Listes enregistrées
+    if (_initialized) {
+      List<Widget> mesListes = []; //Listes crées
+      List<Widget> listeEnregistrees = []; //Listes enregistrées
+      print("For each ici, numéro 2");
+      _mapCreatedList.forEach((key, value) {
+        List<Widget> items = [];
+        for (final item in value) {
+          items.add(_renderListTile(item));
+        }
+        mesListes.add(ExpansionTile(title: Text(key), children: items));
+      });
+      print("For each la, num 3");
+      _mapSavedList.forEach((key, value) {
+        List<Widget> items = [];
+        for (final item in value) {
+          items.add(_renderListTile(item));
+        }
+        listeEnregistrees.add(ExpansionTile(title: Text(key), children: items));
+      });
 
-   _mapCreatedList.forEach((key, value) {
-      List<Widget> items = [];
-      for (final item in value) {
-        items.add(_renderListTile(item));
-      }
-      mesListes.add(ExpansionTile(title: Text(key), children: items));
-    });
-
-    _mapSavedList.forEach((key, value) {
-      List<Widget> items = [];
-      for (final item in value) {
-        items.add(_renderListTile(item));
-      }
-      listeEnregistrees.add(ExpansionTile(title: Text(key), children: items));
-    });
 
 
+      return Column(
+        children: <Widget>[
+          ExpansionTile(title: const Text("Mes listes"), children: mesListes),
+          ExpansionTile(
+              title: const Text("Les listes enregistrées"), children:listeEnregistrees),
+        ],
+      );
+    } else {
+      return  const Center(child: CircularProgressIndicator());
+    }
 
-    return Column(
-          children: <Widget>[
-            ExpansionTile(title: const Text("Mes listes"), children: mesListes),
-            ExpansionTile(
-                title: const Text("Les listes enregistrées"), children:listeEnregistrees),
-          ],
-        );
   }
 
   Widget _renderListTile(Post post) {
@@ -84,11 +89,9 @@ class _DashBoardState extends State<DashBoard> {
   //Map nomListe-List<post>
   Future<Map> _getPostListCreatedForDashboard() async{
     var lists = {};
-    print(_createdLists);
     for (var listeToTurn in _createdLists) {
-      print("Id list");
       print(listeToTurn.id);
-      lists[listeToTurn.nomListe]= listeToTurn.getPostsOfList(_user);
+      lists[listeToTurn.nomListe]= await listeToTurn.getPostsOfList(_user);
     }
     print("Lists Created : ");
     print(lists);
@@ -98,10 +101,11 @@ class _DashBoardState extends State<DashBoard> {
   Future<Map> _getPostListLikedForDashboard() async{
     var listsSaved = {};
     for (var listeToTurn in _savedLists) {
-      listsSaved[listeToTurn.nomListe]= listeToTurn.getPostsOfList(_user);
+      print(listeToTurn.id);
+      listsSaved[listeToTurn.nomListe]=await  listeToTurn.getPostsOfList(_user);
     }
-    print("Lists saved : ");
-    print(listsSaved);
+    //print("Lists saved : ");
+    //print(listsSaved);
     return listsSaved;
   }
 
@@ -110,16 +114,18 @@ class _DashBoardState extends State<DashBoard> {
       _initialized = false;
     });
     UserConneted user = await getUser();
-
+    setState(() {
+      _user = user;
+    });
     List<Listes> pc = await user.getListsCreated();
     List<Listes> pl = await user.getListsLiked();
+    setState(() {;
+      _createdLists=pc;
+      _savedLists=pl;
+    });
     Map<dynamic, dynamic> mpc = await _getPostListCreatedForDashboard();
     Map<dynamic, dynamic> mpl =await _getPostListLikedForDashboard();
     setState(() {
-      _user = user;
-      _initialized = true;
-      _createdLists=pc;
-      _savedLists=pl;
       _mapCreatedList=mpc;
       _mapSavedList=mpl;
     });
