@@ -2,11 +2,8 @@ import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/components/description.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
-import 'package:cityxplorer/styles.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../components/numbers_widget.dart';
 import '../components/profile_widget.dart';
@@ -28,28 +25,11 @@ class _UserProfileState extends State<UserProfile> {
 
   User _user = User.empty();
   bool _initialized = false;
-  late DatabaseHelper backUp;
-  static Database? database;
 
   @override
-  Future<void> initState() async {
-    bool hasInternet = await InternetConnectionChecker().hasConnection;
-
-    if (hasInternet) {
-      User.fromPseudo(widget.arguments['pseudo'].toString()).then((user) {
-        setState(() {
-          _user = user;
-        });
-        backUp.insertUpdate(_user, database!);
-        _load();
-      });
-
-    } else {
-      _user = backUp.getProfile() as User;
-    }
-
-
+  void initState() {
     super.initState();
+    _load();
   }
 
   @override
@@ -88,12 +68,18 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> _load() async {
     setState(() => _initialized = false);
-    Widget posts = await _renderPosts(context);
 
-    User u = await updateUser(_user);
-
+    bool hasInternet = await InternetConnectionChecker().hasConnection;
+    User u = await getUser();
+    if (hasInternet) {
+      u = await updateUser(u);
+    }
     setState(() {
       _user = u;
+    });
+    Widget posts = await _renderPosts(context);
+
+    setState(() {
       postsLoaded = posts;
       _initialized = true;
     });
@@ -168,6 +154,7 @@ class _UserProfileState extends State<UserProfile> {
       );
 
   Future<Widget> _renderPosts(BuildContext context) async {
+    print(_user);
     List<Post> posts = await _user.getPosts();
     bool isCurrent = await isCurrentUser(_user.pseudo);
     if (posts.isEmpty) {
@@ -183,10 +170,5 @@ class _UserProfileState extends State<UserProfile> {
       }
       return Column(children: list.reversed.toList());
     }
-  }
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<Database>('database', database));
   }
 }

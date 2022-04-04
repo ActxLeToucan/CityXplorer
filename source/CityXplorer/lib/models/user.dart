@@ -1,15 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:cityxplorer/models/post.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../conf.dart';
 import '../router/delegate.dart';
@@ -113,55 +109,3 @@ class User {
     routerDelegate.pushPage(name: '/user', arguments: {'pseudo': pseudo});
   }
 }
-
-class DatabaseHelper {
-  DatabaseHelper._privateConstructor();
-  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
-
-  static Database? _database;
-  Future<Database> get database async => _database ??= await _initDatabase();
-
-  Future<Database> _initDatabase() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, 'UserBackUp.db');
-    return
-      await openDatabase(
-      path,
-      version: 1,
-      onCreate: _onCreate,
-    );
-  }
-
-  Future insertUpdate(User u, Database db) async {
-    await db.execute('''
-      INSERT INTO UserData (`pseudo`, `name`, `password`, `avatar`, `niveauAcces`, `token`, `description`) VALUES (
-         '${u.pseudo}',
-         '${u.name}',
-         '${u.avatar}',
-         '${u.niveauAcces}',
-         '${u.description}'
-      )
-      ''');
-  }
-
-  Future _onCreate(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE UserData(
-          pseudo TEXT
-          name TEXT
-          avatar TEXT
-          niveauAcces TEXT
-          description TEXT
-      )
-      ''');
-  }
-
-  Future getProfile() async {
-    Database bd = await instance.database;
-    
-    var res = bd.rawQuery('select * from UserData');
-    return res;
-  }
-}
-
-
