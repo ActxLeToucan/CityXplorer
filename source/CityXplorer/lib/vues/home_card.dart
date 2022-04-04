@@ -39,36 +39,59 @@ class Home extends StatelessWidget {
         const SizedBox(height: 30),
         initialized
             ? !user.isEmpty()
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                ? Column(
                     children: [
-                      SizedBox(
-                        width: 140.0,
-                        height: 60.0,
-                        child: TextButton(
-                            child: const Text("Profil"),
-                            style: TextButton.styleFrom(
-                              primary: Colors.black,
-                              backgroundColor: Colors.greenAccent,
-                            ),
-                            onPressed: () {
-                              if (!user.isEmpty()) {
-                                user.pushPage();
-                              }
-                            }),
+                      const Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Text(
+                            "Bienvenue sur CityXplorer !\n Prenez des photos de lieux, partagez les et découvrez celles de vos amis ! ",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Oswald',
+                              fontSize: 20.0,
+                            )),
                       ),
-                      const SizedBox(width: 30),
-                      SizedBox(
-                        width: 140.0,
-                        height: 60.0,
-                        child: TextButton(
-                          child: const Text("Mes postes"),
-                          style: TextButton.styleFrom(
-                            primary: Colors.black,
-                            backgroundColor: Colors.greenAccent,
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 140.0,
+                            height: 60.0,
+                            child: TextButton(
+                                child: const Text("Profil",
+                                    style: TextStyle(
+                                      fontFamily: 'Oswald',
+                                      fontSize: 17.0,
+                                    )),
+                                style: TextButton.styleFrom(
+                                  primary: Colors.black,
+                                  backgroundColor: Colors.lightGreen,
+                                ),
+                                onPressed: () {
+                                  if (!user.isEmpty()) {
+                                    user.pushPage();
+                                  }
+                                }),
                           ),
-                          onPressed: () {},
-                        ),
+                          const SizedBox(width: 30),
+                          SizedBox(
+                            width: 140.0,
+                            height: 60.0,
+                            child: TextButton(
+                              child: const Text("Mes listes",
+                                  style: TextStyle(
+                                    fontFamily: 'Oswald',
+                                    fontSize: 17.0,
+                                  )),
+                              style: TextButton.styleFrom(
+                                primary: Colors.black,
+                                backgroundColor: Colors.lightGreen,
+                              ),
+                              onPressed: () {},
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   )
@@ -80,24 +103,6 @@ class Home extends StatelessWidget {
                     ),
                   )
             : const CircularProgressIndicator(),
-        const SizedBox(height: 10),
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Container(
-            width: 350,
-            decoration: BoxDecoration(
-              border: Border.all(width: 1.5),
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-            ),
-            child: Text(
-              "Sauvegardez des photos de lieux qui vous intéressent, partagez-les avec vos amis et consultez les leurs !",
-              textAlign: TextAlign.center,
-              style: DefaultTextStyle.of(context)
-                  .style
-                  .apply(fontSizeFactor: 1.2), //pour agrandir le texte
-            ),
-          ),
-        ),
         buttonDownload
       ],
     );

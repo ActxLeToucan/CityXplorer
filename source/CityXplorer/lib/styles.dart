@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class Styles {
   // global
+  static const Color homeColor = Colors.lightGreen;
   static const Color mainColor = Color(0xFF388E3C);
   static const Color darkred = Color(0xFFCF0000);
   static const Color linkColor = mainColor;

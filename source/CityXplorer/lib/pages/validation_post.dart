@@ -11,18 +11,17 @@ class ValidationPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => routerDelegate.popRoute(),
+        appBar: AppBar(
+          elevation: 0,
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => routerDelegate.popRoute(),
+          ),
+          title: const Text(
+            'Panneau administrateur',
+          ),
         ),
-        title: const Text(
-          'Crédits',
-        ),
-      ),
-      body: Text("Validation"),
-    );
+        body: Container());
   }
 }
