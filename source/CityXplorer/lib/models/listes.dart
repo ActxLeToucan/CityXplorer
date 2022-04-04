@@ -51,11 +51,8 @@ class Listes {
 
   Future<List<Post>> getPostsOfList(User user) async {
     List<Post> posts = [];
-
-
     String url = Conf.domainServer + Conf.apiPath +
         "/postFromList?idList=${this.id}pseudo=${user.pseudo}";
-
     try {
       var response = await http.get(Uri.parse(url));
       print(response.body);

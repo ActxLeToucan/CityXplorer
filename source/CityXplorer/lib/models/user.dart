@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../router/delegate.dart';
-import 'Listes.dart';
+import 'listes.dart';
 
 class User {
   final String pseudo;
@@ -119,7 +119,7 @@ class User {
 
     }catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données la.");
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
     return lists;
   }

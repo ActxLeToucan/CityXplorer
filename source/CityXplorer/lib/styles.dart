@@ -18,4 +18,8 @@ class Styles {
       color: Styles.loginTextColor, fontSize: Styles.bigButtonTextSize);
   static const double widthElementLogin = 0.8;
   static const double heightElementLogin = 0.08;
+  static const textCTAButton = TextStyle(
+    fontSize: 22.0,
+    color: Colors.white,
+  );
 }

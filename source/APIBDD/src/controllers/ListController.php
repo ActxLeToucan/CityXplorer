@@ -33,11 +33,7 @@ class ListController{
 
 
         $titre = filter_var($content['titre'], FILTER_SANITIZE_STRING);
-        if(isset($content['decr'])){
-            $desc= filter_var($content['decr'], FILTER_SANITIZE_STRING);
-        }else{
-            $desc="";
-        }
+        $desc= filter_var($content['descr']??"", FILTER_SANITIZE_STRING);
         $tab = [
             "result" => 0,
             "message" => "Erreur lors de l'insertion",

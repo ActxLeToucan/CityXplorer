@@ -1,12 +1,14 @@
 import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/main.dart';
-import 'package:cityxplorer/vues/camera.dart';
+//import 'package:cityxplorer/vues/camera.dart';
+import 'package:cityxplorer/vues/take_photo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../components/menu.dart';
 import '../models/user.dart';
 import '../router/delegate.dart';
+import '../styles.dart';
 import '../vues/dashboard_card.dart';
 import '../vues/home_card.dart';
 
@@ -53,8 +55,14 @@ class _MainInterfaceState extends State<MainInterface> {
           child: Home(initialized: _initialized, user: _user)),
       const TakePictureScreen(),
       //const Camera(),
-      const SingleChildScrollView(
-          child: DashBoard(initialized: _initialized, user: _user)),
+      Stack(
+        children: [
+        const SingleChildScrollView(
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
+            child:DashBoard(),),
+        _renderFooter(context)
+    ],)
     ];
 
     return Scaffold(
@@ -84,5 +92,32 @@ class _MainInterfaceState extends State<MainInterface> {
       )
           : null,
     );
+  }
+  Widget _renderFooter(BuildContext context){
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          decoration: BoxDecoration(color:Colors.white.withOpacity(0.5)),
+          height: FooterHeight,
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 30.0),
+            child:_renderFooterAddListButton(),
+          ),
+        )
+      ],
+    );
+  }
+  Widget _renderFooterAddListButton() {
+    return FlatButton(
+      color: Styles.mainColor,
+      textColor: Styles.loginTextColor,
+      onPressed: _handleAddListPress,
+      child: Text('Ajouter une liste'.toUpperCase(), style: Styles.textCTAButton),
+    );
+  }
+  void _handleAddListPress() async{
+    routerDelegate.pushPage(name: '/new_list');
   }
 }
