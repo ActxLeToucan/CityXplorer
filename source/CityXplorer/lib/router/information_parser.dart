@@ -36,6 +36,8 @@ class MyRouteInformationParser
     switch (routeSettings.name) {
       case '/user':
         return '?pseudo=${(routeSettings.arguments as Map)['pseudo']}';
+      case '/lists':
+        return '?pseudo=${(routeSettings.arguments as Map)['pseudo']}';
       case '/post':
         return '?id=${(routeSettings.arguments as Map)['id'].toString()}';
       case '/map':

@@ -2,13 +2,15 @@ import 'package:cityxplorer/components/appbar.dart';
 import 'package:flutter/material.dart';
 
 class CreditPage extends StatelessWidget {
-  CreditPage({Key? key}) : super(key: key);
+  const CreditPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: namedAppBar(context, "Crédits"),
         body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
               const SizedBox(
