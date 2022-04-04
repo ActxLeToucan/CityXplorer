@@ -69,8 +69,14 @@ class _MenuState extends State<Menu> {
           ),
           (_user.niveauAcces >= 2)
               ? ListTile(
-                  leading: const Icon(Icons.verified_user),
-                  title: const Text("Valider des posts"),
+                  leading: const Icon(
+                    Icons.verified_user,
+                    color: Colors.blue,
+                  ),
+                  title: const Text(
+                    "Valider des posts",
+                    style: TextStyle(color: Colors.blue),
+                  ),
                   onTap: () => routerDelegate.pushPage(name: '/validationPost'),
                 )
               : Container(),
