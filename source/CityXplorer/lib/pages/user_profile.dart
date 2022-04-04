@@ -3,6 +3,7 @@ import 'package:cityxplorer/components/description.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import '../components/numbers_widget.dart';
 import '../components/profile_widget.dart';
@@ -27,13 +28,8 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   void initState() {
-    User.fromPseudo(widget.arguments['pseudo'].toString()).then((user) {
-      setState(() {
-        _user = user;
-      });
-      _load();
-    });
     super.initState();
+    _load();
   }
 
   @override
@@ -74,12 +70,18 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> _load() async {
     setState(() => _initialized = false);
-    Widget posts = await _renderPosts(context);
 
-    User u = await updateUser(_user);
-
+    bool hasInternet = await InternetConnectionChecker().hasConnection;
+    User u = await getUser();
+    if (hasInternet) {
+      u = await updateUser(u);
+    }
     setState(() {
       _user = u;
+    });
+    Widget posts = await _renderPosts(context);
+
+    setState(() {
       postsLoaded = posts;
       _initialized = true;
     });
@@ -154,6 +156,7 @@ class _UserProfileState extends State<UserProfile> {
       );
 
   Future<Widget> _renderPosts(BuildContext context) async {
+    print(_user);
     List<Post> posts = await _user.getPosts();
     bool isCurrent = await isCurrentUser(_user.pseudo);
     UserConneted _currentUser = await getUser();
