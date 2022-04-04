@@ -93,9 +93,9 @@ class _UserProfileState extends State<UserProfile> {
         ProfileWidget(
             user: _user,
             onClicked: () async {
-              UserConneted userConneted = UserConneted.empty();
-              if (_user is UserConneted) {
-                userConneted = (_user as UserConneted);
+              UserConnected userConneted = UserConnected.empty();
+              if (_user is UserConnected) {
+                userConneted = (_user as UserConnected);
               } else if (await isCurrentUser(_user.pseudo)) {
                 userConneted = await getUser();
               }
@@ -159,7 +159,7 @@ class _UserProfileState extends State<UserProfile> {
     print(_user);
     List<Post> posts = await _user.getPosts();
     bool isCurrent = await isCurrentUser(_user.pseudo);
-    UserConneted _currentUser = await getUser();
+    UserConnected _currentUser = await getUser();
     if (posts.isEmpty) {
       return const Center(
         child: Text("Aucun post n'a été publié par cet utilisateur.",
@@ -169,7 +169,7 @@ class _UserProfileState extends State<UserProfile> {
       List<Widget> list = [];
       for (Post post in posts) {
         if (post.isValid() || _currentUser.niveauAcces >= 2 || isCurrent) {
-          list.add(post.toWidget(context));
+          list.add(post.toWidget());
         }
       }
       return Column(children: list.reversed.toList());

@@ -387,7 +387,7 @@ class PostController {
         } else if ($user->niveauAcces < 2) {
             return $rs->withJSON([
                 "result" => 0,
-                "message" => "Vous devez être administrateur pour effectuer cette action.",
+                "message" => "Permissions insuffisantes",
                 "post" => null
             ], 200);
         } else {
@@ -407,5 +407,35 @@ class PostController {
                 "post" => $post->toArray(true)
             ], 200);
         }
+    }
+
+    public function getPendingPosts(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('pending_posts');
+        $url = $base . $route_uri;
+
+        $token = $rq->getQueryParam('token', '_');
+        if (is_null($user = User::where('token', '=', $token)->first())) {
+            return $rs->withJSON([
+                'result' => 0,
+                'message' => 'Token invalide',
+                'posts' => []
+            ], 200);
+        } else if ($user->niveauAcces < 2) {
+            return $rs->withJSON([
+                'result' => 0,
+                'message' => 'Permissions insuffisantes',
+                'posts' => []
+            ], 200);
+        }
+
+        $posts = Post::where('etat', '=', Post::ETAT_EN_ATTENTE)->get();
+
+        return $rs->withJSON([
+            'result' => 1,
+            'message' => sizeof($posts) . " posts en attente",
+            'posts' => $posts
+        ], 200);
     }
 }

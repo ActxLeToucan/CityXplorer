@@ -1,27 +1,13 @@
+import 'package:cityxplorer/components/appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-import '../router/delegate.dart';
 
 class CreditPage extends StatelessWidget {
-  final routerDelegate = Get.find<MyRouterDelegate>();
-
   CreditPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => routerDelegate.popRoute(),
-          ),
-          title: const Text(
-            'Crédits',
-          ),
-        ),
+        appBar: namedAppBar(context, "Crédits"),
         body: SingleChildScrollView(
           child: Column(
             children: [

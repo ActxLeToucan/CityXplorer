@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 
 import '../router/delegate.dart';
 
-class UserConneted extends User {
+class UserConnected extends User {
   final String token;
 
-  UserConneted(
+  UserConnected(
       {required this.token,
       required String pseudo,
       required String name,
@@ -22,8 +22,8 @@ class UserConneted extends User {
             description: description,
             likes: likes);
 
-  factory UserConneted.fromJson(Map<String, dynamic> json) {
-    return UserConneted(
+  factory UserConnected.fromJson(Map<String, dynamic> json) {
+    return UserConnected(
         token: json['token'],
         pseudo: json['pseudo'],
         name: json['name'],
@@ -33,8 +33,8 @@ class UserConneted extends User {
         likes: List<int>.from(json['likes']));
   }
 
-  factory UserConneted.empty() {
-    return UserConneted(
+  factory UserConnected.empty() {
+    return UserConnected(
         token: "",
         pseudo: "",
         name: "",
@@ -58,7 +58,7 @@ class UserConneted extends User {
   }
 
   updateWith(User user) {
-    return UserConneted(
+    return UserConnected(
         token: this.token,
         pseudo: user.pseudo,
         name: user.name,

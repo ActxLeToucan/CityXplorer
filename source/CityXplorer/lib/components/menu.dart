@@ -67,9 +67,7 @@ class _MenuState extends State<Menu> {
           ? ListTile(
               leading: const Icon(Icons.verified_user),
               title: const Text("Valider des posts"),
-              onTap: () async {
-                routerDelegate.pushPage(name: '/validationPost');
-              },
+              onTap: () => routerDelegate.pushPage(name: '/validationPost'),
             )
           : Container(),
       ListTile(

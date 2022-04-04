@@ -80,6 +80,9 @@ $app->put('/post', 'cityXplorer\controllers\PostController:editPost')->setName("
 // changement etat post
 $app->patch('/post', 'cityXplorer\controllers\PostController:setEtat')->setName("set_etat_post");
 
+// posts en attente
+$app->get('/pending_posts', 'cityXplorer\controllers\PostController:getPendingPosts')->setName("pending_posts");
+
 
 /**
  * LIST

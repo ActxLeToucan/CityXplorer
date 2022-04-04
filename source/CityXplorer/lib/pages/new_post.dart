@@ -160,7 +160,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
         request.fields['date'] = getCurrentDateBDD();
 
-        UserConneted user = await getUser();
+        UserConnected user = await getUser();
         if (!user.isEmpty()) {
           request.fields['token'] = user.token;
         } else {

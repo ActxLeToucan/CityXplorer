@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
         var res = data['result'];
 
         if (res == 1) {
-          UserConneted user = UserConneted.fromJson(data['user']);
+          UserConnected user = UserConnected.fromJson(data['user']);
           connexion(user);
 
           routerDelegate.pushPageAndClear(name: '/');

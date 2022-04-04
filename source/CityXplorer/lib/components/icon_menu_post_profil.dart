@@ -12,7 +12,7 @@ import '../router/delegate.dart';
 
 /// menu de boutons lorsque l on clique sur les 3 points dans le details d un post
 class IconMenuPost extends StatefulWidget {
-  final UserConneted user;
+  final UserConnected user;
   final Post post;
   const IconMenuPost({Key? key, required this.user, required this.post})
       : super(key: key);
