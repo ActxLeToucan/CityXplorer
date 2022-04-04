@@ -58,17 +58,18 @@ class Listes {
       var response = await http.get(Uri.parse(url));
       final Map<String,dynamic> data = json.decode(response.body);
       //print("ForEach ici");
-      var res = data["listPost"];
-      print(res);
-      res.foreach ((e ) {
-        posts.add(Post.fromJson(e));
-      });
+      if(data['result']==1){
+       List<dynamic> postsJson = data["listPost"];
+       postsJson.forEach ((e ) {
+         posts.add(Post.fromJson(e));
+       });
+      }
+
+
     } catch (e) {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données ici.");
     }
-    print("Tab des posts");
-    print(posts);
     return posts;
   }
 }
