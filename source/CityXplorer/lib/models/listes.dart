@@ -56,6 +56,7 @@ class Listes {
         "/postFromList?idList=${id}&pseudo=${user.pseudo}";
     try {
       var response = await http.get(Uri.parse(url));
+      print(response.body);
       final Map<String,dynamic> data = json.decode(response.body);
       //print("ForEach ici");
       if(data['result']==1){
@@ -64,8 +65,6 @@ class Listes {
          posts.add(Post.fromJson(e));
        });
       }
-
-
     } catch (e) {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données ici.");
