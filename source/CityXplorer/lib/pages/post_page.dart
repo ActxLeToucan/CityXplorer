@@ -43,7 +43,7 @@ class _PostPageState extends State<PostPage> {
                 child: Text("Post invalide.", textAlign: TextAlign.center)));
       } else if (_post.etat == Post.postEtatBloque &&
           _user.niveauAcces < 2 &&
-          _user.name != _post.userPseudo) {
+          _user.pseudo != _post.userPseudo) {
         return Scaffold(
             appBar: defaultAppBar(context),
             body: const Center(
