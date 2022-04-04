@@ -1,25 +1,19 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cityxplorer/components/appbar.dart';
-import 'package:cityxplorer/components/custom_alert_post.dart';
 import 'package:cityxplorer/components/input_field.dart';
-import 'package:cityxplorer/models/user_connected.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 
 import '../conf.dart';
 import '../main.dart';
+import '../models/user_connected.dart';
 import '../router/delegate.dart';
 
 /// formulaire de creation d'un post avec gestion de la requete envoyee et de son resultat
 class NewListScreen extends StatefulWidget {
-
   const NewListScreen({Key? key}) : super(key: key);
 
   @override
@@ -33,23 +27,22 @@ class _NewListScreenState extends State<NewListScreen> {
   final controllerTitre = TextEditingController(text: "Sans titre");
   final controllerDescription = TextEditingController();
   bool _initialized = false;
-  UserConneted _user = UserConneted.empty();
-
+  UserConnected _user = UserConnected.empty();
 
   @override
   void initState() {
-      getUser().then((u) {
-        setState(() {
-          _user = u;
-          _initialized = true;
-        });
+    getUser().then((u) {
+      setState(() {
+        _user = u;
+        _initialized = true;
+      });
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if(_initialized){
+    if (_initialized) {
       return Scaffold(
         appBar: namedAppBar(context, "Créer une liste"),
         body: SingleChildScrollView(
@@ -94,12 +87,11 @@ class _NewListScreenState extends State<NewListScreen> {
           ),
         ),
       );
-    }else{
+    } else {
       return Scaffold(
           appBar: defaultAppBar(context),
           body: const Center(child: CircularProgressIndicator()));
     }
-
   }
 
   /// renvoie la date du jour au format JJ/MM/AAAA -- affichage utilisateur

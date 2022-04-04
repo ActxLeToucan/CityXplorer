@@ -1,6 +1,5 @@
 import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/main.dart';
-import 'package:cityxplorer/vues/take_photo_screen.dart';
 import 'package:cityxplorer/vues/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -56,12 +55,14 @@ class _MainInterfaceState extends State<MainInterface> {
       const Camera(),
       Stack(
         children: [
-        const SingleChildScrollView(
-          physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics()),
-            child:DashBoard(),),
-        _renderFooter(context)
-      ],)
+          const SingleChildScrollView(
+            physics:
+                BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            child: DashBoard(),
+          ),
+          _renderFooter(context)
+        ],
+      )
     ];
 
     return Scaffold(
@@ -70,53 +71,58 @@ class _MainInterfaceState extends State<MainInterface> {
       drawer: const Menu(),
       bottomNavigationBar: _initialized && !_user.isEmpty()
           ? BottomNavigationBar(
-        selectedItemColor:
-        Theme.of(context).textSelectionTheme.selectionColor,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Accueil',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_a_photo_rounded),
-            label: 'Créer un post',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.speed),
-            label: 'Tableau de bord',
-          ),
-        ],
-      )
+              selectedItemColor:
+                  Theme.of(context).textSelectionTheme.selectionColor,
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Accueil',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.add_a_photo_rounded),
+                  label: 'Créer un post',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.speed),
+                  label: 'Tableau de bord',
+                ),
+              ],
+            )
           : null,
     );
   }
-  Widget _renderFooter(BuildContext context){
+
+  Widget _renderFooter(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          decoration: BoxDecoration(color:Colors.white.withOpacity(0.5)),
+          decoration: BoxDecoration(color: Colors.white.withOpacity(0.5)),
           height: FooterHeight,
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 30.0),
-            child:_renderFooterAddListButton(),
+            padding:
+                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
+            child: _renderFooterAddListButton(),
           ),
         )
       ],
     );
   }
+
   Widget _renderFooterAddListButton() {
     return FlatButton(
       color: Styles.mainColor,
       textColor: Styles.loginTextColor,
       onPressed: _handleAddListPress,
-      child: Text('Ajouter une liste'.toUpperCase(), style: Styles.textCTAButton),
+      child:
+          Text('Ajouter une liste'.toUpperCase(), style: Styles.textCTAButton),
     );
   }
-  void _handleAddListPress() async{
+
+  void _handleAddListPress() async {
     routerDelegate.pushPage(name: '/new_list');
   }
 }

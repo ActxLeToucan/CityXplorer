@@ -16,11 +16,12 @@ import '../router/delegate.dart';
 import '../styles.dart';
 import '../vues/dashboard_card.dart';
 import '../vues/home_card.dart';
-const FooterHeight=100.0;
+
+const FooterHeight = 100.0;
+
 //contenu de la page dashboard
 class DashBoard extends StatefulWidget {
-  const DashBoard({Key? key})
-      : super(key: key);
+  const DashBoard({Key? key}) : super(key: key);
 
   @override
   State<DashBoard> createState() => _DashBoardState();
@@ -29,10 +30,10 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   final routerDelegate = Get.find<MyRouterDelegate>();
   bool _initialized = false;
-  List<Listes> _createdLists=[];
-  List<Listes>_savedLists=[];
-  Map<dynamic,dynamic> _mapCreatedList={};
-  Map<dynamic,dynamic> _mapSavedList={};
+  List<Listes> _createdLists = [];
+  List<Listes> _savedLists = [];
+  Map<dynamic, dynamic> _mapCreatedList = {};
+  Map<dynamic, dynamic> _mapSavedList = {};
   User _user = User.empty();
 
   @override
@@ -40,8 +41,6 @@ class _DashBoardState extends State<DashBoard> {
     super.initState();
     _load();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -64,19 +63,17 @@ class _DashBoardState extends State<DashBoard> {
         listeEnregistrees.add(ExpansionTile(title: Text(key), children: items));
       });
 
-
-
       return Column(
         children: <Widget>[
           ExpansionTile(title: const Text("Mes listes"), children: mesListes),
           ExpansionTile(
-              title: const Text("Les listes enregistrées"), children:listeEnregistrees),
+              title: const Text("Les listes enregistrées"),
+              children: listeEnregistrees),
         ],
       );
     } else {
-      return  const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
-
   }
 
   Widget _renderListTile(Post post) {
@@ -85,25 +82,27 @@ class _DashBoardState extends State<DashBoard> {
       trailing: IconMenu(),
     );
   }
+
   //Map nomListe-List<post>
-  Future<Map> _getPostListCreatedForDashboard() async{
+  Future<Map> _getPostListCreatedForDashboard() async {
     var lists = {};
     for (var listeToTurn in _createdLists) {
-      List<Post> val=await  listeToTurn.getPostsOfList(_user);
-      lists[listeToTurn.nomListe]= val;
+      List<Post> val = await listeToTurn.getPostsOfList(_user);
+      lists[listeToTurn.nomListe] = val;
     }
     return lists;
   }
+
   //Map nomListe-List<post>
-  Future<Map> _getPostListLikedForDashboard() async{
+  Future<Map> _getPostListLikedForDashboard() async {
     var listsSaved = {};
     for (var listeToTurn in _savedLists) {
       print("Saved");
       print(listeToTurn.id);
-      List<Post> val=await  listeToTurn.getPostsOfList(_user);
-      print ("Val =");
+      List<Post> val = await listeToTurn.getPostsOfList(_user);
+      print("Val =");
       print(val[0]);
-      listsSaved[listeToTurn.nomListe]=val;
+      listsSaved[listeToTurn.nomListe] = val;
     }
     //print("Lists saved : ");
     //print(listsSaved);
@@ -114,27 +113,26 @@ class _DashBoardState extends State<DashBoard> {
     setState(() {
       _initialized = false;
     });
-    UserConneted user = await getUser();
+    UserConnected user = await getUser();
     setState(() {
       _user = user;
     });
     List<Listes> pc = await user.getListsCreated();
     List<Listes> pl = await user.getListsLiked();
-    setState(() {;
-      _createdLists=pc;
-      _savedLists=pl;
+    setState(() {
+      ;
+      _createdLists = pc;
+      _savedLists = pl;
     });
     Map<dynamic, dynamic> mpc = await _getPostListCreatedForDashboard();
-    Map<dynamic, dynamic> mpl =await _getPostListLikedForDashboard();
+    Map<dynamic, dynamic> mpl = await _getPostListLikedForDashboard();
     setState(() {
-      _mapCreatedList=mpc;
-      _mapSavedList=mpl;
+      _mapCreatedList = mpc;
+      _mapSavedList = mpl;
     });
 
-
-      setState(() {
-        _initialized = true;
-      });
+    setState(() {
+      _initialized = true;
+    });
   }
-
 }

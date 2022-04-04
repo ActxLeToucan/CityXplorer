@@ -30,7 +30,7 @@ class _AdvanceCustomAlertState extends State<AdvanceCustomAlert> {
           overflow: Overflow.visible,
           alignment: Alignment.topCenter,
           children: [
-            Container(
+            SizedBox(
               height: 200,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(10, 70, 10, 10),
@@ -38,19 +38,19 @@ class _AdvanceCustomAlertState extends State<AdvanceCustomAlert> {
                   children: [
                     Text(
                       widget.message,
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 20),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     Text(
                       (noErr()
                           ? 'Et voilà le post est créé 👍'
                           : 'Une erreur est survenue 🤔'),
-                      style: TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 20),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     RaisedButton(
@@ -58,7 +58,7 @@ class _AdvanceCustomAlertState extends State<AdvanceCustomAlert> {
                       color: (noErr() ? Colors.lightGreen : Colors.redAccent),
                       child: Text(
                         (noErr() ? 'Super ! ' : 'Mince ...'),
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ],

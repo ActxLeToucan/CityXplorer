@@ -23,7 +23,4 @@ class Styles {
     fontSize: 22.0,
     color: Colors.white,
   );
-  
-  // camera
-  static const int maxPhotos = 5;
 }

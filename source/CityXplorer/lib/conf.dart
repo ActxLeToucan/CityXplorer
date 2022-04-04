@@ -22,4 +22,7 @@ class Conf {
   static const int tailleMdpMin = 8;
   static const int tailleMdpMax = 256;
   static const int tailleTitreMax = 100;
+
+  // camera
+  static const int maxPhotos = 5;
 }
