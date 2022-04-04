@@ -19,6 +19,8 @@ class Styles {
       color: Styles.loginTextColor, fontSize: Styles.bigButtonTextSize);
   static const double widthElementLogin = 0.8;
   static const double heightElementLogin = 0.08;
-  // camera
-  static const int maxPhotos = 5;
+  static const textCTAButton = TextStyle(
+    fontSize: 22.0,
+    color: Colors.white,
+  );
 }

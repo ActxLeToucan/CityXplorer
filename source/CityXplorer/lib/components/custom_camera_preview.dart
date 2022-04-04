@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
 
+import '../conf.dart';
 import '../router/delegate.dart';
 
 //ignore: must_be_immutable
@@ -60,7 +61,7 @@ class _CustomCameraPreviewState extends State<CustomCameraPreview> {
               onPressed: () async {
                 try {
                   //you can give limit that's user can take how many photo
-                  if (imageFiles.length != Styles.maxPhotos) {
+                  if (imageFiles.length != Conf.maxPhotos) {
                     if (imageFiles.isEmpty) {
                       setState(() {
                         isLoading = true;
@@ -144,7 +145,7 @@ class _CustomCameraPreviewState extends State<CustomCameraPreview> {
                           ),
                   );
                 },
-                itemCount: Styles.maxPhotos,
+                itemCount: Conf.maxPhotos,
               ),
             )),
         // slider de zoom

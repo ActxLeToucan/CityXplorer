@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import '../components/menu.dart';
 import '../models/user.dart';
 import '../router/delegate.dart';
+import '../styles.dart';
 import '../vues/dashboard_card.dart';
 import '../vues/home_card.dart';
 
@@ -51,21 +52,17 @@ class _MainInterfaceState extends State<MainInterface> {
     List<Widget> pages = <Widget>[
       SingleChildScrollView(
           child: Home(initialized: _initialized, user: _user)),
-      //const TakePictureScreen(),
       const Camera(),
-      const SingleChildScrollView(
-          child: DashBoard(
-        lists: {
-          "Ma liste 1": ["item 1", "item 2", "item 3"],
-          "Ma liste 2": ["item 4"],
-          "Ma liste 3": ["item 5", "item 6"],
-        },
-        savedItems: [
-          "item enregistré 1",
-          "item enregistré 2",
-          "item enregistré 3"
+      Stack(
+        children: [
+          const SingleChildScrollView(
+            physics:
+                BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            child: DashBoard(),
+          ),
+          _renderFooter(context)
         ],
-      )),
+      )
     ];
 
     return Scaffold(
@@ -95,5 +92,37 @@ class _MainInterfaceState extends State<MainInterface> {
             )
           : null,
     );
+  }
+
+  Widget _renderFooter(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          decoration: BoxDecoration(color: Colors.white.withOpacity(0.5)),
+          height: FooterHeight,
+          child: Container(
+            padding:
+                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
+            child: _renderFooterAddListButton(),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _renderFooterAddListButton() {
+    return FlatButton(
+      color: Styles.mainColor,
+      textColor: Styles.loginTextColor,
+      onPressed: _handleAddListPress,
+      child:
+          Text('Ajouter une liste'.toUpperCase(), style: Styles.textCTAButton),
+    );
+  }
+
+  void _handleAddListPress() async {
+    routerDelegate.pushPage(name: '/new_list');
   }
 }

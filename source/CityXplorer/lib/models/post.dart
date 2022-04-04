@@ -37,17 +37,17 @@ class Post {
 
   const Post(
       {required this.id,
-      required this.titre,
-      required this.latitude,
-      required this.longitude,
-      required this.description,
-      required this.date,
-      required this.etat,
-      required this.photos,
-      required this.likedByUsers,
-      required this.userPseudo,
-      required this.adresseCourte,
-      required this.adresseLongue});
+        required this.titre,
+        required this.latitude,
+        required this.longitude,
+        required this.description,
+        required this.date,
+        required this.etat,
+        required this.photos,
+        required this.likedByUsers,
+        required this.userPseudo,
+        required this.adresseCourte,
+        required this.adresseLongue});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     var unescape = HtmlUnescape();
@@ -190,11 +190,11 @@ class Post {
         Row(children: [
           Expanded(
               child: Text(
-            adresseCourte,
-            style: const TextStyle(color: Colors.black45),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          )),
+                adresseCourte,
+                style: const TextStyle(color: Colors.black45),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              )),
           Text(
             "le ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}",
             style: const TextStyle(color: Colors.black45),
@@ -219,9 +219,9 @@ class Post {
                 child: (photos.isEmpty
                     ? Image.asset("assets/default.jpg", fit: BoxFit.cover)
                     : Image.network(
-                        "${Conf.domainServer}/img/posts/${photos[0]}",
-                        fit: BoxFit.cover,
-                      )),
+                  "${Conf.domainServer}/img/posts/${photos[0]}",
+                  fit: BoxFit.cover,
+                )),
               ),
             ),
             Positioned(
@@ -229,13 +229,13 @@ class Post {
               right: 5,
               child: (photos.length > 1
                   ? Container(
-                      child: Text("1/${photos.length}"),
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(4)),
-                        color: Color(0xBFFFFFFF),
-                      ),
-                    )
+                child: Text("1/${photos.length}"),
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(4)),
+                  color: Color(0xBFFFFFFF),
+                ),
+              )
                   : Container()),
             )
           ],

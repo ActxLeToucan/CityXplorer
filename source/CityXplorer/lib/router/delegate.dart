@@ -3,6 +3,7 @@ import 'package:cityxplorer/pages/edit_profile.dart';
 import 'package:cityxplorer/pages/login_screen.dart';
 import 'package:cityxplorer/pages/main_interface.dart';
 import 'package:cityxplorer/pages/map-screen.dart';
+import 'package:cityxplorer/pages/new_list.dart';
 import 'package:cityxplorer/pages/new_post.dart';
 import 'package:cityxplorer/pages/user_profile.dart';
 import 'package:cityxplorer/pages/validation_post.dart';
@@ -146,6 +147,9 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
       case '/new_post':
         child = NewPostScreen(
             arguments: routeSettings.arguments as Map<String, String>);
+        break;
+      case '/new_list':
+        child = NewListScreen();
         break;
       case '/lists':
         child = UserLists(

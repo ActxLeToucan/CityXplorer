@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../router/delegate.dart';
+import 'listes.dart';
 
 class User {
   final String pseudo;
@@ -102,6 +103,47 @@ class User {
     }
 
     return posts;
+  }
+  Future<List<Listes>> getListsCreated() async{
+    List<Listes> lists=[];
+
+
+    String url = Conf.domainServer + Conf.apiPath + "/listCreatedUser?pseudo=$pseudo";
+
+    try{
+      var response= await http.get(Uri.parse(url));
+      //print("Problème dans Lists created");
+      //print(response.body);
+      final List<dynamic> data  = json.decode(response.body);
+
+     lists = List<Listes>.from(data.map((model) => Listes.fromJson(model)));
+
+    }catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
+    return lists;
+  }
+
+  Future<List<Listes>> getListsLiked() async{
+    List<Listes> lists=[];
+
+
+    String url = Conf.domainServer + Conf.apiPath + "/listLikedUser?pseudo=$pseudo";
+
+    try{
+      var response= await http.get(Uri.parse(url));
+      //print("Problème dans Lists liked");
+      //print(response.body);
+      final List<dynamic> data  = json.decode(response.body);
+
+      lists = List<Listes>.from(data.map((model) => Listes.fromJson(model)));
+
+    }catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données par ici.");
+    }
+    return lists;
   }
 
   void pushPage() {
