@@ -73,12 +73,15 @@ class _UserProfileState extends State<UserProfile> {
 
     bool hasInternet = await InternetConnectionChecker().hasConnection;
     User u = await getUser();
-    if (hasInternet) {
-      u = await updateUser(u);
+    if (u.pseudo == widget.arguments['pseudo']) {
+      if (hasInternet) {
+        u = await updateUser(u);
+      }
+      setState(() => _user = u);
+    } else {
+      User user = await User.fromPseudo(widget.arguments['pseudo']);
+      setState(() => _user = user);
     }
-    setState(() {
-      _user = u;
-    });
     Widget posts = await _renderPosts(context);
 
     setState(() {
