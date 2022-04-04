@@ -1,9 +1,9 @@
 import 'package:cityxplorer/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../main.dart';
 
 import '../conf.dart';
+import '../main.dart';
 import '../models/user.dart';
 import '../router/delegate.dart';
 import '../styles.dart';
@@ -61,6 +61,13 @@ class _MenuState extends State<Menu> {
             deconnexion();
           }
           routerDelegate.pushPageAndClear(name: '/login');
+        },
+      ),
+      ListTile(
+        leading: const Icon(Icons.people),
+        title: const Text("Crédits"),
+        onTap: () async {
+          routerDelegate.pushPage(name: '/credit');
         },
       ),
     ]));

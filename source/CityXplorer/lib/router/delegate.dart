@@ -9,6 +9,7 @@ import 'package:cityxplorer/router/transition_delegate.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/create_account.dart';
+import '../pages/credit_page.dart';
 import '../pages/post_edit.dart';
 import '../pages/post_page.dart';
 import '../pages/search_page.dart';
@@ -133,6 +134,9 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
       case '/map':
         child = GeolocationMap(
             arguments: routeSettings.arguments as Map<String, String>);
+        break;
+      case '/credit':
+        child = CreditPage();
         break;
       case '/new_post':
         child = NewPostScreen(
