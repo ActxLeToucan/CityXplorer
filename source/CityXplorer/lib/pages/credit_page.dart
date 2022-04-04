@@ -11,6 +11,9 @@ class CreditPage extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
+              const SizedBox(
+                height: 20,
+              ),
               Image.asset(
                 "assets/CityXplorer.gif",
                 height: 100.0,
