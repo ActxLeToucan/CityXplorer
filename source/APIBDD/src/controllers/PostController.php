@@ -438,4 +438,49 @@ class PostController {
             'posts' => $posts
         ], 200);
     }
+
+    public function setPostPending(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('set_post_pending');
+        $url = $base . $route_uri;
+
+        $content = $rq->getParsedBody();
+
+        if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Token invalide",
+                "post" => null
+            ], 200);
+        } else if (!isset($content['id']) || is_null($post = Post::find($content['id']))) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Id du post invalide",
+                "post" => null
+            ], 200);
+        } else if ($post->user != $user) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Vous devez être le propriétaire de post pour le modifier.",
+                "post" => null
+            ], 200);
+        } else {
+            if ($post->etat != Post::ETAT_BLOQUE) {
+                return $rs->withJSON([
+                    "result" => 0,
+                    "message" => "Etat invalide",
+                    "post" => null
+                ], 200);
+            }
+            $post->etat = Post::ETAT_EN_ATTENTE;
+            $post->save();
+
+            return $rs->withJSON([
+                "result" => 1,
+                "message" => "Etat modifié",
+                "post" => $post->toArray(true)
+            ], 200);
+        }
+    }
 }
