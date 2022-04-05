@@ -54,7 +54,7 @@ class Listes {
   }
 
   bool isEmpty() {
-    return (nomListe == "");
+    return (id == -1);
   }
 
   Future<List<Post>> getPostsOfList() async {

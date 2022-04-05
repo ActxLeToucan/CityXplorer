@@ -1,3 +1,4 @@
+import 'package:cityxplorer/pages/add_post_to_list.dart';
 import 'package:cityxplorer/pages/change_password.dart';
 import 'package:cityxplorer/pages/edit_profile.dart';
 import 'package:cityxplorer/pages/login_screen.dart';
@@ -155,6 +156,9 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
       case '/lists':
         child = UserLists(
             arguments: routeSettings.arguments as Map<String, String>);
+        break;
+      case '/post/list':
+        child = AddPostToList(arguments: routeSettings.arguments as Map<String, String>);
         break;
       case '/list':
         child =

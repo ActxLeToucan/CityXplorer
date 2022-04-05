@@ -63,23 +63,34 @@ class _DashBoardState extends State<DashBoard> {
         listeEnregistrees.add(ExpansionTile(title: Text(key), children: items));
       });
 
-      return Column(
-        children: <Widget>[
-          ExpansionTile(title: const Text("Mes listes"), children: mesListes),
-          ExpansionTile(
-              title: const Text("Les listes enregistrées"),
-              children: listeEnregistrees),
-        ],
-      );
+      return RefreshIndicator(
+          onRefresh: _load,
+          child: Column(
+            children: <Widget>[
+              ExpansionTile(
+                  title: const Text("Mes listes"), children: mesListes),
+              ExpansionTile(
+                  title: const Text("Les listes enregistrées"),
+                  children: listeEnregistrees),
+              _tqtCestDeLaTriche(context)
+            ],
+          ));
     } else {
       return const Center(child: CircularProgressIndicator());
     }
   }
+  /*
+  * body: RefreshIndicator(
+              onRefresh: _load,
+              child: SingleChildScrollView(
+  * */
 
   Widget _renderListTile(Post post) {
     return ListTile(
       title: Text(post.titre),
-      trailing: IconMenu(),
+      trailing: IconMenu(
+        post: post,
+      ),
     );
   }
 
@@ -97,11 +108,7 @@ class _DashBoardState extends State<DashBoard> {
   Future<Map> _getPostListLikedForDashboard() async {
     var listsSaved = {};
     for (var listeToTurn in _savedLists) {
-      print("Saved");
-      print(listeToTurn.id);
       List<Post> val = await listeToTurn.getPostsOfList();
-      print("Val =");
-      print(val[0]);
       listsSaved[listeToTurn.nomListe] = val;
     }
     //print("Lists saved : ");
@@ -134,5 +141,11 @@ class _DashBoardState extends State<DashBoard> {
     setState(() {
       _initialized = true;
     });
+  }
+
+  Widget _tqtCestDeLaTriche(BuildContext context) {
+    return const SizedBox(
+      height: FooterHeight + 10.0,
+    );
   }
 }
