@@ -2,6 +2,7 @@ import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/components/description.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
@@ -71,7 +72,8 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _load() async {
     setState(() => _initialized = false);
 
-    bool hasInternet = await InternetConnectionChecker().hasConnection;
+    bool hasInternet =
+        kIsWeb ? true : await InternetConnectionChecker().hasConnection;
     User u = await getUser();
     if (u.pseudo == widget.arguments['pseudo']) {
       if (hasInternet) {
