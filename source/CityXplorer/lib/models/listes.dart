@@ -73,8 +73,7 @@ class Listes {
       }
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(
-          msg: "Impossible d'accéder à la base de données ici.");
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
     return posts;
   }

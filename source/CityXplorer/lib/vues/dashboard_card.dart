@@ -28,7 +28,7 @@ class _DashBoardState extends State<DashBoard> {
   List<Listes> _savedLists = [];
   Map<dynamic, dynamic> _mapCreatedList = {};
   Map<dynamic, dynamic> _mapSavedList = {};
-  User _user = User.empty();
+  UserConnected _user = UserConnected.empty();
 
   @override
   void initState() {
@@ -44,14 +44,18 @@ class _DashBoardState extends State<DashBoard> {
       _mapCreatedList.forEach((key, value) {
         List<Widget> items = [];
         for (final item in value) {
-          items.add(_renderListTile(item));
+          final list =
+              _createdLists.singleWhere((element) => element.nomListe == key);
+          items.add(_renderListTile(item, list));
         }
         mesListes.add(ExpansionTile(title: Text(key), children: items));
       });
       _mapSavedList.forEach((key, value) {
         List<Widget> items = [];
         for (final item in value) {
-          items.add(_renderListTile(item));
+          final list =
+              _savedLists.singleWhere((element) => element.nomListe == key);
+          items.add(_renderListTile(item, list));
         }
         listeEnregistrees.add(ExpansionTile(title: Text(key), children: items));
       });
@@ -78,11 +82,13 @@ class _DashBoardState extends State<DashBoard> {
               child: SingleChildScrollView(
   * */
 
-  Widget _renderListTile(Post post) {
+  Widget _renderListTile(Post post, Listes list) {
     return ListTile(
       title: Text(post.titre),
       trailing: IconMenu(
         post: post,
+        user: _user,
+        list: list,
       ),
     );
   }
