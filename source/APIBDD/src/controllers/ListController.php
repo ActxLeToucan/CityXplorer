@@ -63,8 +63,6 @@ class ListController{
 
         return $rs->withJSON($tab, 200);
     }
-    //Vérifier que ça existe
-    //Vérifier l'utilisateur de la list
     public function enregistrerPostList(Request $rq, Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
@@ -91,16 +89,23 @@ class ListController{
                 $list=Liste::where("idliste","=",$idList)->first();
                 $post=Post::where("idPost","=",$idPost)->first();
                 $nb = $list->posts->where('idPost', '=', $post->idPost)->count();
-                if($nb == 0){
-                    $list->posts()->save($post);
-                    $tab = [
-                        "result" => 1,
-                        "message" => "Insertion effectuée"
-                    ];
+                if($user->id===$list->idCreateur){
+                    if($nb==0){
+                        $list->posts()->save($post);
+                        $tab = [
+                            "result" => 1,
+                            "message" => "Insertion effectuée"
+                        ];
+                    }else{
+                        $tab = [
+                            "result" => 1,
+                            "message" => "Post déja présent dans la liste"
+                        ];
+                    }
                 }else{
                     $tab = [
-                        "result" => 1,
-                        "message" => "Post déja présent dans la liste"
+                        "result" => 0,
+                        "message" => "Vous ne pouvez pas ajouter de post à une liste likée !"
                     ];
                 }
 
@@ -108,10 +113,6 @@ class ListController{
         }
         return $rs->withJSON($tab, 200);
     }
-
-
-
-
 
 
 
@@ -128,7 +129,6 @@ class ListController{
 
 
         $idList=$content['idList'];
-
 
 
         $tab = [
@@ -151,18 +151,30 @@ class ListController{
                     "result" => 0,
                     "message" => "Erreur :le post n'est pas dans la list",
                 ];
-                if ($nb != 0){
-                    $list->posts()->detach($post->idPost);
-                    $nomList=$list->nomListe;
+                if($user->id===$list->idCreateur){
+                    if ($nb != 0){
+                        $list->posts()->detach($post->idPost);
+                        $nomList=$list->nomListe;
+                        $tab = [
+                            "result" => 1,
+                            "message" => "Post {$idPost} supprimé de la liste {$nomList}",
+                        ];
+                    }
+                }else{
                     $tab = [
-                        "result" => 1,
-                        "message" => "Post {$idPost} supprimé de la liste {$nomList}",
+                        "result" => 0,
+                        "message" => "Erreur : Vous n'êtes pas le créateur de cette liste, vous ne pouvez pas en supprimer le post",
                     ];
                 }
+
             }
         }
         return $rs->withJSON($tab, 200);
     }
+
+
+
+
 
 
 
