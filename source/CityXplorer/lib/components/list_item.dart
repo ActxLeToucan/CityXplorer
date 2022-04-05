@@ -35,8 +35,8 @@ class _ListeItemState extends State<ListeItem> {
   Widget build(BuildContext context) {
     return Card(
         child: MaterialButton(
-      onPressed: () => routerDelegate
-          .pushPage(name: '/liste', arguments: {'id': widget.liste.id}),
+      onPressed: () => routerDelegate.pushPage(
+          name: '/list', arguments: {'id': widget.liste.id.toString()}),
       child: ListTile(
         title: Text(widget.liste.nomListe),
         subtitle: Text(widget.liste.description),

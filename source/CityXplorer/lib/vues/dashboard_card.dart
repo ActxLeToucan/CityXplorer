@@ -87,7 +87,7 @@ class _DashBoardState extends State<DashBoard> {
   Future<Map> _getPostListCreatedForDashboard() async {
     var lists = {};
     for (var listeToTurn in _createdLists) {
-      List<Post> val = await listeToTurn.getPostsOfList(_user);
+      List<Post> val = await listeToTurn.getPostsOfList();
       lists[listeToTurn.nomListe] = val;
     }
     return lists;
@@ -99,7 +99,7 @@ class _DashBoardState extends State<DashBoard> {
     for (var listeToTurn in _savedLists) {
       print("Saved");
       print(listeToTurn.id);
-      List<Post> val = await listeToTurn.getPostsOfList(_user);
+      List<Post> val = await listeToTurn.getPostsOfList();
       print("Val =");
       print(val[0]);
       listsSaved[listeToTurn.nomListe] = val;

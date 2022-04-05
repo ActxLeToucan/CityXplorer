@@ -161,8 +161,7 @@ class PostController {
         $route_uri = $container->router->pathFor('postId');
         $url = $base . $route_uri;
 
-        $content=$rq->getQueryParams();
-        $id = $content['id'];
+        $id=$rq->getQueryParam("id", -1);
 
         $postExist = Post::where("idPost", "=", $id)->count();
         if ($postExist == 1) {
