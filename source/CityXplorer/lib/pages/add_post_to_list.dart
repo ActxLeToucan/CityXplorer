@@ -22,12 +22,11 @@ class AddPostToList extends StatefulWidget {
 
   @override
   State<AddPostToList> createState() => _AddPostToListState();
-
 }
 
 class _AddPostToListState extends State<AddPostToList> {
   final routerDelegate = Get.find<MyRouterDelegate>();
-  List<Listes> _createdLists=[];
+  List<Listes> _createdLists = [];
 
   final TextEditingController titre = TextEditingController();
   final TextEditingController description = TextEditingController();
@@ -58,18 +57,16 @@ class _AddPostToListState extends State<AddPostToList> {
             body: const Center(child: Text("Post invalid.")));
       } else {
         List<Widget> mesListes = []; //Listes crées
-          _createdLists.forEach((element) {
-            mesListes.add(_renderTextButton(element.nomListe, element.id
-            ));
-          });
+        _createdLists.forEach((element) {
+          mesListes.add(_renderTextButton(element.nomListe, element.id));
+        });
         return Scaffold(
             appBar: defaultAppBar(context),
-            body:Column(
+            body: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: mesListes,
-            )
-        );
+            ));
       }
     } else {
       return Scaffold(
@@ -77,6 +74,7 @@ class _AddPostToListState extends State<AddPostToList> {
           body: const Center(child: CircularProgressIndicator()));
     }
   }
+
   Future<void> _load() async {
     setState(() {
       _initialized = false;
@@ -86,40 +84,44 @@ class _AddPostToListState extends State<AddPostToList> {
       _user = user;
     });
     List<Listes> pc = await user.getListsCreated();
-    setState(() {;
-    _createdLists=pc;
+    setState(() {
+      ;
+      _createdLists = pc;
     });
     setState(() {
       _initialized = true;
     });
   }
+
   Widget _renderListTile(String s) {
     return ListTile(
       title: Text(s),
     );
   }
-  Widget _renderTextButton(String s, int id){
-    return TextButton( style: TextButton.styleFrom(
-      textStyle: const TextStyle(fontSize: 20),
-    ),
-        onPressed: ()=>_sendPostToList(_post.id, id),
+
+  Widget _renderTextButton(String s, int id) {
+    return TextButton(
+        style: TextButton.styleFrom(
+          textStyle: const TextStyle(fontSize: 20),
+        ),
+        onPressed: () => _sendPostToList(_post.id, id),
         child: Text(s));
   }
-  Future<void> _sendPostToList(int idPost,int idList) async {
-    var tk=_user.token;
-    String url=Conf.domainServer+Conf.apiPath+"/postList?idPost=$idPost&idList=$idList&token=$tk";
-    try {
-      var response = await http.post(Uri.parse(url),
-          headers: {'content-type': 'application/json'});
-      print(response.body);
-      final Map<String, dynamic> data = json.decode(response.body);
 
+  Future<void> _sendPostToList(int idPost, int idList) async {
+    var tk = _user.token;
+    String url = Conf.domainServer +
+        Conf.apiPath +
+        "/postList?idPost=$idPost&idList=$idList&token=$tk";
+    try {
+      var response = await http
+          .post(Uri.parse(url), headers: {'content-type': 'application/json'});
+      final Map<String, dynamic> data = json.decode(response.body);
 
       Fluttertoast.showToast(msg: data['message']);
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(
-          msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
   }
 }
