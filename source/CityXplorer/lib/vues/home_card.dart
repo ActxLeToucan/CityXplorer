@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../conf.dart';
+import '../styles.dart';
 
 //contenu de la page d accueil
 class Home extends StatelessWidget {
@@ -65,8 +66,8 @@ class Home extends StatelessWidget {
                                       fontSize: 17.0,
                                     )),
                                 style: TextButton.styleFrom(
-                                  primary: Colors.black,
-                                  backgroundColor: Colors.lightGreen,
+                                  primary: Colors.white,
+                                  backgroundColor: Styles.mainColor,
                                 ),
                                 onPressed: () {
                                   if (!user.isEmpty()) {
@@ -85,8 +86,8 @@ class Home extends StatelessWidget {
                                     fontSize: 17.0,
                                   )),
                               style: TextButton.styleFrom(
-                                primary: Colors.black,
-                                backgroundColor: Colors.lightGreen,
+                                primary: Colors.white,
+                                backgroundColor: Styles.mainColor,
                               ),
                               onPressed: () {},
                             ),
