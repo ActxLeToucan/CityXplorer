@@ -67,9 +67,9 @@ class Listes {
       //print("ForEach ici");
       if (data['result'] == 1) {
         List<dynamic> postsJson = data["listPost"];
-        postsJson.forEach((e) {
+        for (var e in postsJson) {
           posts.add(Post.fromJson(e));
-        });
+        }
       }
     } catch (e) {
       print(e);

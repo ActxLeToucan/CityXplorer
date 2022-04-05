@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cityxplorer/components/icon_menu_item_liste.dart';
 import 'package:cityxplorer/models/listes.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -8,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import '../components/appbar.dart';
-import '../components/input_field.dart';
 import '../conf.dart';
 import '../main.dart';
 import '../models/post.dart';
@@ -57,9 +55,9 @@ class _AddPostToListState extends State<AddPostToList> {
             body: const Center(child: Text("Post invalid.")));
       } else {
         List<Widget> mesListes = []; //Listes crées
-        _createdLists.forEach((element) {
+        for (var element in _createdLists) {
           mesListes.add(_renderTextButton(element.nomListe, element.id));
-        });
+        }
         return Scaffold(
             appBar: defaultAppBar(context),
             body: Column(
@@ -85,7 +83,6 @@ class _AddPostToListState extends State<AddPostToList> {
     });
     List<Listes> pc = await user.getListsCreated();
     setState(() {
-      ;
       _createdLists = pc;
     });
     setState(() {

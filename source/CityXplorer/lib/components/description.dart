@@ -26,7 +26,7 @@ class Description extends StatelessWidget {
     RegExp regex = RegExp(r"@[\w\-]*");
     List<String> list = description.splitWithDelim(regex);
     List<TextSpan> spans = [];
-    list.forEach((element) {
+    for (var element in list) {
       TextSpan text;
       if (element.startsWith("@")) {
         String pseudo = element.substring(1);
@@ -45,7 +45,7 @@ class Description extends StatelessWidget {
       }
 
       spans.add(text);
-    });
+    }
     return RichText(text: TextSpan(children: spans));
   }
 }

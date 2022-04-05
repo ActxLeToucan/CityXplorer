@@ -93,9 +93,9 @@ class _ValidationPostState extends State<ValidationPost> {
 
       if (data['result'] == 1) {
         List<dynamic> postsJson = data['posts'];
-        postsJson.forEach((element) {
+        for (var element in postsJson) {
           posts.add(Post.fromJson(element));
-        });
+        }
       }
     } catch (e) {
       print(e);

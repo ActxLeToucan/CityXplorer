@@ -47,19 +47,19 @@ class UserConnected extends User {
   @override
   Map<String, dynamic> toJson() {
     return {
-      "token": this.token,
-      "pseudo": this.pseudo,
-      "name": this.name,
-      "avatar": this.avatar,
-      "niveauAcces": this.niveauAcces,
-      "description": this.description,
-      "likes": this.likes
+      "token": token,
+      "pseudo": pseudo,
+      "name": name,
+      "avatar": avatar,
+      "niveauAcces": niveauAcces,
+      "description": description,
+      "likes": likes
     };
   }
 
   updateWith(User user) {
     return UserConnected(
-        token: this.token,
+        token: token,
         pseudo: user.pseudo,
         name: user.name,
         avatar: user.avatar,

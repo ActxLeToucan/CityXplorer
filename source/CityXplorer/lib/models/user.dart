@@ -70,12 +70,12 @@ class User {
 
   Map<String, dynamic> toJson() {
     return {
-      "pseudo": this.pseudo,
-      "name": this.name,
-      "avatar": this.avatar,
-      "niveauAcces": this.niveauAcces,
-      "description": this.description,
-      "likes": this.likes
+      "pseudo": pseudo,
+      "name": name,
+      "avatar": avatar,
+      "niveauAcces": niveauAcces,
+      "description": description,
+      "likes": likes
     };
   }
 

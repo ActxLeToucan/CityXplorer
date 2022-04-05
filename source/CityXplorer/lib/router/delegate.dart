@@ -141,7 +141,7 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
             arguments: routeSettings.arguments as Map<String, String>);
         break;
       case '/credit':
-        child = CreditPage();
+        child = const CreditPage();
         break;
       case '/validationPost':
         child = const ValidationPost();
@@ -151,14 +151,15 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
             arguments: routeSettings.arguments as Map<String, String>);
         break;
       case '/new_list':
-        child = NewListScreen();
+        child = const NewListScreen();
         break;
       case '/lists':
         child = UserLists(
             arguments: routeSettings.arguments as Map<String, String>);
         break;
       case '/post/list':
-        child = AddPostToList(arguments: routeSettings.arguments as Map<String, String>);
+        child = AddPostToList(
+            arguments: routeSettings.arguments as Map<String, String>);
         break;
       case '/list':
         child =

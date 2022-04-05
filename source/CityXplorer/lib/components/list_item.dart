@@ -3,16 +3,15 @@ import 'package:get/get.dart';
 
 import '../conf.dart';
 import '../models/listes.dart';
-import '../models/post.dart';
 import '../router/delegate.dart';
 import '../styles.dart';
 
 class ListeItem extends StatefulWidget {
-  Listes liste;
-  bool liked;
-  String url;
+  final Listes liste;
+  final bool liked;
+  final String url;
 
-  ListeItem(
+  const ListeItem(
       {Key? key, required this.liste, required this.liked, required this.url})
       : super(key: key);
 

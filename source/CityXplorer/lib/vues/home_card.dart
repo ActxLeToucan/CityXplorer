@@ -8,10 +8,10 @@ import '../styles.dart';
 
 //contenu de la page d accueil
 class Home extends StatelessWidget {
-  bool initialized = false;
-  User user = User.empty();
+  final bool initialized;
+  final User user;
 
-  Home({Key? key, required this.initialized, required this.user})
+  const Home({Key? key, required this.initialized, required this.user})
       : super(key: key);
 
   @override

@@ -5,19 +5,13 @@ import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 import 'package:cityxplorer/components/icon_menu_item_liste.dart';
 
-import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/main.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../components/menu.dart';
 import '../models/user.dart';
 import '../router/delegate.dart';
-import '../styles.dart';
-import '../vues/dashboard_card.dart';
-import '../vues/home_card.dart';
 
-const FooterHeight = 100.0;
+const footerHeight = 100.0;
 
 //contenu de la page dashboard
 class DashBoard extends StatefulWidget {
@@ -126,7 +120,6 @@ class _DashBoardState extends State<DashBoard> {
     List<Listes> pc = await user.getListsCreated();
     List<Listes> pl = await user.getListsLiked();
     setState(() {
-      ;
       _createdLists = pc;
       _savedLists = pl;
     });
@@ -144,7 +137,7 @@ class _DashBoardState extends State<DashBoard> {
 
   Widget _tqtCestDeLaTriche(BuildContext context) {
     return const SizedBox(
-      height: FooterHeight + 10.0,
+      height: footerHeight + 10.0,
     );
   }
 }
