@@ -336,14 +336,6 @@ class ListController{
             "message" => "Erreur lors de la récupération des posts de la list",
             "listPost" => []
         ];
-        if(isset($content['pseudo'])){
-            $user = User::where("pseudo", "=", $content['pseudo'])->first();
-            $tab = [
-                "result" => 0,
-                "message" => "Erreur : token invalide",
-                "pseudo" => $content['pseudo'],
-            ];
-            if(!is_null($user)){
                 $list=Liste::where("idliste","=",$idList)->first();
                 $t = [];
                 foreach ($list->posts as $Post){
@@ -353,9 +345,6 @@ class ListController{
                 $tab =["result" => 1,
                     "message" => "Récupération des posts de la list {$idList}",
                     "listPost" => $t];
-
-            }
-        }
         return $rs->withJSON($tab, 200);
     }
 
@@ -379,9 +368,8 @@ class ListController{
             ];
             if(!is_null($user)){
                 $tab=[];
-
                 foreach ($user->listLikes as $list){
-                    $tab=$list->toArray();
+                    $tab[]=$list->toArray();
                 }
             }
         }

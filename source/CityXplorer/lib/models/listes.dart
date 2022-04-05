@@ -35,14 +35,14 @@ class Listes {
   }
 
   bool isEmpty() {
-    return (nomListe == "");
+    return (id == -1);
   }
 
-  Future<List<Post>> getPostsOfList(User user) async {
+  Future<List<Post>> getPostsOfList() async {
     List<Post> posts = [];
     String url = Conf.domainServer +
         Conf.apiPath +
-        "/postFromList?idList=$id&pseudo=${user.pseudo}";
+        "/postFromList?idList=$id";
     try {
       var response = await http.get(Uri.parse(url));
       print(response.body);

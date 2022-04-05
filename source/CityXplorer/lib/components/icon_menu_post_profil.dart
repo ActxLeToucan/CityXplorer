@@ -71,6 +71,9 @@ class _IconMenuPostState extends State<IconMenuPost> {
         onSelected: (value) {
           switch (value) {
             case optionAddList:
+              routerDelegate.pushPage(
+                  name:'/post/list',
+                  arguments:{'id': widget.post.id.toString()});
               break;
             case optionEdit:
               routerDelegate.pushPage(
