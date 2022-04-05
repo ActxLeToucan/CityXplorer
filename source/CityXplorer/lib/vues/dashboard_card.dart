@@ -63,24 +63,34 @@ class _DashBoardState extends State<DashBoard> {
         listeEnregistrees.add(ExpansionTile(title: Text(key), children: items));
       });
 
-      return Column(
-        children: <Widget>[
-          ExpansionTile(title: const Text("Mes listes"), children: mesListes),
-          ExpansionTile(
-              title: const Text("Les listes enregistrées"),
-              children: listeEnregistrees),
-          _tqtCestDeLaTriche(context)
-        ],
-      );
+      return RefreshIndicator(
+          onRefresh: _load,
+          child: Column(
+            children: <Widget>[
+              ExpansionTile(
+                  title: const Text("Mes listes"), children: mesListes),
+              ExpansionTile(
+                  title: const Text("Les listes enregistrées"),
+                  children: listeEnregistrees),
+              _tqtCestDeLaTriche(context)
+            ],
+          ));
     } else {
       return const Center(child: CircularProgressIndicator());
     }
   }
+  /*
+  * body: RefreshIndicator(
+              onRefresh: _load,
+              child: SingleChildScrollView(
+  * */
 
   Widget _renderListTile(Post post) {
     return ListTile(
       title: Text(post.titre),
-      trailing: IconMenu(post: post,),
+      trailing: IconMenu(
+        post: post,
+      ),
     );
   }
 
@@ -132,9 +142,10 @@ class _DashBoardState extends State<DashBoard> {
       _initialized = true;
     });
   }
+
   Widget _tqtCestDeLaTriche(BuildContext context) {
-    return SizedBox(
-      height: FooterHeight+10.0,
+    return const SizedBox(
+      height: FooterHeight + 10.0,
     );
   }
 }
