@@ -1,4 +1,5 @@
 import 'package:cityxplorer/components/list_item.dart';
+import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 
 import '../components/appbar.dart';
@@ -66,7 +67,8 @@ class _UserListsState extends State<UserLists> {
 
   Future<Widget> _renderLists(User user) async {
     List<Listes> lists = await user.getListsCreated();
-    List<Listes> listesEnregistrees = await (await getUser()).getListsLiked();
+    UserConnected userConnected = await getUser();
+    List<Listes> listesEnregistrees = await userConnected.getListsLiked();
     if (lists.isEmpty) {
       return const Center(
         child: Text("Cet utilisateur n'a aucune liste.",
@@ -87,9 +89,11 @@ class _UserListsState extends State<UserLists> {
           if (urlImg != "") break;
         }
         list.add(ListeItem(
-            liste: element,
-            liked: listesEnregistrees.contains(element),
-            url: urlImg));
+          liste: element,
+          liked: listesEnregistrees.contains(element),
+          url: urlImg,
+          user: userConnected,
+        ));
       }
       return ListView(
         children: list,

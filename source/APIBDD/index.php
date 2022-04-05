@@ -101,9 +101,9 @@ $app->post('/postList', 'cityXplorer\controllers\ListController:enregistrerPostL
 //Testé
 $app->delete('/postList', 'cityXplorer\controllers\ListController:supprimerPostList')->setName("deletePostToList");
 //Non testé
-$app->post('/likeList', 'cityXplorer\controllers\ListController:likeList')->setName("likeList");
+$app->post('/saved_list', 'cityXplorer\controllers\ListController:likeList')->setName("likeList");
 //Non testé
-$app->delete('/likeList', 'cityXplorer\controllers\ListController:dislikeList')->setName("dislikeList");
+$app->delete('/saved_list', 'cityXplorer\controllers\ListController:dislikeList')->setName("dislikeList");
 
 /**
  * Post from a list
