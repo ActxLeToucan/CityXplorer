@@ -82,6 +82,7 @@ class _NumbersWidgetState extends State<NumbersWidget> {
         0,
         (previousValue, element) =>
             previousValue + (element.isValid() ? 1 : 0));
+    nbListes = (await widget.user.getListsCreated()).length;
     likes = posts.fold(
         0,
         (previousValue, element) =>

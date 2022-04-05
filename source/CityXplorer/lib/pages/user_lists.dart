@@ -1,6 +1,10 @@
+import 'package:cityxplorer/components/list_item.dart';
 import 'package:flutter/material.dart';
 
 import '../components/appbar.dart';
+import '../main.dart';
+import '../models/listes.dart';
+import '../models/post.dart';
 import '../models/user.dart';
 
 class UserLists extends StatefulWidget {
@@ -37,15 +41,9 @@ class _UserListsState extends State<UserLists> {
         return Scaffold(
           appBar: namedAppBar(context, "Listes de @${_user.pseudo}"),
           body: RefreshIndicator(
-              onRefresh: _load,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: _lists,
-                ),
-                physics: const BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics()),
-              )),
+            onRefresh: _load,
+            child: _lists,
+          ),
         );
       }
     } else {
@@ -66,25 +64,38 @@ class _UserListsState extends State<UserLists> {
     });
   }
 
-  // TODO
-  Future<List> getLists(User user) async {
-    return [];
-  }
-
-  // TODO
   Future<Widget> _renderLists(User user) async {
-    List lists = await getLists(user);
+    List<Listes> lists = await user.getListsCreated();
+    List<Listes> listesEnregistrees = await (await getUser()).getListsLiked();
     if (lists.isEmpty) {
       return const Center(
         child: Text("Cet utilisateur n'a aucune liste.",
             textAlign: TextAlign.center),
       );
     } else {
-      List<ListTile> list = [];
-      lists.forEach((element) {
-        list.add(element.toListTile());
-      });
-      return ListView(children: list);
+      List<Widget> list = [];
+      for (Listes element in lists) {
+        List<Post> posts = await element.getPostsOfList();
+        String urlImg = "";
+        for (Post p in posts) {
+          for (String? url in p.photos) {
+            if (url != null && url != "") {
+              urlImg = url;
+              break;
+            }
+          }
+          if (urlImg != "") break;
+        }
+        list.add(ListeItem(
+            liste: element,
+            liked: listesEnregistrees.contains(element),
+            url: urlImg));
+      }
+      return ListView(
+        children: list,
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
+      );
     }
   }
 }

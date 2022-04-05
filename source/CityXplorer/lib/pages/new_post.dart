@@ -183,7 +183,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         //  contentType: MediaType("image", "jpeg")));
 
         var response = await http.Response.fromStream(await request.send());
-        //print(response.body);
+        print(response.body);
         final Map<String, dynamic> data = json.decode(response.body);
         String res = data['message'];
         int code = data['result'];

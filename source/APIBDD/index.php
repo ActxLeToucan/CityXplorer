@@ -90,6 +90,8 @@ $app->patch('/post_pending', 'cityXplorer\controllers\PostController:setPostPend
 /**
  * LIST
  */
+
+$app->get('/list', 'cityXplorer\controllers\ListController:getListById')->setName("get_list_id");
 //Testé
 $app->post('/list', 'cityXplorer\controllers\ListController:createList')->setName("createList");
 //Non testé

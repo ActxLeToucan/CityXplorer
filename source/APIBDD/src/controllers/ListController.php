@@ -404,4 +404,24 @@ class ListController{
         return $rs->withJSON($tab, 200);
     }
 
+    public function getListById(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('get_list_id');
+        $url = $base . $route_uri;
+
+        $id = $rq->getQueryParam('id', -1);
+        if (is_null($list = Liste::find($id))) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Erreur : id invalide",
+                "list" => null,
+            ], 200);
+        }
+        return $rs->withJSON([
+            "result" => 1,
+            "message" => "Liste trouvée",
+            "list" => $list,
+        ], 200);
+    }
 }

@@ -6,6 +6,7 @@ import 'package:cityxplorer/pages/main_interface.dart';
 import 'package:cityxplorer/pages/map-screen.dart';
 import 'package:cityxplorer/pages/new_list.dart';
 import 'package:cityxplorer/pages/new_post.dart';
+import 'package:cityxplorer/pages/page_list.dart';
 import 'package:cityxplorer/pages/user_profile.dart';
 import 'package:cityxplorer/pages/validation_post.dart';
 import 'package:cityxplorer/router/transition_delegate.dart';
@@ -158,6 +159,10 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
         break;
       case '/post/list':
         child = AddPostToList(arguments: routeSettings.arguments as Map<String, String>);
+        break;
+      case '/list':
+        child =
+            PageList(arguments: routeSettings.arguments as Map<String, String>);
         break;
       default:
         if (routeSettings.name != null &&

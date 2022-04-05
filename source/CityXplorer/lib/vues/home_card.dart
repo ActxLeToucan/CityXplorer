@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../conf.dart';
+import '../styles.dart';
 
 //contenu de la page d accueil
 class Home extends StatelessWidget {
@@ -47,7 +48,7 @@ class Home extends StatelessWidget {
                             "Bienvenue sur CityXplorer !\n Prenez des photos de lieux, partagez les et découvrez celles de vos amis ! ",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontFamily: 'Oswald',
+                              fontFamily: 'Questrial',
                               fontSize: 20.0,
                             )),
                       ),
@@ -61,12 +62,12 @@ class Home extends StatelessWidget {
                             child: TextButton(
                                 child: const Text("Profil",
                                     style: TextStyle(
-                                      fontFamily: 'Oswald',
+                                      fontFamily: 'Questrial',
                                       fontSize: 17.0,
                                     )),
                                 style: TextButton.styleFrom(
-                                  primary: Colors.black,
-                                  backgroundColor: Colors.lightGreen,
+                                  primary: Colors.white,
+                                  backgroundColor: Styles.mainColor,
                                 ),
                                 onPressed: () {
                                   if (!user.isEmpty()) {
@@ -81,12 +82,12 @@ class Home extends StatelessWidget {
                             child: TextButton(
                               child: const Text("Mes listes",
                                   style: TextStyle(
-                                    fontFamily: 'Oswald',
+                                    fontFamily: 'Questrial',
                                     fontSize: 17.0,
                                   )),
                               style: TextButton.styleFrom(
-                                primary: Colors.black,
-                                backgroundColor: Colors.lightGreen,
+                                primary: Colors.white,
+                                backgroundColor: Styles.mainColor,
                               ),
                               onPressed: () {},
                             ),

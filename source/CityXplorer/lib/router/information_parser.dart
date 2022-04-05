@@ -38,6 +38,8 @@ class MyRouteInformationParser
         return '?pseudo=${(routeSettings.arguments as Map)['pseudo']}';
       case '/lists':
         return '?pseudo=${(routeSettings.arguments as Map)['pseudo']}';
+      case '/list':
+        return '?id=${(routeSettings.arguments as Map)['id'].toString()}';
       case '/post':
         return '?id=${(routeSettings.arguments as Map)['id'].toString()}';
       case '/map':
