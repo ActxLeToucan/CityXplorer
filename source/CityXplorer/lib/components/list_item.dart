@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 
 import '../conf.dart';
@@ -10,9 +15,14 @@ class ListeItem extends StatefulWidget {
   final Listes liste;
   final bool liked;
   final String url;
+  final UserConnected user;
 
   const ListeItem(
-      {Key? key, required this.liste, required this.liked, required this.url})
+      {Key? key,
+      required this.liste,
+      required this.liked,
+      required this.url,
+      required this.user})
       : super(key: key);
 
   @override
@@ -52,10 +62,40 @@ class _ListeItemState extends State<ListeItem> {
     ));
   }
 
-  // TODO
-  void changeState() {
-    setState(() {
-      _liked = !_liked;
-    });
+  Future<void> changeState() async {
+    bool fav = _liked;
+    if (widget.user.isEmpty()) {
+      Fluttertoast.showToast(
+          msg: "Vous devez être connecté pour enregistrer une liste.");
+      return;
+    }
+
+    String url = Conf.domainServer + Conf.apiPath + "/saved_list";
+    Map<String, dynamic> body = {
+      "token": widget.user.token,
+      "id": widget.liste.id,
+    };
+
+    try {
+      var response = fav
+          ? await http.delete(Uri.parse(url),
+              body: json.encode(body),
+              headers: {'content-type': 'application/json'})
+          : await http.post(Uri.parse(url),
+              body: json.encode(body),
+              headers: {'content-type': 'application/json'});
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      Fluttertoast.showToast(msg: data['message']);
+
+      if (data['result'] == 1) {
+        setState(() {
+          _liked = !fav;
+        });
+      }
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
   }
 }

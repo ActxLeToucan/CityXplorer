@@ -242,86 +242,77 @@ class ListController{
         }
         return $res;
     }
-    public function likeList(Request $rq,Response $rs, array $args){
+
+    // enregistrement d'une liste (= like)
+    public function likeList(Request $rq,Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('likeList');
         $url = $base . $route_uri;
-        $content = $rq->getQueryParams();
-        $idList=$content["idList"];
-        $tab = [
-            "result" => 0,
-            "message" => "Erreur lors du like de la list",
-            "listPost" => null
-        ];
-        if(isset($content['token'])){
-            $user = User::where("token", "=", $content['token'])->first();
-            $tab = [
+
+        $content = $rq->getParsedBody();
+
+        if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Erreur : token invalide",
-                "token" => $content['token'],
-            ];
-            if(!is_null($user)){
-                $list=Liste::where("idliste","=",$idList)->first();
-                $nb = $list->likers->where('idUtilisateur', '=', $user->idUtilisateur)->count();
-                $nb2=$user->listLikes->where('idListe',"=",$list->id)->count();
-                if($nb == 0){ //Rentre quand même
-                    $list->likers()->save($user);
-                    $tab = [
-                        "result" => 1,
-                        "message" => "Insertion effectuée"
-                    ];
-                }else{
-                    $tab = [
-                        "result" => 1,
-                        "message" => "List Déjà likée"
-                    ];
-                }
-            }
+            ], 200);
         }
-        return $rs->withJSON($tab, 200);
+
+        if (!isset($content['id']) || is_null($list = Liste::where("idliste", "=", $content['id'])->first())) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Liste invalide"
+            ], 200);
+        }
+
+        $nb = $user->listLikes->where('idListe',"=",$list->idListe)->count();
+
+        if($nb == 0) {
+            $list->likers()->save($user);
+        }
+
+        return $rs->withJSON([
+            "result" => 1,
+            "message" => "Liste enregistrée"
+        ], 200);
     }
-    //Does it exist
-    public function dislikeList(Request $rq,Response $rs, array $args){
+
+    public function dislikeList(Request $rq,Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('dislikeList');
         $url = $base . $route_uri;
-        $content = $rq->getQueryParams();
-        $idList=$content["idList"];
-        $tab = [
-            "result" => 0,
-            "message" => "Erreur lors de la suppression",
-            "listPost" => []
-        ];
-        if(isset($content['token'])){
-            $user = User::where("token", "=", $content['token'])->first();
-            $tab = [
+
+        $content = $rq->getParsedBody();
+
+        if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Erreur : token invalide",
-                "token" => $content['token'],
-            ];
-            if(!is_null($user)){
-                $list=Liste::where("idliste","=",$idList)->first();
-                $nb = $list->likers->where('idUtilisateur', '=', $user->idUtilisateur)->count();
-                if($nb != 0){ //nb==0
-                    $list->likers()->detach($user->id);
-                    $tab = [
-                        "result" => 1,
-                        "message" => "Suppression effectuées"
-                    ];
-                }else{ //rentre toujours ici
-                    $tab = [
-                        "result" => 1,
-                        "message" => "List Déjà disliké"
-                    ];
-                }
-            }
+            ], 200);
         }
-        return $rs->withJSON($tab, 200);
+
+        if (!isset($content['id']) || is_null($list = Liste::where("idliste", "=", $content['id'])->first())) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Liste invalide"
+            ], 200);
+        }
+
+        $nb = $user->listLikes->where('idListe',"=",$list->idListe)->count();
+
+        if($nb != 0) {
+            $list->likers()->detach($user->id);
+        }
+
+        return $rs->withJSON([
+            "result" => 1,
+            "message" => "Liste retirée"
+        ], 200);
     }
 
-    public function getPostList(Request $rq,Response $rs, array $args){
+    public function getPostList(Request $rq,Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('postFromList');
@@ -345,7 +336,7 @@ class ListController{
         return $rs->withJSON($tab, 200);
     }
 
-    public function getLikedListUser(Request $rq,Response $rs, array $args){
+    public function getLikedListUser(Request $rq,Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('ListLikedFromUser');
@@ -373,7 +364,7 @@ class ListController{
         return $rs->withJSON($tab, 200);
     }
 
-    public function getCreatedListUser(Request $rq,Response $rs, array $args){
+    public function getCreatedListUser(Request $rq,Response $rs, array $args): Response {
         $container = $this->c;
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('ListCreatedByUser');

@@ -162,19 +162,19 @@ class _UserProfileState extends State<UserProfile> {
     List<Post> posts = await _user.getPosts();
     bool isCurrent = await isCurrentUser(_user.pseudo);
     UserConnected _currentUser = await getUser();
-    if (posts.isEmpty) {
+
+    List<Widget> list = [];
+    for (Post post in posts) {
+      if (post.isValid() || _currentUser.niveauAcces >= 2 || isCurrent) {
+        list.add(post.toWidget());
+      }
+    }
+    if (list.isEmpty) {
       return const Center(
         child: Text("Aucun post n'a été publié par cet utilisateur.",
             textAlign: TextAlign.center),
       );
-    } else {
-      List<Widget> list = [];
-      for (Post post in posts) {
-        if (post.isValid() || _currentUser.niveauAcces >= 2 || isCurrent) {
-          list.add(post.toWidget());
-        }
-      }
-      return Column(children: list.reversed.toList());
     }
+    return Column(children: list.reversed.toList());
   }
 }
