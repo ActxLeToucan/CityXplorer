@@ -122,54 +122,52 @@ class ListController{
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('deletePostToList');
         $url = $base . $route_uri;
-        $content = $rq->getQueryParams();
 
-        $idPost=$content['idPost'];
-
-
-
-        $idList=$content['idList'];
+        $idPost = $rq->getQueryParam('idPost', -1);
+        $idList = $rq->getQueryParam('idList', -1);
+        $token = $rq->getQueryParam('token', '_');
 
 
-        $tab = [
-            "result" => 0,
-            "message" => "Erreur lors de l'insertion",
-            "listPost" => []
-        ];
-        if (isset($content['token'])) {
-            $user = User::where("token", "=", $content['token'])->first();
-            $tab = [
+        if (is_null($user = User::where("token", "=", $token)->first())) {
+            return $rs->withJSON([
                 "result" => 0,
                 "message" => "Erreur : token invalide",
-                "token" => $content['token'],
-            ];
-            if(!is_null($user)){
-                $list=Liste::where("idliste","=",$idList)->first();
-                $post=Post::where("idPost","=",$idPost)->first();
-                $nb = $list->posts->where('idPost', '=', $post->idPost)->count();
-                $tab = [
-                    "result" => 0,
-                    "message" => "Erreur :le post n'est pas dans la list",
-                ];
-                if($user->id===$list->idCreateur){
-                    if ($nb != 0){
-                        $list->posts()->detach($post->idPost);
-                        $nomList=$list->nomListe;
-                        $tab = [
-                            "result" => 1,
-                            "message" => "Post {$idPost} supprimé de la liste {$nomList}",
-                        ];
-                    }
-                }else{
-                    $tab = [
-                        "result" => 0,
-                        "message" => "Erreur : Vous n'êtes pas le créateur de cette liste, vous ne pouvez pas en supprimer le post",
-                    ];
-                }
-
-            }
+            ], 200);
         }
-        return $rs->withJSON($tab, 200);
+
+        if (is_null($list = Liste::find($idList))) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Liste invalide"
+            ], 200);
+        }
+
+        if (is_null($post = Post::find($idPost))) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Post invalide"
+            ], 200);
+        }
+
+        if ($user != $list->creator) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Erreur : Vous n'êtes pas le créateur de cette liste, vous ne pouvez pas en supprimer le post",
+            ], 200);
+        }
+
+        $nb = $list->posts->where('idPost', '=', $post->idPost)->count();
+
+        if ($nb != 0) {
+            $list->posts()->detach($post->idPost);
+        }
+        $nomList=$list->nomListe;
+
+
+        return $rs->withJSON([
+            "result" => 1,
+            "message" => "Post {$idPost} supprimé de la liste {$nomList}",
+        ], 200);
     }
 
 

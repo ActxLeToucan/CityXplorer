@@ -117,19 +117,10 @@ class _IconMenuState extends State<IconMenu> {
   Future<void> deletePostList(BuildContext context) async {
     String url = Conf.domainServer +
         Conf.apiPath +
-        "/postList?idPost=${widget.post.id}&idList=${widget.post.id.toInt()}&token=${widget.user.token}";
-
+        "/postList?idPost=${widget.post.id}&idList=${widget.list.id}&token=${widget.user.token}";
+    print(url);
     try {
       var response = await http.delete(Uri.parse(url));
-      print(widget.user.token);
-      print(widget.post.titre);
-      print(widget.post.description);
-      print(widget.post.etat);
-      print("Idpost");
-      print(widget.post.id);
-      print("idList");
-      print(widget.list.id);
-      print(widget.list.nomListe);
       print(response.body);
       final Map<String, dynamic> data = json.decode(response.body);
 
