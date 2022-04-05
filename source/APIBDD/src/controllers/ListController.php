@@ -1,9 +1,6 @@
 <?php
 
 namespace cityXplorer\controllers;
-use cityXplorer\models\Contient;
-use cityXplorer\models\EnregistreListe;
-use cityXplorer\models\Like;
 use cityXplorer\models\User;
 use cityXplorer\models\Post;
 use cityXplorer\models\Liste;
@@ -421,7 +418,7 @@ class ListController{
         return $rs->withJSON([
             "result" => 1,
             "message" => "Liste trouvée",
-            "list" => $list,
+            "list" => $list->toArray(),
         ], 200);
     }
 }

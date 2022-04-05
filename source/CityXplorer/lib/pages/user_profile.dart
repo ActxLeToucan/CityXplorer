@@ -159,7 +159,6 @@ class _UserProfileState extends State<UserProfile> {
       );
 
   Future<Widget> _renderPosts(BuildContext context) async {
-    print(_user);
     List<Post> posts = await _user.getPosts();
     bool isCurrent = await isCurrentUser(_user.pseudo);
     UserConnected _currentUser = await getUser();

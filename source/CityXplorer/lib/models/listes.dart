@@ -12,13 +12,13 @@ class Listes {
   final int id;
   final String nomListe;
   final String description;
-  final int idCreateur;
+  final String pseudoCreateur;
 
   const Listes(
       {required this.id,
       required this.nomListe,
       required this.description,
-      required this.idCreateur});
+      required this.pseudoCreateur});
 
   factory Listes.fromJson(Map<String, dynamic> json) {
     var unescape = HtmlUnescape();
@@ -26,7 +26,7 @@ class Listes {
         id: json['idListe'],
         nomListe: unescape.convert(json['nomListe']),
         description: json['descrListe'],
-        idCreateur: json['idCreateur']);
+        pseudoCreateur: json['pseudo']);
   }
 
   static Future<Listes> fromId(String id) async {
@@ -50,7 +50,8 @@ class Listes {
   }
 
   factory Listes.empty() {
-    return const Listes(id: -1, nomListe: "", description: "", idCreateur: -1);
+    return const Listes(
+        id: -1, nomListe: "", description: "", pseudoCreateur: "");
   }
 
   bool isEmpty() {
@@ -63,8 +64,6 @@ class Listes {
     try {
       var response = await http.get(Uri.parse(url));
       final Map<String, dynamic> data = json.decode(response.body);
-      print(id);
-      print(response.body);
       //print("ForEach ici");
       if (data['result'] == 1) {
         List<dynamic> postsJson = data["listPost"];

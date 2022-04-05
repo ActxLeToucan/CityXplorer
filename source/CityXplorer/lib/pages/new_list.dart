@@ -105,13 +105,11 @@ class _NewListScreenState extends State<NewListScreen> {
         "titre": controllerTitre.text,
         "desc": controllerDescription.text.trim(),
       };
-      print(body);
 
       try {
         var response = await http.post(Uri.parse(url),
             body: json.encode(body),
             headers: {'content-type': 'application/json'});
-        print(response.body);
         final Map<String, dynamic> data = json.decode(response.body);
 
         Fluttertoast.showToast(msg: data['message']);

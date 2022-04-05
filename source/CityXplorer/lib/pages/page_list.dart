@@ -1,14 +1,14 @@
-import 'dart:convert';
-
 import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
-import '../conf.dart';
+import '../components/description.dart';
 import '../models/listes.dart';
 import '../models/post.dart';
+import '../router/delegate.dart';
+import '../styles.dart';
 
 class PageList extends StatefulWidget {
   final Map<String, dynamic> arguments;
@@ -20,6 +20,8 @@ class PageList extends StatefulWidget {
 }
 
 class _PageListState extends State<PageList> {
+  final routerDelegate = Get.find<MyRouterDelegate>();
+
   bool _initialized = false;
 
   UserConnected _user = UserConnected.empty();
@@ -85,9 +87,28 @@ class _PageListState extends State<PageList> {
 
   Widget _renderHeader() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(_list.nomListe),
-        Text(_list.description),
+        Padding(
+            padding: const EdgeInsets.fromLTRB(8, 20, 8, 8),
+            child: Text(_list.nomListe, style: const TextStyle(fontSize: 20))),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Description(
+              description: _list.description,
+              defaultColor: Colors.black.withOpacity(0.65)),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            onTap: () => routerDelegate.pushPage(
+                name: '/user', arguments: {'pseudo': _list.pseudoCreateur}),
+            child: Text(
+              "@${_list.pseudoCreateur}",
+              style: const TextStyle(color: Styles.linkColor),
+            ),
+          ),
+        )
       ],
     );
   }

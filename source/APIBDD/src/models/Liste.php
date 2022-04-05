@@ -35,5 +35,14 @@ class Liste extends Model {
             'idPost'
         );
     }
+
+    public function toArray(): array {
+        return [
+            "idListe" => $this->idListe,
+            "nomListe" => $this->nomListe,
+            "descrListe" => $this->descrListe,
+            "pseudo" => $this->creator->pseudo
+        ];
+    }
 }
 
