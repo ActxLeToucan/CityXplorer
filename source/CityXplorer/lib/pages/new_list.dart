@@ -11,6 +11,7 @@ import '../conf.dart';
 import '../main.dart';
 import '../models/user_connected.dart';
 import '../router/delegate.dart';
+import '../styles.dart';
 
 /// formulaire de creation d'un post avec gestion de la requete envoyee et de son resultat
 class NewListScreen extends StatefulWidget {
@@ -44,6 +45,7 @@ class _NewListScreenState extends State<NewListScreen> {
   Widget build(BuildContext context) {
     if (_initialized) {
       return Scaffold(
+        backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
         appBar: namedAppBar(context, "Créer une liste"),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -66,6 +68,7 @@ class _NewListScreenState extends State<NewListScreen> {
                       }
                       return null;
                     },
+                    textColor: Styles.darkMode ? Colors.white : Colors.black,
                   ),
                   InputField(
                     controller: controllerDescription,
@@ -74,6 +77,7 @@ class _NewListScreenState extends State<NewListScreen> {
                     minLines: 2,
                     maxLines: 5,
                     withBottomSpace: true,
+                    textColor: Styles.darkMode ? Colors.white : Colors.black,
                   ),
                   Button(
                     type: ButtonType.big,

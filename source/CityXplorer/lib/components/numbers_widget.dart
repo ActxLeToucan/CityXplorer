@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../models/post.dart';
 import '../router/delegate.dart';
+import '../styles.dart';
 
 class NumbersWidget extends StatefulWidget {
   final User user;
@@ -48,7 +49,7 @@ class _NumbersWidgetState extends State<NumbersWidget> {
     );
   }
 
-  Widget buildDivider() => const SizedBox(
+  Widget buildDivider() => SizedBox(
         height: 24,
         child: VerticalDivider(color: Colors.grey),
       );
@@ -65,13 +66,16 @@ class _NumbersWidgetState extends State<NumbersWidget> {
           children: <Widget>[
             Text(
               value,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  color: Styles.darkMode ? Colors.white : Colors.black),
             ),
             const SizedBox(height: 2),
-            Text(
-              text,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+            Text(text,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Styles.darkMode ? Colors.white : Colors.black)),
           ],
         ),
       );

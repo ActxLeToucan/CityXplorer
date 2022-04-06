@@ -1,6 +1,7 @@
 import 'package:cityxplorer/models/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../conf.dart';
@@ -42,7 +43,7 @@ class Home extends StatelessWidget {
             ? !user.isEmpty()
                 ? Column(
                     children: [
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.all(10.0),
                         child: Text(
                             "Bienvenue sur CityXplorer !\n Prenez des photos de lieux, partagez les et découvrez celles de vos amis ! ",
@@ -50,6 +51,7 @@ class Home extends StatelessWidget {
                             style: TextStyle(
                               fontFamily: 'Questrial',
                               fontSize: 20.0,
+                              color: Styles.darkMode ? Styles.loginTextColor : Colors.black,
                             )),
                       ),
                       const SizedBox(height: 30),
@@ -101,6 +103,7 @@ class Home extends StatelessWidget {
                     child: Text(
                       "Connectez-vous ou créez un compte pour profiter pleinement de l'application !",
                       textAlign: TextAlign.center,
+                      style: TextStyle(color: Styles.loginTextColor),
                     ),
                   )
             : const CircularProgressIndicator(),

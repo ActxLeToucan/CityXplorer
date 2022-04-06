@@ -35,9 +35,11 @@ class _ListeItemState extends State<ListeItem> {
   Widget build(BuildContext context) {
     return Card(
         child: MaterialButton(
+      color: Styles.darkMode ? Colors.white : Colors.black,
       onPressed: () => routerDelegate
           .pushPage(name: '/liste', arguments: {'id': widget.liste.id}),
       child: ListTile(
+        textColor: Styles.darkMode ? Colors.white : Colors.black,
         title: Text(widget.liste.nomListe),
         subtitle: Text(widget.liste.description),
         iconColor: Styles.mainColor,

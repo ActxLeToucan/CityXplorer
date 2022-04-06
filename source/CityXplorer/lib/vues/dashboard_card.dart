@@ -5,9 +5,8 @@ import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 import 'package:cityxplorer/components/icon_menu_item_liste.dart';
 
-import 'package:cityxplorer/components/appbar.dart';
+
 import 'package:cityxplorer/main.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../components/menu.dart';

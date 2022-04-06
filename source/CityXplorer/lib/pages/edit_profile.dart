@@ -52,6 +52,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (_initialized) {
       if (_user.isEmpty()) {
         return Scaffold(
+            backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
             body: const Center(
@@ -59,6 +60,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     textAlign: TextAlign.center)));
       } else {
         return Scaffold(
+            backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
             body: Form(
@@ -78,6 +80,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     InputField(
                       controller: name,
                       hintText: "Nom",
+                      hintColor: Styles.darkMode ? Colors.white : Colors.black,
                       hintPosition: HintPosition.above,
                       withBottomSpace: true,
                       validator: (value) {
@@ -92,13 +95,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         }
                         return null;
                       },
+                      textColor: Styles.darkMode ? Colors.white : Colors.black,
                     ),
                     InputField(
                         controller: description,
                         hintText: "Description",
+                        hintColor:
+                            Styles.darkMode ? Colors.white : Colors.black,
                         hintPosition: HintPosition.above,
                         minLines: 2,
                         maxLines: 5,
+                        textColor:
+                            Styles.darkMode ? Colors.white : Colors.black,
                         withBottomSpace: true),
                     Button(
                       type: ButtonType.big,
@@ -110,6 +118,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     Button(
                       type: ButtonType.small,
                       text: "Changer de mot de passe",
+                      contentColor:
+                          Styles.darkMode ? Colors.white : Colors.black,
                       onPressed: () =>
                           routerDelegate.pushPage(name: '/change_password'),
                     ),

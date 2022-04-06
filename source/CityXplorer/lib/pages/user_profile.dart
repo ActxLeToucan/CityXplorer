@@ -2,6 +2,7 @@ import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/components/description.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
+import 'package:cityxplorer/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
@@ -37,13 +38,16 @@ class _UserProfileState extends State<UserProfile> {
     if (_initialized) {
       if (_user.isEmpty()) {
         return Scaffold(
+            backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
             body: const Center(
                 child: Text("Utilisateur invalide.",
+                    style: TextStyle(color: Styles.loginTextColor),
                     textAlign: TextAlign.center)));
       } else {
         return Scaffold(
+            backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
             body: RefreshIndicator(
@@ -120,12 +124,16 @@ class _UserProfileState extends State<UserProfile> {
         children: [
           Text(
             user.name,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+                color: Styles.darkMode ? Colors.white : Colors.black),
           ),
           const SizedBox(height: 4),
           Text(
             "@${user.pseudo}",
-            style: const TextStyle(color: Colors.grey),
+            style: TextStyle(
+                color: Styles.darkMode ? Colors.grey : Colors.black12),
           )
         ],
       );
@@ -135,9 +143,12 @@ class _UserProfileState extends State<UserProfile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Description',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Styles.darkMode ? Colors.white : Colors.black),
             ),
             const SizedBox(height: 16),
             user.description == ""
@@ -146,14 +157,18 @@ class _UserProfileState extends State<UserProfile> {
                     style: TextStyle(
                         fontSize: 16,
                         height: 1.4,
-                        color: Colors.black.withOpacity(0.65),
+                        color: Styles.darkMode
+                            ? Colors.white.withOpacity(0.65)
+                            : Colors.black12.withOpacity(0.65),
                         fontStyle: FontStyle.italic),
                   )
                 : Description(
                     description: user.description,
                     fontSize: 16,
                     height: 1.4,
-                    defaultColor: Colors.black.withOpacity(0.65)),
+                    defaultColor: Styles.darkMode
+                        ? Colors.white.withOpacity(0.65)
+                        : Colors.black.withOpacity(0.65)),
           ],
         ),
       );
@@ -165,8 +180,10 @@ class _UserProfileState extends State<UserProfile> {
     UserConnected _currentUser = await getUser();
     if (posts.isEmpty) {
       return const Center(
-        child: Text("Aucun post n'a été publié par cet utilisateur.",
-            textAlign: TextAlign.center),
+        child: Text(
+          "Aucun post n'a été publié par cet utilisateur.",
+          textAlign: TextAlign.center,
+        ),
       );
     } else {
       List<Widget> list = [];

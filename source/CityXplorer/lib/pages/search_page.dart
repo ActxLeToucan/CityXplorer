@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../models/user.dart';
+import '../styles.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -33,6 +34,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
       )),
       body: _searchListView(),
+      backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
     );
   }
 
@@ -46,6 +48,7 @@ class _SearchPageState extends State<SearchPage> {
               child: MaterialButton(
             padding: EdgeInsets.zero,
             child: ListTile(
+                tileColor: Styles.darkMode ? Colors.black54 : Colors.white,
                 title: Text(_list[index].name),
                 subtitle: Text("@${_list[index].pseudo}")),
             onPressed: () => _list[index].pushPage(),

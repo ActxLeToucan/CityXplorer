@@ -66,26 +66,31 @@ class _MainInterfaceState extends State<MainInterface> {
     ];
 
     return Scaffold(
+      backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
       appBar: defaultAppBar(context),
       body: pages[_selectedIndex],
       drawer: const Menu(),
       bottomNavigationBar: _initialized && !_user.isEmpty()
           ? BottomNavigationBar(
+              backgroundColor: Styles.darkMode ? Colors.black12 : Colors.white,
               selectedItemColor:
                   Theme.of(context).textSelectionTheme.selectionColor,
               currentIndex: _selectedIndex,
               onTap: _onItemTapped,
-              items: const <BottomNavigationBarItem>[
+              items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
+                  icon: Icon(Icons.home,
+                      color: Styles.darkMode ? Colors.white : Colors.black12),
                   label: 'Accueil',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.add_a_photo_rounded),
+                  icon: Icon(Icons.add_a_photo_rounded,
+                      color: Styles.darkMode ? Colors.white : Colors.black12),
                   label: 'Créer un post',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.speed),
+                  icon: Icon(Icons.speed,
+                      color: Styles.darkMode ? Colors.white : Colors.black12),
                   label: 'Tableau de bord',
                 ),
               ],

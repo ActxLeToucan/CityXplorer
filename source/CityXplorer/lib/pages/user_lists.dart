@@ -6,6 +6,7 @@ import '../main.dart';
 import '../models/listes.dart';
 import '../models/post.dart';
 import '../models/user.dart';
+import '../styles.dart';
 
 class UserLists extends StatefulWidget {
   final Map<String, dynamic> arguments;
@@ -33,12 +34,14 @@ class _UserListsState extends State<UserLists> {
     if (_initialized) {
       if (_user.isEmpty()) {
         return Scaffold(
+            //backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
             appBar: namedAppBar(context, "CityXplorer"),
             body: const Center(
                 child: Text("Utilisateur invalide.",
                     textAlign: TextAlign.center)));
       } else {
         return Scaffold(
+          //backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
           appBar: namedAppBar(context, "Listes de @${_user.pseudo}"),
           body: RefreshIndicator(
             onRefresh: _load,
@@ -48,6 +51,7 @@ class _UserListsState extends State<UserLists> {
       }
     } else {
       return Scaffold(
+          //backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
           appBar: namedAppBar(context, "Chargement..."),
           body: const Center(child: CircularProgressIndicator()));
     }
