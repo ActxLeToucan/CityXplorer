@@ -5,7 +5,7 @@ import 'package:cityxplorer/pages/edit_list.dart';
 import 'package:cityxplorer/pages/edit_profile.dart';
 import 'package:cityxplorer/pages/login_screen.dart';
 import 'package:cityxplorer/pages/main_interface.dart';
-import 'package:cityxplorer/pages/map-screen.dart';
+import 'package:cityxplorer/pages/map_screen.dart';
 import 'package:cityxplorer/pages/new_list.dart';
 import 'package:cityxplorer/pages/new_post.dart';
 import 'package:cityxplorer/pages/page_action_list.dart';

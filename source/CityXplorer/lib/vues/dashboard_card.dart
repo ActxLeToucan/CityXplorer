@@ -1,7 +1,6 @@
 import 'package:cityxplorer/components/input_field.dart';
 import 'package:cityxplorer/models/listes.dart';
 import 'package:cityxplorer/models/post.dart';
-import 'package:cityxplorer/models/user.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 import 'package:cityxplorer/components/icon_menu_item_liste.dart';
