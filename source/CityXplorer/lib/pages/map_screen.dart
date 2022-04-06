@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import '../components/appbar.dart';
-import '../models/directionsM.dart';
-import '../models/directionsR.dart';
+import '../models/directions_m.dart';
+import '../models/directions_r.dart';
 
 class GeolocationMap extends StatefulWidget {
   final Map<String, dynamic> arguments;

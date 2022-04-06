@@ -113,6 +113,10 @@ class _NewListScreenState extends State<NewListScreen> {
         final Map<String, dynamic> data = json.decode(response.body);
 
         Fluttertoast.showToast(msg: data['message']);
+
+        if (data['result'] == 1) {
+          routerDelegate.popRoute();
+        }
       } catch (e) {
         print(e);
         Fluttertoast.showToast(

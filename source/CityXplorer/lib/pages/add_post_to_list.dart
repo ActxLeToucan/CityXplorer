@@ -90,12 +90,6 @@ class _AddPostToListState extends State<AddPostToList> {
     });
   }
 
-  Widget _renderListTile(String s) {
-    return ListTile(
-      title: Text(s),
-    );
-  }
-
   Widget _renderTextButton(String s, int id) {
     return TextButton(
         style: TextButton.styleFrom(

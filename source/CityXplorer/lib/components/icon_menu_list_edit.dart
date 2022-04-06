@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:cityxplorer/models/listes.dart';
-import 'package:cityxplorer/models/post.dart';
-import 'package:cityxplorer/models/user.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:cityxplorer/router/delegate.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +8,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../conf.dart';
 
@@ -37,7 +34,7 @@ class _IconMenuListEditState extends State<IconMenuListEdit> {
                     Icons.remove_red_eye,
                     size: 15.0,
                   ),
-                  title: Text('Modifier'),
+                  title: const Text('Modifier'),
                   onTap: () => routerDelegate.pushPage(
                       name: "/listEdit", arguments: {'list': widget.list}),
                 ),
@@ -98,10 +95,8 @@ class _IconMenuListEditState extends State<IconMenuListEdit> {
     String url = Conf.domainServer +
         Conf.apiPath +
         "/list?idList=${widget.list.id}&token=${widget.user.token}";
-    print(url);
     try {
       var response = await http.delete(Uri.parse(url));
-      print(response.body);
       final Map<String, dynamic> data = json.decode(response.body);
 
       Fluttertoast.showToast(msg: data['message']);

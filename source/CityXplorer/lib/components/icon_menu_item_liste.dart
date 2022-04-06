@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:cityxplorer/models/listes.dart';
 import 'package:cityxplorer/models/post.dart';
-import 'package:cityxplorer/models/user.dart';
 import 'package:cityxplorer/models/user_connected.dart';
 import 'package:cityxplorer/router/delegate.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +30,6 @@ class _IconMenuState extends State<IconMenu> {
   final routerDelegate = Get.find<MyRouterDelegate>();
   @override
   Widget build(BuildContext context) {
-    var postId = widget.post.id;
     return PopupMenuButton(
         itemBuilder: (context) => [
               PopupMenuItem(
@@ -40,7 +38,7 @@ class _IconMenuState extends State<IconMenu> {
                     Icons.remove_red_eye,
                     size: 15.0,
                   ),
-                  title: Text('Aperçu'),
+                  title: const Text('Aperçu'),
                   onTap: () => routerDelegate.pushPage(
                       name: "/post",
                       arguments: {'id': widget.post.id.toString()}),
@@ -49,11 +47,11 @@ class _IconMenuState extends State<IconMenu> {
               ),
               PopupMenuItem(
                 child: ListTile(
-                  leading: Icon(
+                  leading: const Icon(
                     Icons.share,
                     size: 15.0,
                   ),
-                  title: Text('Partager'),
+                  title: const Text('Partager'),
                   onTap: () => Share.share(
                       "${Conf.domainServer}/post?id=${widget.post.id}"),
                 ),
@@ -114,10 +112,8 @@ class _IconMenuState extends State<IconMenu> {
     String url = Conf.domainServer +
         Conf.apiPath +
         "/postList?idPost=${widget.post.id}&idList=${widget.list.id}&token=${widget.user.token}";
-    print(url);
     try {
       var response = await http.delete(Uri.parse(url));
-      print(response.body);
       final Map<String, dynamic> data = json.decode(response.body);
 
       Fluttertoast.showToast(msg: data['message']);

@@ -9,12 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 
-import '../components/profile_widget.dart';
 import '../conf.dart';
 import '../router/delegate.dart';
-import '../styles.dart';
 
 class EditListPage extends StatefulWidget {
   final Map<String, dynamic> arguments;
@@ -123,7 +120,6 @@ class _EditListState extends State<EditListPage> {
         var response = await http.put(Uri.parse(url),
             body: json.encode(body),
             headers: {'content-type': 'application/json'});
-        print(response.body);
         final Map<String, dynamic> data = json.decode(response.body);
         Fluttertoast.showToast(msg: data['message']);
       } catch (e) {
