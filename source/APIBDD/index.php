@@ -86,6 +86,8 @@ $app->get('/pending_posts', 'cityXplorer\controllers\PostController:getPendingPo
 // passer un post en attente
 $app->patch('/post_pending', 'cityXplorer\controllers\PostController:setPostPending')->setName("set_post_pending");
 
+$app->get('/liked_posts', 'cityXplorer\controllers\PostController:getLikedPosts')->setName("liked_posts");
+
 
 /**
  * LIST

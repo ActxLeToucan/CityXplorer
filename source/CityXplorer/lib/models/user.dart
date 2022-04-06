@@ -105,6 +105,24 @@ class User {
     return posts;
   }
 
+  Future<List<Post>> getLikedPosts() async {
+    List<Post> posts = [];
+
+    String url =
+        Conf.domainServer + Conf.apiPath + "/liked_posts?pseudo=$pseudo";
+    try {
+      var response = await http.get(Uri.parse(url));
+      final List<dynamic> data = json.decode(response.body);
+
+      posts = List<Post>.from(data.map((model) => Post.fromJson(model)));
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
+
+    return posts;
+  }
+
   Future<List<Listes>> getListsCreated() async {
     List<Listes> lists = [];
 
@@ -148,5 +166,10 @@ class User {
   void pushPage() {
     final routerDelegate = Get.find<MyRouterDelegate>();
     routerDelegate.pushPage(name: '/user', arguments: {'pseudo': pseudo});
+  }
+
+  void pushPageLists() {
+    final routerDelegate = Get.find<MyRouterDelegate>();
+    routerDelegate.pushPage(name: '/lists', arguments: {'pseudo': pseudo});
   }
 }

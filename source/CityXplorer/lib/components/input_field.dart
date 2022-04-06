@@ -152,6 +152,7 @@ class Button extends StatefulWidget {
   final Function? onPressed;
   final bool underlined;
   final bool? parentState;
+  final String? fontFamily;
 
   const Button({
     Key? key,
@@ -165,6 +166,7 @@ class Button extends StatefulWidget {
     this.fontSize,
     this.underlined = false,
     this.parentState,
+    this.fontFamily,
   }) : super(key: key);
 
   @override
@@ -195,6 +197,7 @@ class _ButtonState extends State<Button> {
       content = Text(
         widget.text ?? "",
         style: TextStyle(
+            fontFamily: widget.fontFamily,
             color: widget.contentColor ??
                 (widget.type == ButtonType.big ? Colors.white : Colors.black),
             fontSize: widget.fontSize ??

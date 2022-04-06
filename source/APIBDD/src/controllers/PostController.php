@@ -482,4 +482,28 @@ class PostController {
             ], 200);
         }
     }
+
+    public function getLikedPosts(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('liked_posts');
+        $url = $base . $route_uri;
+
+        $content = $rq->getQueryParams();
+        $pseudo = $content['pseudo'];
+
+        $userNameExist = User::where("pseudo", "=", $pseudo)->count();
+
+        if ($userNameExist == 1) {
+            $user = User::where("pseudo", "=", $pseudo)->first();
+            $tabPosts = [];
+            foreach ($user->likes as $post) {
+                $tabPosts[] = $post->toArray();
+            }
+
+            return $rs->withJSON($tabPosts, 200);
+        }
+
+        return $rs->withJSON([], 200);
+    }
 }

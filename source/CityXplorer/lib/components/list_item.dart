@@ -44,6 +44,7 @@ class _ListeItemState extends State<ListeItem> {
   Widget build(BuildContext context) {
     return Card(
         child: MaterialButton(
+      padding: EdgeInsets.zero,
       onPressed: () => routerDelegate.pushPage(
           name: '/list', arguments: {'id': widget.liste.id.toString()}),
       child: ListTile(
@@ -56,8 +57,18 @@ class _ListeItemState extends State<ListeItem> {
           onPressed: changeState,
         ),
         leading: widget.url != ""
-            ? Image.network("${Conf.domainServer}/img/posts/${widget.url}")
-            : Image.asset('assets/default.jpg'),
+            ? Image.network(
+                "${Conf.domainServer}/img/posts/${widget.url}",
+                fit: BoxFit.cover,
+                width: 50,
+                height: 50,
+              )
+            : Image.asset(
+                'assets/default.jpg',
+                fit: BoxFit.cover,
+                width: 50,
+                height: 50,
+              ),
       ),
     ));
   }
