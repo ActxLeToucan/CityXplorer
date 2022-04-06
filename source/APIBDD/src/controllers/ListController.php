@@ -249,8 +249,8 @@ class ListController{
                 ];
                 if($doesItExist==1){
                     $listToDelete=Liste::where("idListe","=",$idList)->first();
-                    $suppLink=$this->supprimerTouteLiaisonListPost($rq, $rs, $args, $listToDelete);
-                    $suppEnr= $this->supprimerListEnregistrees($rq,$rs,$args,$listToDelete);
+
+                    $listToDelete->deleteAssociations();
                     $listToDelete->delete();
                     $tab = [
                         "result" => 1,
@@ -260,34 +260,6 @@ class ListController{
             }
         }
         return $rs->withJSON($tab, 200);
-    }
-
-    private function supprimerTouteLiaisonListPost(Request $rq, Response $rs, array $args, Liste $temp){
-        $AllPostFromList=$temp->posts()->get();
-        $res="La liste ne contiens aucun post";
-        if(!is_null($AllPostFromList)){
-            foreach ($AllPostFromList as $postToUnlink){
-                echo $postToUnlink."\n\n";
-                $temp->posts()->detach($postToUnlink->idPost);
-                echo("\n Suppression");
-            }
-            $res= "Tout les éléments on étés supprimés";
-        }
-        return $res;
-    }
-
-    private function supprimerListEnregistrees(Request $rq, Response $rs, array $args, Liste $temp){
-        $AllUserThatLikedList=$temp->likers()->get();
-        $res="Personne n'a enregistré la list";
-        if(!is_null($AllUserThatLikedList)){
-            foreach ($AllUserThatLikedList as $User){
-                echo $User."\n\n";
-                $temp->likers()->detach($User->id);
-                echo("\n Suppression");
-            }
-            $res= "La liste a été supprimées de chez tout le monde";
-        }
-        return $res;
     }
 
     // enregistrement d'une liste (= like)

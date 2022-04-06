@@ -62,5 +62,32 @@ class User extends Model {
         ];
     }
 
+    private function deletePosts(): void {
+        foreach ($this->posts as $post) {
+            $post->deleteAssociations();
+            $post->delete();
+        }
+    }
 
+    private function deleteLikes(): void {
+        $this->likes()->detach();
+    }
+
+    private function deleteLists(): void {
+        foreach ($this->createdLists as $list) {
+            $list->deleteAssociations();
+            $list->delete();
+        }
+    }
+
+    private function deleteSavedLists(): void {
+        $this->listLikes()->detach();
+    }
+
+    public function deleteAssociations(): void {
+        $this->deletePosts();
+        $this->deleteLikes();
+        $this->deleteLists();
+        $this->deleteSavedLists();
+    }
 }

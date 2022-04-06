@@ -27,27 +27,6 @@ class PostController {
     }
 
     /**
-     * Méthode servant à ajouter des valeurs à la table partage
-     * @param Request $rq Requete
-     * @param Response $rs Reponse
-     * @param array $args Array
-     * @param int $idUser Id de l'utilisateur à associer au post
-     * @param int $idPost Id du post associé à l'utilisateur
-     */
-    public function addToPartageById(Request $rq, Response $rs, array $args, int $idUser, int $idPost) {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor();
-        $url = $base . $route_uri;
-        $content = $rq->getParsedBody();
-
-        $PartageToAdd = new Partage();
-        $PartageToAdd->idUtilisateur = $idUser;
-        $PartageToAdd->idPost = $idPost;
-        $PartageToAdd->save();
-    }
-
-    /**
      * Méthode servant à ajouter un post
      * @param Request $rq
      * @param Response $rs
@@ -228,13 +207,7 @@ class PostController {
             ], 200);
         }
 
-        foreach ($post->photos as $photo) {
-            $photo->deleteFile();
-            $photo->delete();
-        }
-        $post->likedByUsers()->detach();
-        $post->lists()->detach();
-
+        $post->deleteAssociations();
         $post->delete();
 
         return $rs->withJSON([

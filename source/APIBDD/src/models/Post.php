@@ -32,6 +32,7 @@ class Post extends Model{
             "idUtilisateur"
         );
     }
+
     public function lists(): BelongsToMany{
         return $this->belongsToMany(
             "cityXplorer\models\Liste",
@@ -40,6 +41,7 @@ class Post extends Model{
             "idListe"
         );
     }
+
     public function toArray(): array {
         $tabPhotos = [];
         foreach ($this->photos as $photo) {
@@ -66,4 +68,24 @@ class Post extends Model{
         ];
     }
 
+    private function deletePhotos(): void {
+        foreach ($this->photos as $photo) {
+            $photo->deleteFile();
+            $photo->delete();
+        }
+    }
+
+    private function deleteFromLists(): void {
+        $this->lists()->detach();
+    }
+
+    private function deleteFromLikes(): void {
+        $this->likedByUsers()->detach();
+    }
+
+    public function deleteAssociations(): void {
+        $this->deletePhotos();
+        $this->deleteFromLists();
+        $this->deleteFromLikes();
+    }
 }
