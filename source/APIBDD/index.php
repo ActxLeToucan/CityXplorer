@@ -86,10 +86,14 @@ $app->get('/pending_posts', 'cityXplorer\controllers\PostController:getPendingPo
 // passer un post en attente
 $app->patch('/post_pending', 'cityXplorer\controllers\PostController:setPostPending')->setName("set_post_pending");
 
+$app->get('/liked_posts', 'cityXplorer\controllers\PostController:getLikedPosts')->setName("liked_posts");
+
 
 /**
  * LIST
  */
+
+$app->get('/list', 'cityXplorer\controllers\ListController:getListById')->setName("get_list_id");
 //Testé
 $app->post('/list', 'cityXplorer\controllers\ListController:createList')->setName("createList");
 //Non testé
@@ -99,9 +103,11 @@ $app->post('/postList', 'cityXplorer\controllers\ListController:enregistrerPostL
 //Testé
 $app->delete('/postList', 'cityXplorer\controllers\ListController:supprimerPostList')->setName("deletePostToList");
 //Non testé
-$app->post('/likeList', 'cityXplorer\controllers\ListController:likeList')->setName("likeList");
+$app->post('/saved_list', 'cityXplorer\controllers\ListController:likeList')->setName("likeList");
 //Non testé
-$app->delete('/likeList', 'cityXplorer\controllers\ListController:dislikeList')->setName("dislikeList");
+$app->delete('/saved_list', 'cityXplorer\controllers\ListController:dislikeList')->setName("dislikeList");
+
+$app->put('/list','cityXplorer\controllers\ListController:editList')->setName("edit_list");
 
 /**
  * Post from a list

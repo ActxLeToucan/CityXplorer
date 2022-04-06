@@ -1,3 +1,4 @@
+import 'package:cityxplorer/components/input_field.dart';
 import 'package:cityxplorer/models/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -5,14 +6,13 @@ import 'package:path/path.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../conf.dart';
-import '../styles.dart';
 
 //contenu de la page d accueil
 class Home extends StatelessWidget {
-  bool initialized = false;
-  User user = User.empty();
+  final bool initialized;
+  final User user;
 
-  Home({Key? key, required this.initialized, required this.user})
+  const Home({Key? key, required this.initialized, required this.user})
       : super(key: key);
 
   @override
@@ -60,17 +60,11 @@ class Home extends StatelessWidget {
                         children: [
                           SizedBox(
                             width: 140.0,
-                            height: 60.0,
-                            child: TextButton(
-                                child: const Text("Profil",
-                                    style: TextStyle(
-                                      fontFamily: 'Questrial',
-                                      fontSize: 17.0,
-                                    )),
-                                style: TextButton.styleFrom(
-                                  primary: Colors.white,
-                                  backgroundColor: Styles.mainColor,
-                                ),
+                            child: Button(
+                                type: ButtonType.big,
+                                text: 'Profil',
+                                fontSize: 17.0,
+                                fontFamily: 'Questrial',
                                 onPressed: () {
                                   if (!user.isEmpty()) {
                                     user.pushPage();
@@ -79,21 +73,18 @@ class Home extends StatelessWidget {
                           ),
                           const SizedBox(width: 30),
                           SizedBox(
-                            width: 140.0,
-                            height: 60.0,
-                            child: TextButton(
-                              child: const Text("Mes listes",
-                                  style: TextStyle(
-                                    fontFamily: 'Questrial',
-                                    fontSize: 17.0,
-                                  )),
-                              style: TextButton.styleFrom(
-                                primary: Colors.white,
-                                backgroundColor: Styles.mainColor,
-                              ),
-                              onPressed: () {},
-                            ),
-                          ),
+                              width: 140.0,
+                              child: Button(
+                                type: ButtonType.big,
+                                text: "Mes listes",
+                                fontSize: 17.0,
+                                fontFamily: 'Questrial',
+                                onPressed: () {
+                                  if (!user.isEmpty()) {
+                                    user.pushPageLists();
+                                  }
+                                },
+                              )),
                         ],
                       ),
                     ],

@@ -35,5 +35,27 @@ class Liste extends Model {
             'idPost'
         );
     }
+
+    public function toArray(): array {
+        return [
+            "idListe" => $this->idListe,
+            "nomListe" => $this->nomListe,
+            "descrListe" => $this->descrListe,
+            "pseudo" => $this->creator->pseudo
+        ];
+    }
+
+    private function deleteContent(): void {
+        $this->posts()->detach();
+    }
+
+    private function deleteFromSavedLists(): void {
+        $this->likers()->detach();
+    }
+
+    public function deleteAssociations(): void {
+        $this->deleteContent();
+        $this->deleteFromSavedLists();
+    }
 }
 

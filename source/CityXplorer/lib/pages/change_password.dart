@@ -152,7 +152,6 @@ class _ChangePasswordState extends State<ChangePassword> {
         var response = await http.post(Uri.parse(url),
             body: json.encode(body),
             headers: {'content-type': 'application/json'});
-        print(response.body);
         final Map<String, dynamic> data = json.decode(response.body);
 
         var res = data['result'];

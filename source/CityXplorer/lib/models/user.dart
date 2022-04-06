@@ -70,12 +70,12 @@ class User {
 
   Map<String, dynamic> toJson() {
     return {
-      "pseudo": this.pseudo,
-      "name": this.name,
-      "avatar": this.avatar,
-      "niveauAcces": this.niveauAcces,
-      "description": this.description,
-      "likes": this.likes
+      "pseudo": pseudo,
+      "name": name,
+      "avatar": avatar,
+      "niveauAcces": niveauAcces,
+      "description": description,
+      "likes": likes
     };
   }
 
@@ -104,44 +104,61 @@ class User {
 
     return posts;
   }
-  Future<List<Listes>> getListsCreated() async{
-    List<Listes> lists=[];
 
+  Future<List<Post>> getLikedPosts() async {
+    List<Post> posts = [];
 
-    String url = Conf.domainServer + Conf.apiPath + "/listCreatedUser?pseudo=$pseudo";
+    String url =
+        Conf.domainServer + Conf.apiPath + "/liked_posts?pseudo=$pseudo";
+    try {
+      var response = await http.get(Uri.parse(url));
+      final List<dynamic> data = json.decode(response.body);
 
-    try{
-      var response= await http.get(Uri.parse(url));
+      posts = List<Post>.from(data.map((model) => Post.fromJson(model)));
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
+
+    return posts;
+  }
+
+  Future<List<Listes>> getListsCreated() async {
+    List<Listes> lists = [];
+
+    String url =
+        Conf.domainServer + Conf.apiPath + "/listCreatedUser?pseudo=$pseudo";
+
+    try {
+      var response = await http.get(Uri.parse(url));
       //print("Problème dans Lists created");
       //print(response.body);
-      final List<dynamic> data  = json.decode(response.body);
+      final List<dynamic> data = json.decode(response.body);
 
-     lists = List<Listes>.from(data.map((model) => Listes.fromJson(model)));
-
-    }catch (e) {
+      lists = List<Listes>.from(data.map((model) => Listes.fromJson(model)));
+    } catch (e) {
       print(e);
       Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
     }
     return lists;
   }
 
-  Future<List<Listes>> getListsLiked() async{
-    List<Listes> lists=[];
+  Future<List<Listes>> getListsLiked() async {
+    List<Listes> lists = [];
 
+    String url =
+        Conf.domainServer + Conf.apiPath + "/listLikedUser?pseudo=$pseudo";
 
-    String url = Conf.domainServer + Conf.apiPath + "/listLikedUser?pseudo=$pseudo";
-
-    try{
-      var response= await http.get(Uri.parse(url));
+    try {
+      var response = await http.get(Uri.parse(url));
       //print("Problème dans Lists liked");
-      //print(response.body);
-      final List<dynamic> data  = json.decode(response.body);
+      final List<dynamic> data = json.decode(response.body);
 
       lists = List<Listes>.from(data.map((model) => Listes.fromJson(model)));
-
-    }catch (e) {
+    } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données par ici.");
+      Fluttertoast.showToast(
+          msg: "Impossible d'accéder à la base de données par ici.");
     }
     return lists;
   }
@@ -149,5 +166,10 @@ class User {
   void pushPage() {
     final routerDelegate = Get.find<MyRouterDelegate>();
     routerDelegate.pushPage(name: '/user', arguments: {'pseudo': pseudo});
+  }
+
+  void pushPageLists() {
+    final routerDelegate = Get.find<MyRouterDelegate>();
+    routerDelegate.pushPage(name: '/lists', arguments: {'pseudo': pseudo});
   }
 }

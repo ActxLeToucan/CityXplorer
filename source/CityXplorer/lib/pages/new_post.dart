@@ -179,26 +179,11 @@ class _NewPostScreenState extends State<NewPostScreen> {
               File(photos[i]).lengthSync(),
               filename: path.basename(photos[i].split("/").last)));
         }
-        //request.files.add(await http.MultipartFile.fromPath("photo", photos[0],
-        //  contentType: MediaType("image", "jpeg")));
 
         var response = await http.Response.fromStream(await request.send());
-        //print(response.body);
         final Map<String, dynamic> data = json.decode(response.body);
         String res = data['message'];
         int code = data['result'];
-
-        /*
-        ///ajout de la photo a la requete
-        request.files.add(await http.MultipartFile.fromPath("photo", imagePath,
-            contentType: MediaType("image", "jpeg")));
-
-        var response = await http.Response.fromStream(await request.send());
-        // print(response.body);
-        final Map<String, dynamic> data = json.decode(response.body);
-        String res = data['message'];
-        int code = data['result'];
-        */
 
         /// si l 'insertion a reussie on retourne sur la page de l'appareil photo
         /// sinon on reste sur le formulaire, peut etre que le gars va resoudre le probleme tout seul

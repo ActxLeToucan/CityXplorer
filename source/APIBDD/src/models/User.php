@@ -3,7 +3,6 @@
 namespace cityXplorer\models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -63,5 +62,32 @@ class User extends Model {
         ];
     }
 
+    private function deletePosts(): void {
+        foreach ($this->posts as $post) {
+            $post->deleteAssociations();
+            $post->delete();
+        }
+    }
 
+    private function deleteLikes(): void {
+        $this->likes()->detach();
+    }
+
+    private function deleteLists(): void {
+        foreach ($this->createdLists as $list) {
+            $list->deleteAssociations();
+            $list->delete();
+        }
+    }
+
+    private function deleteSavedLists(): void {
+        $this->listLikes()->detach();
+    }
+
+    public function deleteAssociations(): void {
+        $this->deletePosts();
+        $this->deleteLikes();
+        $this->deleteLists();
+        $this->deleteSavedLists();
+    }
 }

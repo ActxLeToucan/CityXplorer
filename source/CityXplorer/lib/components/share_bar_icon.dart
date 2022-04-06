@@ -50,19 +50,13 @@ class _ShareBarState extends State<ShareBar> {
           color: Colors.black,
           onPressed: () => widget.post.pushMap(),
         ),
-        /*IconButton(
-          icon: Icon(_isFavorited ? Icons.favorite : Icons.favorite_border),
-          iconSize: 28,
-          color: Colors.red[400],
-          onPressed: likePost,
-        ),*/
         LikeButton(
             size: 28,
             onTap: likePost,
             likeBuilder: (bool isLiked) {
               return Icon(
-                Icons.favorite,
-                color: _isFavorited ? Colors.redAccent : Colors.grey,
+                _isFavorited ? Icons.favorite : Icons.favorite_border,
+                color: user.isEmpty() ? Colors.grey : Colors.redAccent,
                 size: 28,
               );
             })

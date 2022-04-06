@@ -1,34 +1,129 @@
+import 'dart:convert';
+
+import 'package:cityxplorer/models/listes.dart';
+import 'package:cityxplorer/models/post.dart';
+import 'package:cityxplorer/models/user_connected.dart';
+import 'package:cityxplorer/router/delegate.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:share_plus/share_plus.dart';
+
+import '../conf.dart';
 
 // menu de boutons lorsque l on clique sur les 3 points d une tuile d un post dans une liste du dashboard
-class IconMenu extends StatelessWidget {
-  const IconMenu({Key? key}) : super(key: key);
+class IconMenu extends StatefulWidget {
+  final Post post;
+  final UserConnected user;
+  final Listes list;
+  const IconMenu(
+      {Key? key, required this.post, required this.user, required this.list})
+      : super(key: key);
 
+  @override
+  State<IconMenu> createState() => _IconMenuState();
+}
+
+class _IconMenuState extends State<IconMenu> {
+  final routerDelegate = Get.find<MyRouterDelegate>();
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
         itemBuilder: (context) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 child: ListTile(
-                  leading: Icon(Icons.remove_red_eye),
-                  title: Text('Aperçu'),
+                  leading: const Icon(
+                    Icons.remove_red_eye,
+                    size: 15.0,
+                  ),
+                  title: const Text('Aperçu'),
+                  onTap: () => routerDelegate.pushPage(
+                      name: "/post",
+                      arguments: {'id': widget.post.id.toString()}),
                 ),
                 value: 1,
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 child: ListTile(
-                  leading: Icon(Icons.add),
-                  title: Text('Ajouter à une liste'),
+                  leading: const Icon(
+                    Icons.share,
+                    size: 15.0,
+                  ),
+                  title: const Text('Partager'),
+                  onTap: () => Share.share(
+                      "${Conf.domainServer}/post?id=${widget.post.id}"),
                 ),
                 value: 2,
               ),
               const PopupMenuItem(
                 child: ListTile(
-                  leading: Icon(Icons.share),
-                  title: Text('Partager'),
+                  leading: Icon(
+                    Icons.highlight_remove,
+                    size: 30.0,
+                  ),
+                  title: Text(
+                    'Supprimer',
+                    style: TextStyle(color: Colors.red),
+                  ),
                 ),
                 value: 3,
-              ),
-            ]);
+              )
+            ],
+        onSelected: (value) {
+          switch (value) {
+            case 3:
+              alertDelete(context);
+              break;
+          }
+        });
+  }
+
+  void alertDelete(BuildContext context) {
+    Widget cancelButton = TextButton(
+      child: const Text("Annuler"),
+      onPressed: () => Navigator.pop(context),
+    );
+    Widget continueButton = TextButton(
+      child: const Text("Supprimer", style: TextStyle(color: Colors.red)),
+      onPressed: () => deletePostList(context),
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: const Text("Supprimer"),
+      content: const Text(
+          "Voulez-vous vraiment supprimer ce post ? Cette action est irréversible."),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  Future<void> deletePostList(BuildContext context) async {
+    String url = Conf.domainServer +
+        Conf.apiPath +
+        "/postList?idPost=${widget.post.id}&idList=${widget.list.id}&token=${widget.user.token}";
+    try {
+      var response = await http.delete(Uri.parse(url));
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      Fluttertoast.showToast(msg: data['message']);
+
+      if (data["result"] == 1) {
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
   }
 }

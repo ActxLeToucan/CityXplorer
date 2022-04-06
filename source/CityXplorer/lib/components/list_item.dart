@@ -1,19 +1,28 @@
+import 'dart:convert';
+
+import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 
 import '../conf.dart';
 import '../models/listes.dart';
-import '../models/post.dart';
 import '../router/delegate.dart';
 import '../styles.dart';
 
 class ListeItem extends StatefulWidget {
-  Listes liste;
-  bool liked;
-  String url;
+  final Listes liste;
+  final bool liked;
+  final String url;
+  final UserConnected user;
 
-  ListeItem(
-      {Key? key, required this.liste, required this.liked, required this.url})
+  const ListeItem(
+      {Key? key,
+      required this.liste,
+      required this.liked,
+      required this.url,
+      required this.user})
       : super(key: key);
 
   @override
@@ -36,8 +45,9 @@ class _ListeItemState extends State<ListeItem> {
     return Card(
         child: MaterialButton(
       color: Styles.darkMode ? Colors.white : Colors.black,
-      onPressed: () => routerDelegate
-          .pushPage(name: '/liste', arguments: {'id': widget.liste.id}),
+      padding: EdgeInsets.zero,
+      onPressed: () => routerDelegate.pushPage(
+          name: '/list', arguments: {'id': widget.liste.id.toString()}),
       child: ListTile(
         textColor: Styles.darkMode ? Colors.white : Colors.black,
         title: Text(widget.liste.nomListe),
@@ -49,16 +59,56 @@ class _ListeItemState extends State<ListeItem> {
           onPressed: changeState,
         ),
         leading: widget.url != ""
-            ? Image.network("${Conf.domainServer}/img/posts/${widget.url}")
-            : Image.asset('assets/default.jpg'),
+            ? Image.network(
+                "${Conf.domainServer}/img/posts/${widget.url}",
+                fit: BoxFit.cover,
+                width: 50,
+                height: 50,
+              )
+            : Image.asset(
+                'assets/default.jpg',
+                fit: BoxFit.cover,
+                width: 50,
+                height: 50,
+              ),
       ),
     ));
   }
 
-  // TODO
-  void changeState() {
-    setState(() {
-      _liked = !_liked;
-    });
+  Future<void> changeState() async {
+    bool fav = _liked;
+    if (widget.user.isEmpty()) {
+      Fluttertoast.showToast(
+          msg: "Vous devez être connecté pour enregistrer une liste.");
+      return;
+    }
+
+    String url = Conf.domainServer + Conf.apiPath + "/saved_list";
+    Map<String, dynamic> body = {
+      "token": widget.user.token,
+      "id": widget.liste.id,
+    };
+
+    try {
+      var response = fav
+          ? await http.delete(Uri.parse(url),
+              body: json.encode(body),
+              headers: {'content-type': 'application/json'})
+          : await http.post(Uri.parse(url),
+              body: json.encode(body),
+              headers: {'content-type': 'application/json'});
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      Fluttertoast.showToast(msg: data['message']);
+
+      if (data['result'] == 1) {
+        setState(() {
+          _liked = !fav;
+        });
+      }
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+    }
   }
 }

@@ -2,7 +2,11 @@ import 'package:cityxplorer/components/appbar.dart';
 import 'package:cityxplorer/components/description.dart';
 import 'package:cityxplorer/main.dart';
 import 'package:cityxplorer/models/user_connected.dart';
+
 import 'package:cityxplorer/styles.dart';
+
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
@@ -75,7 +79,8 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _load() async {
     setState(() => _initialized = false);
 
-    bool hasInternet = await InternetConnectionChecker().hasConnection;
+    bool hasInternet =
+        kIsWeb ? true : await InternetConnectionChecker().hasConnection;
     User u = await getUser();
     if (u.pseudo == widget.arguments['pseudo']) {
       if (hasInternet) {
@@ -174,25 +179,24 @@ class _UserProfileState extends State<UserProfile> {
       );
 
   Future<Widget> _renderPosts(BuildContext context) async {
-    print(_user);
     List<Post> posts = await _user.getPosts();
     bool isCurrent = await isCurrentUser(_user.pseudo);
     UserConnected _currentUser = await getUser();
-    if (posts.isEmpty) {
+
+    List<Widget> list = [];
+    for (Post post in posts) {
+      if (post.isValid() || _currentUser.niveauAcces >= 2 || isCurrent) {
+        list.add(post.toWidget());
+      }
+    }
+    if (list.isEmpty) {
       return const Center(
         child: Text(
           "Aucun post n'a été publié par cet utilisateur.",
           textAlign: TextAlign.center,
         ),
       );
-    } else {
-      List<Widget> list = [];
-      for (Post post in posts) {
-        if (post.isValid() || _currentUser.niveauAcces >= 2 || isCurrent) {
-          list.add(post.toWidget());
-        }
-      }
-      return Column(children: list.reversed.toList());
     }
+    return Column(children: list.reversed.toList());
   }
 }

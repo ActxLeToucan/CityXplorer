@@ -4,10 +4,10 @@ import 'package:cityxplorer/vues/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../components/input_field.dart';
 import '../components/menu.dart';
 import '../models/user.dart';
 import '../router/delegate.dart';
-import '../styles.dart';
 import '../vues/dashboard_card.dart';
 import '../vues/home_card.dart';
 
@@ -106,7 +106,7 @@ class _MainInterfaceState extends State<MainInterface> {
       children: [
         Container(
           decoration: BoxDecoration(color: Colors.white.withOpacity(0.5)),
-          height: FooterHeight,
+          height: footerHeight,
           child: Container(
             padding:
                 const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
@@ -118,12 +118,10 @@ class _MainInterfaceState extends State<MainInterface> {
   }
 
   Widget _renderFooterAddListButton() {
-    return FlatButton(
-      color: Styles.mainColor,
-      textColor: Styles.loginTextColor,
+    return Button(
+      type: ButtonType.big,
+      text: 'Ajouter une liste',
       onPressed: _handleAddListPress,
-      child:
-          Text('Ajouter une liste'.toUpperCase(), style: Styles.textCTAButton),
     );
   }
 

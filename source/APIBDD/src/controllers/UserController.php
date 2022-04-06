@@ -190,7 +190,7 @@ class UserController {
         $base = $rq->getUri()->getBasePath();
         $route_uri = $container->router->pathFor('user');
         $url = $base . $route_uri;
-        $pseudo=$_GET['pseudo'];
+        $pseudo=$rq->getQueryParam('pseudo', '_');
 
         $userNameExist = User::where("pseudo", "=", $pseudo)->count();
 
@@ -274,19 +274,7 @@ class UserController {
             ], 200);
         }
 
-        foreach ($user->posts as $post) {
-            foreach ($post->photos as $photo) {
-                $photo->deleteFile();
-                $photo->delete();
-            }
-            $post->delete();
-        }
-        foreach ($user->createdLists as $createdList) {
-            $createdList->delete();
-        }
-        $user->likes()->detach();
-        $user->listLikes()->detach();
-
+        $user->deleteAssociations();
         $user->delete();
 
         return $rs->withJSON([
