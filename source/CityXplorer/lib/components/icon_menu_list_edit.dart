@@ -10,6 +10,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 
 import '../conf.dart';
+import '../styles.dart';
 
 // menu de boutons lorsque l on clique sur les 3 points d une tuile d un post dans une liste du dashboard
 class IconMenuListEdit extends StatefulWidget {
@@ -27,26 +28,29 @@ class _IconMenuListEditState extends State<IconMenuListEdit> {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
+        color: (Styles.darkMode ? Styles.darkElement : Styles.lightElement),
+        icon: Icon(
+          Icons.more_vert,
+          color: (Styles.darkMode ? Styles.darkTextColor : Colors.black54),
+        ),
         itemBuilder: (context) => [
               PopupMenuItem(
                 child: ListTile(
-                  leading: const Icon(
-                    Icons.remove_red_eye,
-                    size: 15.0,
-                  ),
+                  textColor: (Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor),
                   title: const Text('Modifier'),
                   onTap: () => routerDelegate.pushPage(
                       name: "/listEdit", arguments: {'list': widget.list}),
                 ),
                 value: 1,
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 child: ListTile(
-                  leading: Icon(
-                    Icons.highlight_remove,
-                    size: 30.0,
-                  ),
-                  title: Text(
+                  textColor: (Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor),
+                  title: const Text(
                     'Supprimer',
                     style: TextStyle(color: Colors.red),
                   ),
@@ -74,9 +78,22 @@ class _IconMenuListEditState extends State<IconMenuListEdit> {
     );
 
     AlertDialog alert = AlertDialog(
-      title: const Text("Supprimer"),
-      content: const Text(
-          "Voulez-vous vraiment supprimer cette liste? Cette action est irréversible."),
+      backgroundColor:
+          (Styles.darkMode ? Styles.darkElement : Styles.lightElement),
+      title: Text(
+        "Supprimer",
+        style: TextStyle(
+          color:
+              (Styles.darkMode ? Styles.darkTextColor : Styles.lightTextColor),
+        ),
+      ),
+      content: Text(
+          "Voulez-vous vraiment supprimer cette liste ? Cette action est irréversible.",
+          style: TextStyle(
+            color: (Styles.darkMode
+                ? Styles.darkTextColor
+                : Styles.lightTextColor),
+          )),
       actions: [
         cancelButton,
         continueButton,

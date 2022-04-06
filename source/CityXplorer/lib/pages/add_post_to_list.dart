@@ -12,6 +12,7 @@ import '../main.dart';
 import '../models/post.dart';
 import '../models/user_connected.dart';
 import '../router/delegate.dart';
+import '../styles.dart';
 
 class AddPostToList extends StatefulWidget {
   final Map<String, dynamic> arguments;
@@ -51,14 +52,27 @@ class _AddPostToListState extends State<AddPostToList> {
     if (_initialized) {
       if (_post.isEmpty()) {
         return Scaffold(
+            backgroundColor: (Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground),
             appBar: defaultAppBar(context),
-            body: const Center(child: Text("Post invalid.")));
+            body: Center(
+                child: Text(
+              "Post invalid.",
+              style: TextStyle(
+                  color: (Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor)),
+            )));
       } else {
         List<Widget> mesListes = []; //Listes crées
         for (var element in _createdLists) {
           mesListes.add(_renderTextButton(element.nomListe, element.id));
         }
         return Scaffold(
+            backgroundColor: (Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground),
             appBar: defaultAppBar(context),
             body: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -68,6 +82,9 @@ class _AddPostToListState extends State<AddPostToList> {
       }
     } else {
       return Scaffold(
+          backgroundColor: (Styles.darkMode
+              ? Styles.darkBackground
+              : Styles.lightBackground),
           appBar: defaultAppBar(context),
           body: const Center(child: CircularProgressIndicator()));
     }

@@ -2,10 +2,10 @@ import 'package:cityxplorer/components/input_field.dart';
 import 'package:cityxplorer/models/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../conf.dart';
+import '../styles.dart';
 
 //contenu de la page d accueil
 class Home extends StatelessWidget {
@@ -44,14 +44,16 @@ class Home extends StatelessWidget {
                 ? Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.all(10.0),
                         child: Text(
                             "Bienvenue sur CityXplorer !\n Prenez des photos de lieux, partagez les et découvrez celles de vos amis ! ",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontFamily: 'Questrial',
                               fontSize: 20.0,
-                              color: Styles.darkMode ? Styles.loginTextColor : Colors.black,
+                              color: Styles.darkMode
+                                  ? Styles.loginTextColor
+                                  : Colors.black,
                             )),
                       ),
                       const SizedBox(height: 30),

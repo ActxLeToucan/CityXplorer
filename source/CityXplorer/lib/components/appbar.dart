@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../router/delegate.dart';
+import '../styles.dart';
 
 defaultAppBar(BuildContext context) {
   final routerDelegate = Get.find<MyRouterDelegate>();
@@ -28,6 +29,7 @@ transparentAppBar(BuildContext context) {
   return AppBar(
     backgroundColor: Colors.transparent,
     elevation: 0,
-    foregroundColor: Colors.black,
+    foregroundColor:
+        Styles.darkMode ? Styles.darkTextColor : Styles.lightTextColor,
   );
 }

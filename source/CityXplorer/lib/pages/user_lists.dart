@@ -35,14 +35,17 @@ class _UserListsState extends State<UserLists> {
     if (_initialized) {
       if (_user.isEmpty()) {
         return Scaffold(
-            //backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             appBar: namedAppBar(context, "CityXplorer"),
             body: const Center(
                 child: Text("Utilisateur invalide.",
                     textAlign: TextAlign.center)));
       } else {
         return Scaffold(
-          //backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
+          backgroundColor:
+              Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
           appBar: namedAppBar(context, "Listes de @${_user.pseudo}"),
           body: RefreshIndicator(
             onRefresh: _load,
@@ -52,7 +55,8 @@ class _UserListsState extends State<UserLists> {
       }
     } else {
       return Scaffold(
-          //backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
+          backgroundColor:
+              Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
           appBar: namedAppBar(context, "Chargement..."),
           body: const Center(child: CircularProgressIndicator()));
     }

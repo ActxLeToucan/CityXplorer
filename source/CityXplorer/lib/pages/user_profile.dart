@@ -42,16 +42,17 @@ class _UserProfileState extends State<UserProfile> {
     if (_initialized) {
       if (_user.isEmpty()) {
         return Scaffold(
-            backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
+            backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
-            body: const Center(
+            body: Center(
                 child: Text("Utilisateur invalide.",
-                    style: TextStyle(color: Styles.loginTextColor),
+                    style: TextStyle(
+                        color: Styles.darkMode ? Colors.white : Colors.black),
                     textAlign: TextAlign.center)));
       } else {
         return Scaffold(
-            backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
+            backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
             body: RefreshIndicator(
@@ -70,6 +71,7 @@ class _UserProfileState extends State<UserProfile> {
       }
     } else {
       return Scaffold(
+          backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
           extendBodyBehindAppBar: true,
           appBar: transparentAppBar(context),
           body: const Center(child: CircularProgressIndicator()));
@@ -137,8 +139,7 @@ class _UserProfileState extends State<UserProfile> {
           const SizedBox(height: 4),
           Text(
             "@${user.pseudo}",
-            style: TextStyle(
-                color: Styles.darkMode ? Colors.grey : Colors.black12),
+            style: const TextStyle(color: Colors.grey),
           )
         ],
       );
@@ -162,18 +163,17 @@ class _UserProfileState extends State<UserProfile> {
                     style: TextStyle(
                         fontSize: 16,
                         height: 1.4,
-                        color: Styles.darkMode
-                            ? Colors.white.withOpacity(0.65)
-                            : Colors.black12.withOpacity(0.65),
+                        color: (Styles.darkMode ? Colors.white : Colors.black)
+                            .withOpacity(0.65),
                         fontStyle: FontStyle.italic),
                   )
                 : Description(
                     description: user.description,
                     fontSize: 16,
                     height: 1.4,
-                    defaultColor: Styles.darkMode
-                        ? Colors.white.withOpacity(0.65)
-                        : Colors.black.withOpacity(0.65)),
+                    defaultColor:
+                        (Styles.darkMode ? Colors.white : Colors.black)
+                            .withOpacity(0.65)),
           ],
         ),
       );

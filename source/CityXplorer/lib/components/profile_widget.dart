@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../models/user.dart';
 import '../conf.dart';
+import '../styles.dart';
 
 class ProfileWidget extends StatelessWidget {
   final User user;
@@ -74,7 +75,7 @@ class ProfileWidget extends StatelessWidget {
   }
 
   Widget buildIcon(Color color, IconData iconData) => buildCircle(
-        color: Colors.white,
+        color: Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
         all: 3,
         child: buildCircle(
           color: color,

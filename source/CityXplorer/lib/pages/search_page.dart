@@ -34,7 +34,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
       )),
       body: _searchListView(),
-      backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
+      backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
     );
   }
 

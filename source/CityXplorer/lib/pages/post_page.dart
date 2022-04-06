@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../components/appbar.dart';
 import '../models/post.dart';
+import '../styles.dart';
 
 class PostPage extends StatefulWidget {
   final Map<String, dynamic> arguments;
@@ -38,6 +39,7 @@ class _PostPageState extends State<PostPage> {
     if (_loaded) {
       if (_post.isEmpty()) {
         return Scaffold(
+            backgroundColor: (Styles.darkMode ? Colors.black : Colors.white),
             appBar: defaultAppBar(context),
             body: const Center(
                 child: Text("Post invalide.", textAlign: TextAlign.center)));
@@ -45,11 +47,13 @@ class _PostPageState extends State<PostPage> {
           _user.niveauAcces < 2 &&
           _user.pseudo != _post.userPseudo) {
         return Scaffold(
+            backgroundColor: (Styles.darkMode ? Colors.black : Colors.white),
             appBar: defaultAppBar(context),
             body: const Center(
                 child: Text("Post bloqué.", textAlign: TextAlign.center)));
       } else {
         return Scaffold(
+            backgroundColor: (Styles.darkMode ? Colors.black : Colors.white),
             appBar: defaultAppBar(context),
             body: RefreshIndicator(
               onRefresh: _load,
@@ -74,6 +78,7 @@ class _PostPageState extends State<PostPage> {
       }
     } else {
       return Scaffold(
+          backgroundColor: (Styles.darkMode ? Colors.black : Colors.white),
           appBar: namedAppBar(context, "Chargement..."),
           body: const Center(child: CircularProgressIndicator()));
     }

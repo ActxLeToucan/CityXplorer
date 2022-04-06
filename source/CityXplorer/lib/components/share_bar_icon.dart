@@ -10,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../conf.dart';
 import '../models/post.dart';
+import '../styles.dart';
 
 class ShareBar extends StatefulWidget {
   final Post post;
@@ -40,14 +41,14 @@ class _ShareBarState extends State<ShareBar> {
         IconButton(
           icon: const Icon(Icons.share),
           iconSize: 28,
-          color: Colors.black,
+          color: Styles.darkMode ? Styles.darkTextColor : Styles.lightTextColor,
           onPressed: () =>
               Share.share("${Conf.domainServer}/post?id=${widget.post.id}"),
         ),
         IconButton(
           icon: const Icon(Icons.map),
           iconSize: 28,
-          color: Colors.black,
+          color: Styles.darkMode ? Styles.darkTextColor : Styles.lightTextColor,
           onPressed: () => widget.post.pushMap(),
         ),
         LikeButton(

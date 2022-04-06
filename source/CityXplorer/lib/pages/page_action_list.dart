@@ -7,6 +7,7 @@ import '../components/appbar.dart';
 import '../main.dart';
 import '../models/user_connected.dart';
 import '../router/delegate.dart';
+import '../styles.dart';
 
 class ActionToList extends StatefulWidget {
   final Map<String, dynamic> arguments;
@@ -42,6 +43,7 @@ class _ActionToListState extends State<ActionToList> {
     if (_initialized) {
       if (_createdLists.isEmpty) {
         return Scaffold(
+            backgroundColor: (Styles.darkMode ? Colors.black : Colors.white),
             appBar: defaultAppBar(context),
             body: const Center(child: Text("Listes invalides.")));
       } else {
@@ -50,6 +52,7 @@ class _ActionToListState extends State<ActionToList> {
           mesListes.add(_renderListTile(element.nomListe, element));
         }
         return Scaffold(
+            backgroundColor: (Styles.darkMode ? Colors.black : Colors.white),
             appBar: defaultAppBar(context),
             body: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -59,6 +62,7 @@ class _ActionToListState extends State<ActionToList> {
       }
     } else {
       return Scaffold(
+          backgroundColor: (Styles.darkMode ? Colors.black : Colors.white),
           appBar: defaultAppBar(context),
           body: const Center(child: CircularProgressIndicator()));
     }
@@ -83,6 +87,7 @@ class _ActionToListState extends State<ActionToList> {
 
   Widget _renderListTile(String s, Listes l) {
     return ListTile(
+      textColor: (Styles.darkMode ? Colors.white : Colors.black),
       title: Text(s),
       trailing: IconMenuListEdit(
         user: _user,

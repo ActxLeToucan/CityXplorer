@@ -9,14 +9,14 @@ class Description extends StatelessWidget {
   final String description;
   final double? fontSize;
   final double? height;
-  final Color defaultColor;
+  final Color? defaultColor;
 
   const Description({
     Key? key,
     required this.description,
     this.fontSize,
     this.height,
-    this.defaultColor = Colors.black,
+    this.defaultColor,
   }) : super(key: key);
 
   @override
@@ -41,7 +41,13 @@ class Description extends StatelessWidget {
         text = TextSpan(
             text: element,
             style: TextStyle(
-                fontSize: fontSize, height: height, color: defaultColor));
+              fontSize: fontSize,
+              height: height,
+              color: defaultColor ??
+                  (Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor),
+            ));
       }
 
       spans.add(text);

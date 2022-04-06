@@ -5,11 +5,11 @@ import 'package:cityxplorer/models/user_connected.dart';
 import 'package:flutter/material.dart';
 import 'package:cityxplorer/components/icon_menu_item_liste.dart';
 
-
 import 'package:cityxplorer/main.dart';
 import 'package:get/get.dart';
 
 import '../router/delegate.dart';
+import '../styles.dart';
 
 const footerHeight = 100.0;
 
@@ -56,7 +56,13 @@ class _DashBoardState extends State<DashBoard> {
         mesListes.add(Padding(
           padding: const EdgeInsets.only(left: 10),
           child: GestureDetector(
-            child: ExpansionTile(title: Text(key.nomListe), children: items),
+            child: ExpansionTile(
+                collapsedIconColor:
+                    (Styles.darkMode ? Colors.white : Colors.black),
+                collapsedTextColor:
+                    (Styles.darkMode ? Colors.white : Colors.black),
+                title: Text(key.nomListe),
+                children: items),
             onLongPress: () => routerDelegate
                 .pushPage(name: '/list', arguments: {'id': key.id.toString()}),
           ),
@@ -73,7 +79,13 @@ class _DashBoardState extends State<DashBoard> {
         listeEnregistrees.add(Padding(
           padding: const EdgeInsets.only(left: 10),
           child: GestureDetector(
-            child: ExpansionTile(title: Text(key.nomListe), children: items),
+            child: ExpansionTile(
+                collapsedIconColor:
+                    (Styles.darkMode ? Colors.white : Colors.black),
+                collapsedTextColor:
+                    (Styles.darkMode ? Colors.white : Colors.black),
+                title: Text(key.nomListe),
+                children: items),
             onLongPress: () => routerDelegate
                 .pushPage(name: '/list', arguments: {'id': key.id.toString()}),
           ),
@@ -85,7 +97,9 @@ class _DashBoardState extends State<DashBoard> {
             padding: const EdgeInsets.only(left: 10),
             onPressed: () => routerDelegate
                 .pushPage(name: '/post', arguments: {'id': p.id.toString()}),
-            child: ListTile(title: Text(p.titre))));
+            child: ListTile(
+                textColor: (Styles.darkMode ? Colors.white : Colors.black),
+                title: Text(p.titre))));
       }
 
       return RefreshIndicator(
@@ -101,11 +115,26 @@ class _DashBoardState extends State<DashBoard> {
                     name: '/page_action', arguments: {'lists': _createdLists}),
               ),
               ExpansionTile(
-                  title: const Text("Mes listes"), children: mesListes),
+                  collapsedIconColor:
+                      (Styles.darkMode ? Colors.white : Colors.black),
+                  collapsedTextColor:
+                      (Styles.darkMode ? Colors.white : Colors.black),
+                  title: const Text("Mes listes"),
+                  children: mesListes),
               ExpansionTile(
+                  collapsedIconColor:
+                      (Styles.darkMode ? Colors.white : Colors.black),
+                  collapsedTextColor:
+                      (Styles.darkMode ? Colors.white : Colors.black),
                   title: const Text("Les listes enregistrées"),
                   children: listeEnregistrees),
-              ExpansionTile(title: const Text("Posts likés"), children: posts),
+              ExpansionTile(
+                  collapsedIconColor:
+                      (Styles.darkMode ? Colors.white : Colors.black),
+                  collapsedTextColor:
+                      (Styles.darkMode ? Colors.white : Colors.black),
+                  title: const Text("Posts likés"),
+                  children: posts),
               _tqtCestDeLaTriche(context)
             ],
           ));
@@ -120,7 +149,10 @@ class _DashBoardState extends State<DashBoard> {
       onPressed: () => routerDelegate
           .pushPage(name: '/post', arguments: {'id': post.id.toString()}),
       child: ListTile(
-        title: Text(post.titre),
+        textColor: (Styles.darkMode ? Colors.white : Colors.black),
+        title: Text(
+          post.titre,
+        ),
         trailing: IconMenu(
           post: post,
           user: _user,

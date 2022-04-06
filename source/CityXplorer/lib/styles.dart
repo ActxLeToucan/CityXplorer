@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 
 class Styles {
   static bool darkMode = true;
+
+  static const Color darkBackground = Colors.black;
+  static const Color lightBackground = Colors.white;
+  static const Color darkTextColor = Colors.white;
+  static const Color lightTextColor = Colors.black;
+  static const Color lightElement = Colors.white;
+  static const Color darkElement = Color(0xFF1C1C1C);
+
   // global
   static const Color homeColor = Colors.lightGreen;
   static const Color mainColor = Color(0xFF388E3C);
-  static const Color darkred = Color(0xFFCF0000);
-  static const Color background = Color(0xFF000000);
+  static const Color darkRed = Color(0xFFCF0000);
   static const Color linkColor = mainColor;
 
   // login

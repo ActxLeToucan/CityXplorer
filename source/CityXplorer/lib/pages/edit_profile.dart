@@ -52,7 +52,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (_initialized) {
       if (_user.isEmpty()) {
         return Scaffold(
-            backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
+            backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
             body: const Center(
@@ -60,7 +60,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     textAlign: TextAlign.center)));
       } else {
         return Scaffold(
-            backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
+            backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
             body: Form(
@@ -126,7 +126,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     Button(
                       type: ButtonType.small,
                       text: "Supprimer mon compte",
-                      contentColor: Styles.darkred,
+                      contentColor: Styles.darkRed,
                       onPressed: () => alertDelete(context),
                     ),
                   ],

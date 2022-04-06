@@ -45,7 +45,7 @@ class _NewListScreenState extends State<NewListScreen> {
   Widget build(BuildContext context) {
     if (_initialized) {
       return Scaffold(
-        backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
+        backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
         appBar: namedAppBar(context, "Créer une liste"),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

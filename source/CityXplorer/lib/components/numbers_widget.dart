@@ -49,7 +49,7 @@ class _NumbersWidgetState extends State<NumbersWidget> {
     );
   }
 
-  Widget buildDivider() => SizedBox(
+  Widget buildDivider() => const SizedBox(
         height: 24,
         child: VerticalDivider(color: Colors.grey),
       );
@@ -69,13 +69,17 @@ class _NumbersWidgetState extends State<NumbersWidget> {
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
-                  color: Styles.darkMode ? Colors.white : Colors.black),
+                  color: Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor),
             ),
             const SizedBox(height: 2),
             Text(text,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Styles.darkMode ? Colors.white : Colors.black)),
+                    color: Styles.darkMode
+                        ? Styles.darkTextColor
+                        : Styles.lightTextColor)),
           ],
         ),
       );

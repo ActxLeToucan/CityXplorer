@@ -11,6 +11,7 @@ import '../conf.dart';
 import '../main.dart';
 import '../models/user_connected.dart';
 import '../router/delegate.dart';
+import '../styles.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({Key? key}) : super(key: key);
@@ -49,13 +50,23 @@ class _ChangePasswordState extends State<ChangePassword> {
     if (_initialized) {
       if (_user.isEmpty()) {
         return Scaffold(
+            backgroundColor: (Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground),
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
-            body: const Center(
+            body: Center(
                 child: Text("Connectez-vous pour accéder à cette page",
-                    textAlign: TextAlign.center)));
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: (Styles.darkMode
+                            ? Styles.darkTextColor
+                            : Styles.lightTextColor)))));
       } else {
         return Scaffold(
+            backgroundColor: (Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground),
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
             body: Form(
@@ -133,6 +144,9 @@ class _ChangePasswordState extends State<ChangePassword> {
       }
     } else {
       return Scaffold(
+          backgroundColor: (Styles.darkMode
+              ? Styles.darkBackground
+              : Styles.lightBackground),
           extendBodyBehindAppBar: true,
           appBar: transparentAppBar(context),
           body: const Center(child: CircularProgressIndicator()));

@@ -16,6 +16,8 @@ import 'package:uni_links/uni_links.dart';
 import 'models/user.dart';
 import 'my_http_overrides.dart';
 
+import 'package:flutter_phoenix/flutter_phoenix.dart';
+
 Future<void> main() async {
   // Ensure that plugin services are initialized so that `availableCameras()`
   // can be called before `runApp()`
@@ -23,7 +25,9 @@ Future<void> main() async {
 
   HttpOverrides.global = MyHttpOverrides();
 
-  runApp(const App());
+  Styles.darkMode = await darkThemeEnabled();
+
+  runApp(Phoenix(child: const App()));
 }
 
 class App extends StatefulWidget {
@@ -128,4 +132,10 @@ Future<User> reloadUser() async {
   UserConnected userUpdated = oldUser.updateWith(newUser);
   connexion(userUpdated);
   return userUpdated;
+}
+
+Future<bool> darkThemeEnabled() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool? isDark = prefs.getBool('darkTheme');
+  return isDark ?? false;
 }

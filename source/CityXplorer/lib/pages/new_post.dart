@@ -16,6 +16,7 @@ import 'package:path/path.dart' as path;
 import '../conf.dart';
 import '../main.dart';
 import '../router/delegate.dart';
+import '../styles.dart';
 
 /// formulaire de creation d'un post avec gestion de la requete envoyee et de son resultat
 class NewPostScreen extends StatefulWidget {
@@ -56,6 +57,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   Widget build(BuildContext context) {
     if (photos.isNotEmpty) {
       return Scaffold(
+        backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
         appBar: namedAppBar(context, "Créer un post"),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -68,7 +70,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   carouselBuild(),
                   const SizedBox(height: 5),
                   Text("Prise le : " + getCurrentDate(),
-                      style: const TextStyle(fontSize: 16)),
+                      style: TextStyle(
+                          fontSize: 16,
+                          color:
+                              Styles.darkMode ? Colors.white : Colors.black)),
                   const SizedBox(height: 10),
                   InputField(
                     controller: controllerTitre,

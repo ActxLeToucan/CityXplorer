@@ -142,8 +142,8 @@ class Post {
   Widget toWidget() {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-        color: Styles.darkMode ? Styles.loginTextColor : Colors.black12,
+        borderRadius: const BorderRadius.all(Radius.circular(5)),
+        color: Styles.darkMode ? Styles.darkElement : Colors.black12,
       ),
       margin: const EdgeInsets.fromLTRB(6, 0, 6, 6),
       child: Column(
@@ -177,8 +177,12 @@ class Post {
                 overflow: TextOverflow.fade,
                 softWrap: false,
                 maxLines: 1,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                    color: (Styles.darkMode
+                        ? Styles.darkTextColor
+                        : Styles.lightTextColor)),
               )),
               Padding(
                 padding: const EdgeInsets.only(left: 5),
@@ -191,13 +195,17 @@ class Post {
           Expanded(
               child: Text(
             adresseCourte,
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(
+              color: (Styles.darkMode ? Styles.darkTextColor : Colors.black45),
+            ),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           )),
           Text(
             "le ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}",
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(
+              color: (Styles.darkMode ? Styles.darkTextColor : Colors.black45),
+            ),
           )
         ])
       ],
@@ -229,11 +237,21 @@ class Post {
               right: 5,
               child: (photos.length > 1
                   ? Container(
-                      child: Text("1/${photos.length}"),
+                      child: Text(
+                        "1/${photos.length}",
+                        style: TextStyle(
+                            color: Styles.darkMode
+                                ? Styles.darkTextColor
+                                : Styles.lightTextColor),
+                      ),
                       padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(4)),
-                        color: Color(0xBFFFFFFF),
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(4)),
+                        color: (Styles.darkMode
+                                ? Styles.darkBackground
+                                : Styles.lightBackground)
+                            .withOpacity(0.75),
                       ),
                     )
                   : Container()),
@@ -258,6 +276,10 @@ class Post {
           description,
           overflow: TextOverflow.ellipsis,
           maxLines: 2,
+          style: TextStyle(
+              color: (Styles.darkMode
+                  ? Styles.darkTextColor
+                  : Styles.lightTextColor)),
         )
       ],
     );
@@ -281,8 +303,13 @@ class Post {
                 padding: const EdgeInsets.only(bottom: 4),
                 child: Text(
                   titre,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 24),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                    color: (Styles.darkMode
+                        ? Styles.darkTextColor
+                        : Styles.lightTextColor),
+                  ),
                 ),
               )),
               Padding(
@@ -293,16 +320,20 @@ class Post {
             ]),
         Text(
           "$adresseLongue\nle ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} à ${date.hour}:${date.minute.toString().padLeft(2, '0')}",
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: (Styles.darkMode ? Styles.darkTextColor : Colors.grey),
+          ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(0, 4, 0, 10),
-          child: Text(
+            padding: const EdgeInsets.fromLTRB(0, 4, 0, 10),
+            child: Text(
               photos.length > 1
                   ? "${photos.length} photos"
                   : "${photos.length} photo",
-              style: const TextStyle(color: Colors.white)),
-        ),
+              style: TextStyle(
+                color: (Styles.darkMode ? Styles.darkTextColor : Colors.grey),
+              ),
+            ))
       ],
     );
   }
@@ -382,9 +413,11 @@ class Post {
                 child: iconValidation(),
               ));
         } else {
-          return const CircularProgressIndicator(
+          return CircularProgressIndicator(
             strokeWidth: 1.5,
-            color: Colors.black,
+            color: (Styles.darkMode
+                ? Styles.darkTextColor
+                : Styles.lightTextColor),
           );
         }
       },

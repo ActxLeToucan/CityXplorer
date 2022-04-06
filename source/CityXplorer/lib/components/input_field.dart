@@ -62,12 +62,15 @@ class InputField extends StatelessWidget {
       onChanged: onChanged,
       validator: validator,
       autofocus: autoFocus,
-      style: TextStyle(color: textColor, fontSize: textSize),
+      style: TextStyle(
+          color: textColor ??
+              (Styles.darkMode ? Styles.darkTextColor : Styles.lightTextColor),
+          fontSize: textSize),
       decoration: InputDecoration(
         fillColor: fieldColor,
         filled: fieldColor != null ? true : null,
         labelText: hintPosition == HintPosition.swap ? hintText : null,
-        labelStyle: TextStyle(color: textColor ?? hintColor),
+        labelStyle: TextStyle(color: textColor ?? hintColor ?? Colors.grey),
         alignLabelWithHint: true,
         floatingLabelStyle: TextStyle(color: hintColor ?? Styles.mainColor),
         hintText: hintPosition == HintPosition.inside ? hintText : null,
@@ -93,7 +96,10 @@ class InputField extends StatelessWidget {
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
-              color: hintColor ?? const Color(0xFF404040))));
+              color: hintColor ??
+                  (Styles.darkMode
+                      ? Styles.darkTextColor
+                      : const Color(0xFF404040)))));
       elements.add(const SizedBox(height: 8));
     }
     elements.add(field);
@@ -199,7 +205,11 @@ class _ButtonState extends State<Button> {
         style: TextStyle(
             fontFamily: widget.fontFamily,
             color: widget.contentColor ??
-                (widget.type == ButtonType.big ? Colors.white : Colors.black),
+                (widget.type == ButtonType.big
+                    ? Colors.white
+                    : (Styles.darkMode
+                        ? Styles.darkTextColor
+                        : Styles.lightTextColor)),
             fontSize: widget.fontSize ??
                 (widget.type == ButtonType.big
                     ? Styles.bigButtonTextSize

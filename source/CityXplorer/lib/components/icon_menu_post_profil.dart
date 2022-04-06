@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import '../conf.dart';
 import '../models/post.dart';
 import '../router/delegate.dart';
+import '../styles.dart';
 
 /// menu de boutons lorsque l on clique sur les 3 points dans le details d un post
 class IconMenuPost extends StatefulWidget {
@@ -34,8 +35,12 @@ class _IconMenuPostState extends State<IconMenuPost> {
   Widget build(BuildContext context) {
     if (widget.user.isEmpty()) return Container();
     List<PopupMenuEntry<int>> options = [
-      const PopupMenuItem(
-        child: Text('Ajouter à une liste'),
+      PopupMenuItem(
+        child: Text('Ajouter à une liste',
+            style: TextStyle(
+                color: Styles.darkMode
+                    ? Styles.darkTextColor
+                    : Styles.lightTextColor)),
         value: optionAddList,
       ),
     ];
@@ -56,8 +61,12 @@ class _IconMenuPostState extends State<IconMenuPost> {
           value: optionBlockedToPending,
         ));
       }
-      options.add(const PopupMenuItem(
-        child: Text('Modifier'),
+      options.add(PopupMenuItem(
+        child: Text('Modifier',
+            style: TextStyle(
+                color: Styles.darkMode
+                    ? Styles.darkTextColor
+                    : Styles.lightTextColor)),
         value: optionEdit,
       ));
       options.add(const PopupMenuItem(
@@ -67,13 +76,18 @@ class _IconMenuPostState extends State<IconMenuPost> {
     }
 
     return PopupMenuButton(
+        color: (Styles.darkMode ? Styles.darkElement : Styles.lightElement),
+        icon: Icon(
+          Icons.more_vert,
+          color: (Styles.darkMode ? Styles.darkTextColor : Colors.black54),
+        ),
         itemBuilder: (context) => options,
         onSelected: (value) {
           switch (value) {
             case optionAddList:
               routerDelegate.pushPage(
-                  name:'/post/list',
-                  arguments:{'id': widget.post.id.toString()});
+                  name: '/post/list',
+                  arguments: {'id': widget.post.id.toString()});
               break;
             case optionEdit:
               routerDelegate.pushPage(
@@ -104,9 +118,22 @@ class _IconMenuPostState extends State<IconMenuPost> {
     );
 
     AlertDialog alert = AlertDialog(
-      title: const Text("Supprimer"),
-      content: const Text(
-          "Voulez-vous vraiment supprimer ce post ? Cette action est irréversible."),
+      backgroundColor:
+          (Styles.darkMode ? Styles.darkElement : Styles.lightElement),
+      title: Text(
+        "Supprimer",
+        style: TextStyle(
+          color:
+              (Styles.darkMode ? Styles.darkTextColor : Styles.lightTextColor),
+        ),
+      ),
+      content: Text(
+          "Voulez-vous vraiment supprimer ce post ? Cette action est irréversible.",
+          style: TextStyle(
+            color: (Styles.darkMode
+                ? Styles.darkTextColor
+                : Styles.lightTextColor),
+          )),
       actions: [
         cancelButton,
         continueButton,

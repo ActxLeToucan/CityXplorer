@@ -8,6 +8,7 @@ import '../components/input_field.dart';
 import '../components/menu.dart';
 import '../models/user.dart';
 import '../router/delegate.dart';
+import '../styles.dart';
 import '../vues/dashboard_card.dart';
 import '../vues/home_card.dart';
 
@@ -66,7 +67,7 @@ class _MainInterfaceState extends State<MainInterface> {
     ];
 
     return Scaffold(
-      backgroundColor: Styles.darkMode ? Styles.background : Colors.white,
+      backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
       appBar: defaultAppBar(context),
       body: pages[_selectedIndex],
       drawer: const Menu(),
@@ -75,22 +76,24 @@ class _MainInterfaceState extends State<MainInterface> {
               backgroundColor: Styles.darkMode ? Colors.black12 : Colors.white,
               selectedItemColor:
                   Theme.of(context).textSelectionTheme.selectionColor,
+              unselectedItemColor:
+                  Styles.darkMode ? Colors.white : Colors.black54,
               currentIndex: _selectedIndex,
               onTap: _onItemTapped,
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home,
-                      color: Styles.darkMode ? Colors.white : Colors.black12),
+                      color: Styles.darkMode ? Colors.white : Colors.grey),
                   label: 'Accueil',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.add_a_photo_rounded,
-                      color: Styles.darkMode ? Colors.white : Colors.black12),
+                      color: Styles.darkMode ? Colors.white : Colors.grey),
                   label: 'Créer un post',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.speed,
-                      color: Styles.darkMode ? Colors.white : Colors.black12),
+                      color: Styles.darkMode ? Colors.white : Colors.grey),
                   label: 'Tableau de bord',
                 ),
               ],
@@ -105,7 +108,9 @@ class _MainInterfaceState extends State<MainInterface> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          decoration: BoxDecoration(color: Colors.white.withOpacity(0.5)),
+          decoration: BoxDecoration(
+              color: (Styles.darkMode ? Colors.black : Colors.white)
+                  .withOpacity(0.5)),
           height: footerHeight,
           child: Container(
             padding:
