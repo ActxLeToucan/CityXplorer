@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class ListController{
+    const TAILLE_TITRE_MAX = 100;
     /**
      * @var object container
      */
@@ -170,15 +171,54 @@ class ListController{
         ], 200);
     }
 
+    public function editList(Request $rq, Response $rs, array $args): Response {
+        $container = $this->c;
+        $base = $rq->getUri()->getBasePath();
+        $route_uri = $container->router->pathFor('edit_list');
+        $url = $base . $route_uri;
 
+        $content = $rq->getParsedBody();
 
+        $titre = filter_var($content['titre'] ?? "Sans titre", FILTER_SANITIZE_STRING);
+        $description = filter_var($content['description'] ?? "", FILTER_SANITIZE_STRING);
 
+        if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Token invalide",
+                "post" => null
+            ], 200);
+        } else if (!isset($content['id']) || is_null($list = Liste::find($content['id']))) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Id de la liste invalide",
+                "post" => null
+            ], 200);
+        } else if ($list->idCreateur != $user->id) {
+            return $rs->withJSON([
+                "result" => 0,
+                "message" => "Vous devez être le propriétaire de la list pour le modifier.",
+                "post" => null
+            ], 200);
+        } else {
+            if (strlen($titre) > self::TAILLE_TITRE_MAX) {
+                return $rs->withJSON([
+                    "result" => 0,
+                    "message" => "Ce titre est trop long. Réessayez.",
+                    "post" => null
+                ], 200);
+            }
+            $list->nomListe = $titre;
+            $list->descrListe = $description;
+            $list->save();
 
-
-
-
-
-
+            return $rs->withJSON([
+                "result" => 1,
+                "message" => "Modifications enregistrées.",
+                "post" => $list->toArray(true)
+            ], 200);
+        }
+    }
 
 
     public function supprimerList(Request $rq, Response $rs, array $args): Response {
@@ -215,9 +255,6 @@ class ListController{
                     $tab = [
                         "result" => 1,
                         "message" => "La liste à été supprimée",
-                        "Post" => [] ,
-                        "Suppression Liaison" => $suppLink,
-                        "Suppression Enregistrement " =>$suppEnr
                     ];
                 }
             }

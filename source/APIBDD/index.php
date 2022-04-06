@@ -107,6 +107,8 @@ $app->post('/saved_list', 'cityXplorer\controllers\ListController:likeList')->se
 //Non testé
 $app->delete('/saved_list', 'cityXplorer\controllers\ListController:dislikeList')->setName("dislikeList");
 
+$app->put('/list','cityXplorer\controllers\ListController:editList')->setName("edit_list");
+
 /**
  * Post from a list
  */

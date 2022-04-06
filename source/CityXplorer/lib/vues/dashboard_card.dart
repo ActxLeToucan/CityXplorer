@@ -1,3 +1,4 @@
+import 'package:cityxplorer/components/input_field.dart';
 import 'package:cityxplorer/models/listes.dart';
 import 'package:cityxplorer/models/post.dart';
 import 'package:cityxplorer/models/user.dart';
@@ -88,9 +89,17 @@ class _DashBoardState extends State<DashBoard> {
       }
 
       return RefreshIndicator(
+          displacement: 10.0,
           onRefresh: _load,
           child: Column(
             children: <Widget>[
+              Button(
+                type: ButtonType.small,
+                backgroundColor: Colors.green,
+                text: "Actions sur mes listes",
+                onPressed: () => routerDelegate.pushPage(
+                    name: '/page_action', arguments: {'lists': _createdLists}),
+              ),
               ExpansionTile(
                   title: const Text("Mes listes"), children: mesListes),
               ExpansionTile(
@@ -104,11 +113,6 @@ class _DashBoardState extends State<DashBoard> {
       return const Center(child: CircularProgressIndicator());
     }
   }
-  /*
-  * body: RefreshIndicator(
-              onRefresh: _load,
-              child: SingleChildScrollView(
-  * */
 
   Widget _renderListTile(Post post, Listes list) {
     return MaterialButton(

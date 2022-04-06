@@ -15,23 +15,20 @@ import 'package:share_plus/share_plus.dart';
 import '../conf.dart';
 
 // menu de boutons lorsque l on clique sur les 3 points d une tuile d un post dans une liste du dashboard
-class IconMenu extends StatefulWidget {
-  final Post post;
+class IconMenuListEdit extends StatefulWidget {
   final UserConnected user;
   final Listes list;
-  const IconMenu(
-      {Key? key, required this.post, required this.user, required this.list})
+  const IconMenuListEdit({Key? key, required this.user, required this.list})
       : super(key: key);
 
   @override
-  State<IconMenu> createState() => _IconMenuState();
+  State<IconMenuListEdit> createState() => _IconMenuListEditState();
 }
 
-class _IconMenuState extends State<IconMenu> {
+class _IconMenuListEditState extends State<IconMenuListEdit> {
   final routerDelegate = Get.find<MyRouterDelegate>();
   @override
   Widget build(BuildContext context) {
-    var postId = widget.post.id;
     return PopupMenuButton(
         itemBuilder: (context) => [
               PopupMenuItem(
@@ -40,24 +37,11 @@ class _IconMenuState extends State<IconMenu> {
                     Icons.remove_red_eye,
                     size: 15.0,
                   ),
-                  title: Text('Aperçu'),
+                  title: Text('Modifier'),
                   onTap: () => routerDelegate.pushPage(
-                      name: "/post",
-                      arguments: {'id': widget.post.id.toString()}),
+                      name: "/listEdit", arguments: {'list': widget.list}),
                 ),
                 value: 1,
-              ),
-              PopupMenuItem(
-                child: ListTile(
-                  leading: Icon(
-                    Icons.share,
-                    size: 15.0,
-                  ),
-                  title: Text('Partager'),
-                  onTap: () => Share.share(
-                      "${Conf.domainServer}/post?id=${widget.post.id}"),
-                ),
-                value: 2,
               ),
               const PopupMenuItem(
                 child: ListTile(
@@ -70,12 +54,12 @@ class _IconMenuState extends State<IconMenu> {
                     style: TextStyle(color: Colors.red),
                   ),
                 ),
-                value: 3,
+                value: 2,
               )
             ],
         onSelected: (value) {
           switch (value) {
-            case 3:
+            case 2:
               alertDelete(context);
               break;
           }
@@ -89,13 +73,13 @@ class _IconMenuState extends State<IconMenu> {
     );
     Widget continueButton = TextButton(
       child: const Text("Supprimer", style: TextStyle(color: Colors.red)),
-      onPressed: () => deletePostList(context),
+      onPressed: () => deleteList(context),
     );
 
     AlertDialog alert = AlertDialog(
       title: const Text("Supprimer"),
       content: const Text(
-          "Voulez-vous vraiment supprimer ce post ? Cette action est irréversible."),
+          "Voulez-vous vraiment supprimer cette liste? Cette action est irréversible."),
       actions: [
         cancelButton,
         continueButton,
@@ -110,10 +94,10 @@ class _IconMenuState extends State<IconMenu> {
     );
   }
 
-  Future<void> deletePostList(BuildContext context) async {
+  Future<void> deleteList(BuildContext context) async {
     String url = Conf.domainServer +
         Conf.apiPath +
-        "/postList?idPost=${widget.post.id}&idList=${widget.list.id}&token=${widget.user.token}";
+        "/list?idList=${widget.list.id}&token=${widget.user.token}";
     print(url);
     try {
       var response = await http.delete(Uri.parse(url));

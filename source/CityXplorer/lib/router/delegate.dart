@@ -1,11 +1,14 @@
+import 'package:cityxplorer/models/listes.dart';
 import 'package:cityxplorer/pages/add_post_to_list.dart';
 import 'package:cityxplorer/pages/change_password.dart';
+import 'package:cityxplorer/pages/edit_list.dart';
 import 'package:cityxplorer/pages/edit_profile.dart';
 import 'package:cityxplorer/pages/login_screen.dart';
 import 'package:cityxplorer/pages/main_interface.dart';
 import 'package:cityxplorer/pages/map-screen.dart';
 import 'package:cityxplorer/pages/new_list.dart';
 import 'package:cityxplorer/pages/new_post.dart';
+import 'package:cityxplorer/pages/page_action_list.dart';
 import 'package:cityxplorer/pages/page_list.dart';
 import 'package:cityxplorer/pages/user_profile.dart';
 import 'package:cityxplorer/pages/validation_post.dart';
@@ -164,6 +167,14 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
       case '/list':
         child =
             PageList(arguments: routeSettings.arguments as Map<String, String>);
+        break;
+      case '/page_action':
+        child = ActionToList(
+            arguments: routeSettings.arguments as Map<String, List<Listes>>);
+        break;
+      case '/listEdit':
+        child = EditListPage(
+            arguments: routeSettings.arguments as Map<String, Listes>);
         break;
       default:
         if (routeSettings.name != null &&
