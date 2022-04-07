@@ -6,6 +6,7 @@ import 'package:location/location.dart';
 import '../components/appbar.dart';
 import '../models/directions_m.dart';
 import '../models/directions_r.dart';
+import '../styles.dart';
 
 class GeolocationMap extends StatefulWidget {
   final Map<String, dynamic> arguments;
@@ -138,6 +139,9 @@ class _GeolocationMapState extends State<GeolocationMap> {
     if (_initialized) {
       if (_post.isEmpty()) {
         return Scaffold(
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             appBar: AppBar(
               title: const Text(
                 'Post invalide',
@@ -147,10 +151,18 @@ class _GeolocationMapState extends State<GeolocationMap> {
                 ),
               ),
             ),
-            body: const Center(
-                child: Text("Post invalide.", textAlign: TextAlign.center)));
+            body: Center(
+                child: Text("Post invalide.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Styles.darkMode
+                          ? Styles.darkTextColor
+                          : Styles.lightTextColor,
+                    ))));
       } else {
         return Scaffold(
+          backgroundColor:
+              Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
           appBar: AppBar(
             title: Text(
               'Il vous reste $distance, $temps',
@@ -191,6 +203,8 @@ class _GeolocationMapState extends State<GeolocationMap> {
       }
     } else {
       return Scaffold(
+          backgroundColor:
+              Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
           appBar: namedAppBar(context, "Chargement...", centerTitle: false),
           body: const Center(child: CircularProgressIndicator()));
     }

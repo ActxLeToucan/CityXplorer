@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../router/delegate.dart';
+import '../styles.dart';
 
 class CreateNewAccount extends StatefulWidget {
   const CreateNewAccount({Key? key}) : super(key: key);
@@ -187,10 +188,13 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
 
           routerDelegate.pushPageAndClear(name: '/');
         }
-        Fluttertoast.showToast(msg: data['message']);
+        Fluttertoast.showToast(
+            backgroundColor: Styles.mainColor, msg: data['message']);
       } catch (e) {
         print(e);
         Fluttertoast.showToast(
+            backgroundColor:
+                Styles.darkMode ? Styles.darkRed : Colors.redAccent,
             msg: "Impossible d'accéder à la base de données.");
       }
     }

@@ -159,6 +159,7 @@ class Button extends StatefulWidget {
   final bool underlined;
   final bool? parentState;
   final String? fontFamily;
+  final TextAlign? textAlign;
 
   const Button({
     Key? key,
@@ -173,6 +174,7 @@ class Button extends StatefulWidget {
     this.underlined = false,
     this.parentState,
     this.fontFamily,
+    this.textAlign,
   }) : super(key: key);
 
   @override
@@ -202,6 +204,7 @@ class _ButtonState extends State<Button> {
     if (widget.text != null) {
       content = Text(
         widget.text ?? "",
+        textAlign: widget.textAlign,
         style: TextStyle(
             fontFamily: widget.fontFamily,
             color: widget.contentColor ??

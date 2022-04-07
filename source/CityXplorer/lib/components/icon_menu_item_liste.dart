@@ -129,14 +129,17 @@ class _IconMenuState extends State<IconMenu> {
       var response = await http.delete(Uri.parse(url));
       final Map<String, dynamic> data = json.decode(response.body);
 
-      Fluttertoast.showToast(msg: data['message']);
+      Fluttertoast.showToast(
+          backgroundColor: Styles.mainColor, msg: data['message']);
 
       if (data["result"] == 1) {
         Navigator.pop(context);
       }
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
   }
 }

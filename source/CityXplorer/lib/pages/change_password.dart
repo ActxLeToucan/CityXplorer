@@ -173,10 +173,13 @@ class _ChangePasswordState extends State<ChangePassword> {
           routerDelegate.popRoute();
         }
 
-        Fluttertoast.showToast(msg: data['message']);
+        Fluttertoast.showToast(
+            backgroundColor: Styles.mainColor, msg: data['message']);
       } catch (e) {
         print(e);
         Fluttertoast.showToast(
+            backgroundColor:
+                Styles.darkMode ? Styles.darkRed : Colors.redAccent,
             msg: "Impossible d'accéder à la base de données.");
       }
     }

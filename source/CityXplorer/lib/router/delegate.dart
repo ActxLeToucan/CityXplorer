@@ -21,6 +21,7 @@ import '../pages/post_edit.dart';
 import '../pages/post_page.dart';
 import '../pages/search_page.dart';
 import '../pages/user_lists.dart';
+import '../styles.dart';
 
 class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<List<RouteSettings>> {
@@ -180,18 +181,33 @@ class MyRouterDelegate extends RouterDelegate<List<RouteSettings>>
         if (routeSettings.name != null &&
             routeSettings.name!.startsWith("/download")) {
           child = Scaffold(
+            backgroundColor:
+                Styles.darkMode ? Styles.darkTextColor : Styles.lightTextColor,
             appBar: AppBar(title: const Text("CityXplorer"), centerTitle: true),
-            body: const Center(
+            body: Center(
                 child: Text(
                     "Vous possédez déjà cette application.\nPour mettre à jour l'application, désinstallez la et relancez le fichier d'installation.",
-                    textAlign: TextAlign.center)),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Styles.darkMode
+                          ? Styles.darkTextColor
+                          : Styles.lightTextColor,
+                    ))),
           );
           break;
         }
         child = Scaffold(
+          backgroundColor:
+              Styles.darkMode ? Styles.darkTextColor : Styles.lightTextColor,
           appBar: AppBar(title: const Text('404')),
-          body: const Center(
-              child: Text('Page introuvable', textAlign: TextAlign.center)),
+          body: Center(
+              child: Text('Page introuvable',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Styles.darkMode
+                        ? Styles.darkTextColor
+                        : Styles.lightTextColor,
+                  ))),
         );
     }
 

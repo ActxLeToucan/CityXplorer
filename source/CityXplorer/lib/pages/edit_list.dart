@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../router/delegate.dart';
+import '../styles.dart';
 
 class EditListPage extends StatefulWidget {
   final Map<String, dynamic> arguments;
@@ -51,15 +52,26 @@ class _EditListState extends State<EditListPage> {
     if (_initialized) {
       if (_user.isEmpty()) {
         return Scaffold(
-            extendBodyBehindAppBar: true,
-            appBar: transparentAppBar(context),
-            body: const Center(
-                child: Text("Connectez-vous pour accéder à cette page",
-                    textAlign: TextAlign.center)));
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
+            appBar: defaultAppBar(context),
+            body: Center(
+                child: Text(
+              "Connectez-vous pour accéder à cette page",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Styles.darkMode
+                    ? Styles.darkTextColor
+                    : Styles.lightTextColor,
+              ),
+            )));
       } else {
         return Scaffold(
-            extendBodyBehindAppBar: true,
-            appBar: transparentAppBar(context),
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
+            appBar: defaultAppBar(context),
             body: Form(
               key: _formKey,
               child: Padding(
@@ -100,8 +112,9 @@ class _EditListState extends State<EditListPage> {
       }
     } else {
       return Scaffold(
-          extendBodyBehindAppBar: true,
-          appBar: transparentAppBar(context),
+          backgroundColor:
+              Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
+          appBar: defaultAppBar(context),
           body: const Center(child: CircularProgressIndicator()));
     }
   }
@@ -121,10 +134,13 @@ class _EditListState extends State<EditListPage> {
             body: json.encode(body),
             headers: {'content-type': 'application/json'});
         final Map<String, dynamic> data = json.decode(response.body);
-        Fluttertoast.showToast(msg: data['message']);
+        Fluttertoast.showToast(
+            backgroundColor: Styles.mainColor, msg: data['message']);
       } catch (e) {
         print(e);
         Fluttertoast.showToast(
+            backgroundColor:
+                Styles.darkMode ? Styles.darkRed : Colors.redAccent,
             msg: "Impossible d'accéder à la base de données.");
       }
     }

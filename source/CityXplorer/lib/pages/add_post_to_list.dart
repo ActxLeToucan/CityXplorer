@@ -126,10 +126,13 @@ class _AddPostToListState extends State<AddPostToList> {
           .post(Uri.parse(url), headers: {'content-type': 'application/json'});
       final Map<String, dynamic> data = json.decode(response.body);
 
-      Fluttertoast.showToast(msg: data['message']);
+      Fluttertoast.showToast(
+          backgroundColor: Styles.mainColor, msg: data['message']);
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
   }
 }

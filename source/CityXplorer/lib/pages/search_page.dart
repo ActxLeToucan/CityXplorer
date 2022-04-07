@@ -23,6 +23,8 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
       appBar: AppBar(
           title: Container(
         width: double.infinity,
@@ -34,7 +36,6 @@ class _SearchPageState extends State<SearchPage> {
         ),
       )),
       body: _searchListView(),
-      backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
     );
   }
 
@@ -48,9 +49,21 @@ class _SearchPageState extends State<SearchPage> {
               child: MaterialButton(
             padding: EdgeInsets.zero,
             child: ListTile(
-                tileColor: Styles.darkMode ? Colors.black54 : Colors.white,
-                title: Text(_list[index].name),
-                subtitle: Text("@${_list[index].pseudo}")),
+                tileColor:
+                    Styles.darkMode ? Styles.darkElement : Styles.lightElement,
+                title: Text(
+                  _list[index].name,
+                  style: TextStyle(
+                      color: Styles.darkMode
+                          ? Styles.darkTextColor
+                          : Styles.lightTextColor),
+                ),
+                subtitle: Text("@${_list[index].pseudo}",
+                    style: TextStyle(
+                        color: (Styles.darkMode
+                                ? Styles.darkTextColor
+                                : Styles.lightTextColor)
+                            .withOpacity(.6)))),
             onPressed: () => _list[index].pushPage(),
           ));
         });
@@ -70,7 +83,8 @@ class _SearchPageState extends State<SearchPage> {
           final List<dynamic> data = json.decode(response.body);
 
           if (data.isEmpty) {
-            Fluttertoast.showToast(msg: "Aucun résultat.");
+            Fluttertoast.showToast(
+                backgroundColor: Styles.mainColor, msg: "Aucun résultat.");
           } else {
             for (var user in data) {
               _list.add(User.fromJson(user));
@@ -79,6 +93,8 @@ class _SearchPageState extends State<SearchPage> {
         } catch (e) {
           print(e);
           Fluttertoast.showToast(
+              backgroundColor:
+                  Styles.darkMode ? Styles.darkRed : Colors.redAccent,
               msg: "Impossible d'accéder à la base de données.");
         }
 

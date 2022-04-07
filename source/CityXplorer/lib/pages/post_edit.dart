@@ -12,6 +12,7 @@ import '../main.dart';
 import '../models/post.dart';
 import '../models/user_connected.dart';
 import '../router/delegate.dart';
+import '../styles.dart';
 
 class PostEdit extends StatefulWidget {
   final Map<String, dynamic> arguments;
@@ -55,18 +56,36 @@ class _PostEditState extends State<PostEdit> {
     if (_initialized) {
       if (_post.isEmpty()) {
         return Scaffold(
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             appBar: defaultAppBar(context),
-            body: const Center(
-                child: Text("Post invalide.", textAlign: TextAlign.center)));
+            body: Center(
+                child: Text("Post invalide.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Styles.darkMode
+                            ? Styles.darkTextColor
+                            : Styles.lightTextColor))));
       } else if (_user.isEmpty() || _user.pseudo != _post.userPseudo) {
         return Scaffold(
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             appBar: defaultAppBar(context),
-            body: const Center(
+            body: Center(
                 child: Text(
                     "Vous devez être le propriétaire du post pour accéder à cette page",
-                    textAlign: TextAlign.center)));
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Styles.darkMode
+                            ? Styles.darkTextColor
+                            : Styles.lightTextColor))));
       } else {
         return Scaffold(
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             appBar: defaultAppBar(context),
             body: Form(
               key: _formKey,
@@ -111,6 +130,8 @@ class _PostEditState extends State<PostEdit> {
       }
     } else {
       return Scaffold(
+          backgroundColor:
+              Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
           appBar: defaultAppBar(context),
           body: const Center(child: CircularProgressIndicator()));
     }
@@ -132,10 +153,13 @@ class _PostEditState extends State<PostEdit> {
             headers: {'content-type': 'application/json'});
         final Map<String, dynamic> data = json.decode(response.body);
 
-        Fluttertoast.showToast(msg: data['message']);
+        Fluttertoast.showToast(
+            backgroundColor: Styles.mainColor, msg: data['message']);
       } catch (e) {
         print(e);
         Fluttertoast.showToast(
+            backgroundColor:
+                Styles.darkMode ? Styles.darkRed : Colors.redAccent,
             msg: "Impossible d'accéder à la base de données.");
       }
     }

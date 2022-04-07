@@ -371,13 +371,18 @@ class ListController{
             $tab = [
                 "result" => 0,
                 "message" => "Erreur : token invalide",
-                "user" => $content['pseudo'],
+                "listPost" => [],
             ];
             if(!is_null($user)){
-                $tab=[];
+                $t=[];
                 foreach ($user->listLikes as $list){
-                    $tab[]=$list->toArray();
+                    $t[]=$list->toArray();
                 }
+                $tab = [
+                    "result" => 1,
+                    "message" => "Listes likées obtenues",
+                    "listPost" => $t
+                ];
             }
         }
         return $rs->withJSON($tab, 200);
@@ -399,13 +404,18 @@ class ListController{
             $tab = [
                 "result" => 0,
                 "message" => "Erreur : token invalide",
-                "user" => $content['pseudo'],
+                "listPost" => [],
             ];
             if(!is_null($user)){
-                $tab=[];
+                $t=[];
                 foreach ($user->createdLists as $list){
-                    $tab[]=$list->toArray();
+                    $t[]=$list->toArray();
                 }
+                $tab = [
+                    "result" => 1,
+                    "message" => "Listes créées obtenues",
+                    "listPost" => $t
+                ];
             }
         }
         return $rs->withJSON($tab, 200);

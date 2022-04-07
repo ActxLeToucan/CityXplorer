@@ -80,6 +80,7 @@ class _ListeItemState extends State<ListeItem> {
     bool fav = _liked;
     if (widget.user.isEmpty()) {
       Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
           msg: "Vous devez être connecté pour enregistrer une liste.");
       return;
     }
@@ -100,7 +101,8 @@ class _ListeItemState extends State<ListeItem> {
               headers: {'content-type': 'application/json'});
       final Map<String, dynamic> data = json.decode(response.body);
 
-      Fluttertoast.showToast(msg: data['message']);
+      Fluttertoast.showToast(
+          backgroundColor: Styles.mainColor, msg: data['message']);
 
       if (data['result'] == 1) {
         setState(() {
@@ -109,7 +111,9 @@ class _ListeItemState extends State<ListeItem> {
       }
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
   }
 }

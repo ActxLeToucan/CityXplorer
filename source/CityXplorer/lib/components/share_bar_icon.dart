@@ -69,6 +69,7 @@ class _ShareBarState extends State<ShareBar> {
     bool fav = _isFavorited;
     if (user.isEmpty()) {
       Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
           msg: "Vous devez être connecté pour liker un post.");
       return _isFavorited;
     }
@@ -89,7 +90,8 @@ class _ShareBarState extends State<ShareBar> {
               headers: {'content-type': 'application/json'});
       final Map<String, dynamic> data = json.decode(response.body);
 
-      Fluttertoast.showToast(msg: data['message']);
+      Fluttertoast.showToast(
+          msg: data['message'], backgroundColor: Styles.mainColor);
 
       if (data['result'] == 1) {
         await reloadUser();
@@ -100,7 +102,9 @@ class _ShareBarState extends State<ShareBar> {
       return _isFavorited;
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
       return _isFavorited;
     }
   }

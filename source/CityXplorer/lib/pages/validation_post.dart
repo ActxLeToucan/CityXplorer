@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../models/post.dart';
+import '../styles.dart';
 
 class ValidationPost extends StatefulWidget {
   const ValidationPost({Key? key}) : super(key: key);
@@ -34,20 +35,37 @@ class _ValidationPostState extends State<ValidationPost> {
     if (_initialized) {
       if (_user.isEmpty()) {
         return Scaffold(
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             appBar: defaultAppBar(context),
-            body: const Center(
+            body: Center(
                 child: Text(
                     "Vous devez être connecté pour accéder à cette page.",
-                    textAlign: TextAlign.center)));
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Styles.darkMode
+                            ? Styles.darkTextColor
+                            : Styles.lightTextColor))));
       } else if (_user.niveauAcces < 2) {
         return Scaffold(
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             appBar: defaultAppBar(context),
-            body: const Center(
+            body: Center(
                 child: Text(
-                    "Vous n'avez pas les permissions suffisantes pour accéder à cette page.",
-                    textAlign: TextAlign.center)));
+              "Vous n'avez pas les permissions suffisantes pour accéder à cette page.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor),
+            )));
       } else {
         return Scaffold(
+          backgroundColor:
+              Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
           appBar: namedAppBar(context, "Posts en attente"),
           body: RefreshIndicator(
               onRefresh: _load,
@@ -63,6 +81,8 @@ class _ValidationPostState extends State<ValidationPost> {
       }
     } else {
       return Scaffold(
+          backgroundColor:
+              Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
           appBar: namedAppBar(context, "Posts en attente"),
           body: const Center(child: CircularProgressIndicator()));
     }
@@ -89,7 +109,8 @@ class _ValidationPostState extends State<ValidationPost> {
       var response = await http.get(Uri.parse(url));
       final Map<String, dynamic> data = json.decode(response.body);
 
-      Fluttertoast.showToast(msg: data['message']);
+      Fluttertoast.showToast(
+          backgroundColor: Styles.mainColor, msg: data['message']);
 
       if (data['result'] == 1) {
         List<dynamic> postsJson = data['posts'];
@@ -99,7 +120,9 @@ class _ValidationPostState extends State<ValidationPost> {
       }
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
     return posts;
   }
@@ -107,8 +130,15 @@ class _ValidationPostState extends State<ValidationPost> {
   Future<Widget> _renderPosts(UserConnected user) async {
     List<Post> posts = await getPosts(user);
     if (posts.isEmpty) {
-      return const Center(
-        child: Text("Aucun post en attente.", textAlign: TextAlign.center),
+      return Center(
+        child: Text(
+          "Aucun post en attente.",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Styles.darkMode
+                  ? Styles.darkTextColor
+                  : Styles.lightTextColor),
+        ),
       );
     } else {
       List<Widget> list = [];

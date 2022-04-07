@@ -21,11 +21,12 @@ class Home extends StatelessWidget {
     if (kIsWeb && Conf.downloadable.contains(defaultTargetPlatform)) {
       buttonDownload = Padding(
         padding: const EdgeInsets.all(8.0),
-        child: TextButton(
+        child: Button(
+            type: ButtonType.small,
             onPressed: _pageDownload,
-            child: const Text(
+            text:
                 "Téléchargez CityXplorer sur votre appareil pour profiter au maximum des fonctionnalités de l'application !",
-                textAlign: TextAlign.center)),
+            textAlign: TextAlign.center),
       );
     }
 
@@ -52,8 +53,8 @@ class Home extends StatelessWidget {
                               fontFamily: 'Questrial',
                               fontSize: 20.0,
                               color: Styles.darkMode
-                                  ? Styles.loginTextColor
-                                  : Colors.black,
+                                  ? Styles.darkTextColor
+                                  : Styles.lightTextColor,
                             )),
                       ),
                       const SizedBox(height: 30),
@@ -91,12 +92,15 @@ class Home extends StatelessWidget {
                       ),
                     ],
                   )
-                : const SizedBox(
+                : SizedBox(
                     width: 350,
                     child: Text(
                       "Connectez-vous ou créez un compte pour profiter pleinement de l'application !",
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Styles.loginTextColor),
+                      style: TextStyle(
+                          color: Styles.darkMode
+                              ? Styles.darkTextColor
+                              : Styles.lightTextColor),
                     ),
                   )
             : const CircularProgressIndicator(),

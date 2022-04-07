@@ -57,10 +57,12 @@ class _DashBoardState extends State<DashBoard> {
           padding: const EdgeInsets.only(left: 10),
           child: GestureDetector(
             child: ExpansionTile(
-                collapsedIconColor:
-                    (Styles.darkMode ? Colors.white : Colors.black),
-                collapsedTextColor:
-                    (Styles.darkMode ? Colors.white : Colors.black),
+                collapsedIconColor: (Styles.darkMode
+                    ? Styles.darkTextColor
+                    : Styles.lightTextColor),
+                collapsedTextColor: (Styles.darkMode
+                    ? Styles.darkTextColor
+                    : Styles.lightTextColor),
                 title: Text(key.nomListe),
                 children: items),
             onLongPress: () => routerDelegate
@@ -80,10 +82,12 @@ class _DashBoardState extends State<DashBoard> {
           padding: const EdgeInsets.only(left: 10),
           child: GestureDetector(
             child: ExpansionTile(
-                collapsedIconColor:
-                    (Styles.darkMode ? Colors.white : Colors.black),
-                collapsedTextColor:
-                    (Styles.darkMode ? Colors.white : Colors.black),
+                collapsedIconColor: (Styles.darkMode
+                    ? Styles.darkTextColor
+                    : Styles.lightTextColor),
+                collapsedTextColor: (Styles.darkMode
+                    ? Styles.darkTextColor
+                    : Styles.lightTextColor),
                 title: Text(key.nomListe),
                 children: items),
             onLongPress: () => routerDelegate
@@ -98,7 +102,9 @@ class _DashBoardState extends State<DashBoard> {
             onPressed: () => routerDelegate
                 .pushPage(name: '/post', arguments: {'id': p.id.toString()}),
             child: ListTile(
-                textColor: (Styles.darkMode ? Colors.white : Colors.black),
+                textColor: (Styles.darkMode
+                    ? Styles.darkTextColor
+                    : Styles.lightTextColor),
                 title: Text(p.titre))));
       }
 
@@ -115,24 +121,30 @@ class _DashBoardState extends State<DashBoard> {
                     name: '/page_action', arguments: {'lists': _createdLists}),
               ),
               ExpansionTile(
-                  collapsedIconColor:
-                      (Styles.darkMode ? Colors.white : Colors.black),
-                  collapsedTextColor:
-                      (Styles.darkMode ? Colors.white : Colors.black),
+                  collapsedIconColor: Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor,
+                  collapsedTextColor: Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor,
                   title: const Text("Mes listes"),
                   children: mesListes),
               ExpansionTile(
-                  collapsedIconColor:
-                      (Styles.darkMode ? Colors.white : Colors.black),
-                  collapsedTextColor:
-                      (Styles.darkMode ? Colors.white : Colors.black),
+                  collapsedIconColor: Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor,
+                  collapsedTextColor: Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor,
                   title: const Text("Les listes enregistrées"),
                   children: listeEnregistrees),
               ExpansionTile(
-                  collapsedIconColor:
-                      (Styles.darkMode ? Colors.white : Colors.black),
-                  collapsedTextColor:
-                      (Styles.darkMode ? Colors.white : Colors.black),
+                  collapsedIconColor: Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor,
+                  collapsedTextColor: Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor,
                   title: const Text("Posts likés"),
                   children: posts),
               _tqtCestDeLaTriche(context)
@@ -149,7 +161,8 @@ class _DashBoardState extends State<DashBoard> {
       onPressed: () => routerDelegate
           .pushPage(name: '/post', arguments: {'id': post.id.toString()}),
       child: ListTile(
-        textColor: (Styles.darkMode ? Colors.white : Colors.black),
+        textColor:
+            Styles.darkMode ? Styles.darkTextColor : Styles.lightTextColor,
         title: Text(
           post.titre,
         ),

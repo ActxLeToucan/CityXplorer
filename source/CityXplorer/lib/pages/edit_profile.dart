@@ -52,15 +52,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (_initialized) {
       if (_user.isEmpty()) {
         return Scaffold(
-            backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
-            body: const Center(
-                child: Text("Connectez-vous pour accéder à cette page",
-                    textAlign: TextAlign.center)));
+            body: Center(
+                child: Text(
+              "Connectez-vous pour accéder à cette page",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Styles.darkMode
+                    ? Styles.darkTextColor
+                    : Styles.lightTextColor,
+              ),
+            )));
       } else {
         return Scaffold(
-            backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
             body: Form(
@@ -80,7 +91,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     InputField(
                       controller: name,
                       hintText: "Nom",
-                      hintColor: Styles.darkMode ? Colors.white : Colors.black,
                       hintPosition: HintPosition.above,
                       withBottomSpace: true,
                       validator: (value) {
@@ -95,18 +105,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         }
                         return null;
                       },
-                      textColor: Styles.darkMode ? Colors.white : Colors.black,
                     ),
                     InputField(
                         controller: description,
                         hintText: "Description",
-                        hintColor:
-                            Styles.darkMode ? Colors.white : Colors.black,
                         hintPosition: HintPosition.above,
                         minLines: 2,
                         maxLines: 5,
-                        textColor:
-                            Styles.darkMode ? Colors.white : Colors.black,
                         withBottomSpace: true),
                     Button(
                       type: ButtonType.big,
@@ -118,8 +123,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     Button(
                       type: ButtonType.small,
                       text: "Changer de mot de passe",
-                      contentColor:
-                          Styles.darkMode ? Colors.white : Colors.black,
                       onPressed: () =>
                           routerDelegate.pushPage(name: '/change_password'),
                     ),
@@ -164,7 +167,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       String res = data['message'];
       int code = data['result'];
 
-      Fluttertoast.showToast(msg: res);
+      Fluttertoast.showToast(backgroundColor: Styles.mainColor, msg: res);
 
       if (code == 1) {
         await updateUser(_user);
@@ -176,7 +179,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+        msg: "Impossible d'accéder à la base de données.",
+        backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+      );
     }
     setState(() {
       _initialized = true;
@@ -221,7 +227,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             headers: {'content-type': 'application/json'});
         final Map<String, dynamic> data = json.decode(response.body);
 
-        Fluttertoast.showToast(msg: data['message']);
+        Fluttertoast.showToast(
+            backgroundColor: Styles.mainColor, msg: data['message']);
 
         if (data["result"] == 1) {
           await updateUser(_user);
@@ -229,6 +236,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       } catch (e) {
         print(e);
         Fluttertoast.showToast(
+            backgroundColor:
+                Styles.darkMode ? Styles.darkRed : Colors.redAccent,
             msg: "Impossible d'accéder à la base de données.");
       }
     }
@@ -243,7 +252,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       var response = await http.delete(Uri.parse(url));
       final Map<String, dynamic> data = json.decode(response.body);
 
-      Fluttertoast.showToast(msg: data['message']);
+      Fluttertoast.showToast(
+          backgroundColor: Styles.mainColor, msg: data['message']);
 
       if (data["result"] == 1) {
         deconnexion();
@@ -251,7 +261,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
   }
 }

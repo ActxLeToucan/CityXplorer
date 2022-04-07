@@ -42,17 +42,23 @@ class _UserProfileState extends State<UserProfile> {
     if (_initialized) {
       if (_user.isEmpty()) {
         return Scaffold(
-            backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
             body: Center(
                 child: Text("Utilisateur invalide.",
                     style: TextStyle(
-                        color: Styles.darkMode ? Colors.white : Colors.black),
+                        color: Styles.darkMode
+                            ? Styles.darkTextColor
+                            : Styles.lightTextColor),
                     textAlign: TextAlign.center)));
       } else {
         return Scaffold(
-            backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             extendBodyBehindAppBar: true,
             appBar: transparentAppBar(context),
             body: RefreshIndicator(
@@ -71,7 +77,8 @@ class _UserProfileState extends State<UserProfile> {
       }
     } else {
       return Scaffold(
-          backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
+          backgroundColor:
+              Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
           extendBodyBehindAppBar: true,
           appBar: transparentAppBar(context),
           body: const Center(child: CircularProgressIndicator()));
@@ -134,7 +141,9 @@ class _UserProfileState extends State<UserProfile> {
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
-                color: Styles.darkMode ? Colors.white : Colors.black),
+                color: Styles.darkMode
+                    ? Styles.darkTextColor
+                    : Styles.lightTextColor),
           ),
           const SizedBox(height: 4),
           Text(
@@ -154,7 +163,9 @@ class _UserProfileState extends State<UserProfile> {
               style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Styles.darkMode ? Colors.white : Colors.black),
+                  color: Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor),
             ),
             const SizedBox(height: 16),
             user.description == ""
@@ -163,7 +174,9 @@ class _UserProfileState extends State<UserProfile> {
                     style: TextStyle(
                         fontSize: 16,
                         height: 1.4,
-                        color: (Styles.darkMode ? Colors.white : Colors.black)
+                        color: (Styles.darkMode
+                                ? Styles.darkTextColor
+                                : Styles.lightTextColor)
                             .withOpacity(0.65),
                         fontStyle: FontStyle.italic),
                   )
@@ -171,9 +184,10 @@ class _UserProfileState extends State<UserProfile> {
                     description: user.description,
                     fontSize: 16,
                     height: 1.4,
-                    defaultColor:
-                        (Styles.darkMode ? Colors.white : Colors.black)
-                            .withOpacity(0.65)),
+                    defaultColor: (Styles.darkMode
+                            ? Styles.darkTextColor
+                            : Styles.lightTextColor)
+                        .withOpacity(0.65)),
           ],
         ),
       );

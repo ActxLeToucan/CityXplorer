@@ -43,7 +43,7 @@ class _MenuState extends State<Menu> {
   Widget build(BuildContext context) {
     return Drawer(
         backgroundColor:
-            Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
+            Styles.darkMode ? Styles.darkElement : Styles.lightElement,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -62,9 +62,6 @@ class _MenuState extends State<Menu> {
                           : "@${_user.pseudo}"),
                   currentAccountPicture: _avatar(context)),
               ListTile(
-                tileColor: Styles.darkMode
-                    ? Styles.darkBackground
-                    : Styles.lightBackground,
                 leading: Icon(
                   _user.isEmpty() ? Icons.login : Icons.logout,
                   color: Styles.darkMode ? Styles.darkTextColor : Colors.grey,
@@ -95,9 +92,6 @@ class _MenuState extends State<Menu> {
                     )
                   : Container(),
               ListTile(
-                tileColor: Styles.darkMode
-                    ? Styles.darkBackground
-                    : Styles.lightBackground,
                 leading: Icon(Icons.people,
                     color:
                         Styles.darkMode ? Styles.darkTextColor : Colors.grey),
@@ -109,9 +103,6 @@ class _MenuState extends State<Menu> {
                 },
               ),
               ListTile(
-                tileColor: Styles.darkMode
-                    ? Styles.darkBackground
-                    : Styles.lightBackground,
                 leading: Icon(
                     Styles.darkMode ? Icons.nightlight_round : Icons.wb_sunny,
                     color:
@@ -135,6 +126,7 @@ class _MenuState extends State<Menu> {
                     iconSize: 40,
                     onPressed: () {
                       Fluttertoast.showToast(
+                          backgroundColor: Styles.mainColor,
                           msg: "Vous êtes administrateur💪.");
                     },
                   )

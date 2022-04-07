@@ -39,21 +39,39 @@ class _PostPageState extends State<PostPage> {
     if (_loaded) {
       if (_post.isEmpty()) {
         return Scaffold(
-            backgroundColor: (Styles.darkMode ? Colors.black : Colors.white),
+            backgroundColor: (Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground),
             appBar: defaultAppBar(context),
-            body: const Center(
-                child: Text("Post invalide.", textAlign: TextAlign.center)));
+            body: Center(
+                child: Text(
+              "Post invalide.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor),
+            )));
       } else if (_post.etat == Post.postEtatBloque &&
           _user.niveauAcces < 2 &&
           _user.pseudo != _post.userPseudo) {
         return Scaffold(
-            backgroundColor: (Styles.darkMode ? Colors.black : Colors.white),
+            backgroundColor: (Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground),
             appBar: defaultAppBar(context),
-            body: const Center(
-                child: Text("Post bloqué.", textAlign: TextAlign.center)));
+            body: Center(
+                child: Text("Post bloqué.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Styles.darkMode
+                            ? Styles.darkTextColor
+                            : Styles.lightTextColor))));
       } else {
         return Scaffold(
-            backgroundColor: (Styles.darkMode ? Colors.black : Colors.white),
+            backgroundColor: (Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground),
             appBar: defaultAppBar(context),
             body: RefreshIndicator(
               onRefresh: _load,
@@ -78,7 +96,9 @@ class _PostPageState extends State<PostPage> {
       }
     } else {
       return Scaffold(
-          backgroundColor: (Styles.darkMode ? Colors.black : Colors.white),
+          backgroundColor: (Styles.darkMode
+              ? Styles.darkBackground
+              : Styles.lightBackground),
           appBar: namedAppBar(context, "Chargement..."),
           body: const Center(child: CircularProgressIndicator()));
     }

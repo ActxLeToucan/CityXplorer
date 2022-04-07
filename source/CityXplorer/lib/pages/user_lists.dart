@@ -39,9 +39,13 @@ class _UserListsState extends State<UserLists> {
                 ? Styles.darkBackground
                 : Styles.lightBackground,
             appBar: namedAppBar(context, "CityXplorer"),
-            body: const Center(
+            body: Center(
                 child: Text("Utilisateur invalide.",
-                    textAlign: TextAlign.center)));
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Styles.darkMode
+                            ? Styles.darkTextColor
+                            : Styles.lightTextColor))));
       } else {
         return Scaffold(
           backgroundColor:

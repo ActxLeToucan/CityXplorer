@@ -45,7 +45,8 @@ class _NewListScreenState extends State<NewListScreen> {
   Widget build(BuildContext context) {
     if (_initialized) {
       return Scaffold(
-        backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
+        backgroundColor:
+            Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
         appBar: namedAppBar(context, "Créer une liste"),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -68,7 +69,6 @@ class _NewListScreenState extends State<NewListScreen> {
                       }
                       return null;
                     },
-                    textColor: Styles.darkMode ? Colors.white : Colors.black,
                   ),
                   InputField(
                     controller: controllerDescription,
@@ -77,7 +77,6 @@ class _NewListScreenState extends State<NewListScreen> {
                     minLines: 2,
                     maxLines: 5,
                     withBottomSpace: true,
-                    textColor: Styles.darkMode ? Colors.white : Colors.black,
                   ),
                   Button(
                     type: ButtonType.big,
@@ -93,6 +92,8 @@ class _NewListScreenState extends State<NewListScreen> {
       );
     } else {
       return Scaffold(
+          backgroundColor:
+              Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
           appBar: defaultAppBar(context),
           body: const Center(child: CircularProgressIndicator()));
     }
@@ -116,7 +117,8 @@ class _NewListScreenState extends State<NewListScreen> {
             headers: {'content-type': 'application/json'});
         final Map<String, dynamic> data = json.decode(response.body);
 
-        Fluttertoast.showToast(msg: data['message']);
+        Fluttertoast.showToast(
+            backgroundColor: Styles.mainColor, msg: data['message']);
 
         if (data['result'] == 1) {
           routerDelegate.popRoute();
@@ -124,6 +126,8 @@ class _NewListScreenState extends State<NewListScreen> {
       } catch (e) {
         print(e);
         Fluttertoast.showToast(
+            backgroundColor:
+                Styles.darkMode ? Styles.darkRed : Colors.redAccent,
             msg: "Impossible d'accéder à la base de données.");
       }
     }

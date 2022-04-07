@@ -43,16 +43,26 @@ class _ActionToListState extends State<ActionToList> {
     if (_initialized) {
       if (_createdLists.isEmpty) {
         return Scaffold(
-            backgroundColor: (Styles.darkMode ? Colors.black : Colors.white),
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             appBar: defaultAppBar(context),
-            body: const Center(child: Text("Listes invalides.")));
+            body: Center(
+                child: Text("Listes invalides.",
+                    style: TextStyle(
+                      color: Styles.darkMode
+                          ? Styles.darkTextColor
+                          : Styles.lightTextColor,
+                    ))));
       } else {
         List<Widget> mesListes = []; //Listes crées
         for (var element in _createdLists) {
           mesListes.add(_renderListTile(element.nomListe, element));
         }
         return Scaffold(
-            backgroundColor: (Styles.darkMode ? Colors.black : Colors.white),
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             appBar: defaultAppBar(context),
             body: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -62,7 +72,8 @@ class _ActionToListState extends State<ActionToList> {
       }
     } else {
       return Scaffold(
-          backgroundColor: (Styles.darkMode ? Colors.black : Colors.white),
+          backgroundColor:
+              Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
           appBar: defaultAppBar(context),
           body: const Center(child: CircularProgressIndicator()));
     }
@@ -87,7 +98,8 @@ class _ActionToListState extends State<ActionToList> {
 
   Widget _renderListTile(String s, Listes l) {
     return ListTile(
-      textColor: (Styles.darkMode ? Colors.white : Colors.black),
+      textColor:
+          (Styles.darkMode ? Styles.darkTextColor : Styles.lightTextColor),
       title: Text(s),
       trailing: IconMenuListEdit(
         user: _user,

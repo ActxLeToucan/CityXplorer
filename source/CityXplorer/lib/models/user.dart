@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:cityxplorer/models/post.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
@@ -9,6 +10,7 @@ import 'package:http/http.dart' as http;
 
 import '../conf.dart';
 import '../router/delegate.dart';
+import '../styles.dart';
 import 'listes.dart';
 
 class User {
@@ -62,7 +64,9 @@ class User {
       }
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
 
     return user;
@@ -99,7 +103,9 @@ class User {
       posts = List<Post>.from(data.map((model) => Post.fromJson(model)));
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
 
     return posts;
@@ -112,12 +118,14 @@ class User {
         Conf.domainServer + Conf.apiPath + "/liked_posts?pseudo=$pseudo";
     try {
       var response = await http.get(Uri.parse(url));
-      final List<dynamic> data = json.decode(response.body);
+      var data = json.decode(response.body);
 
       posts = List<Post>.from(data.map((model) => Post.fromJson(model)));
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
 
     return posts;
@@ -131,14 +139,15 @@ class User {
 
     try {
       var response = await http.get(Uri.parse(url));
-      //print("Problème dans Lists created");
-      //print(response.body);
-      final List<dynamic> data = json.decode(response.body);
+      var data = json.decode(response.body);
 
-      lists = List<Listes>.from(data.map((model) => Listes.fromJson(model)));
+      lists = List<Listes>.from(
+          data['listPost'].map((model) => Listes.fromJson(model)));
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
     return lists;
   }
@@ -151,14 +160,15 @@ class User {
 
     try {
       var response = await http.get(Uri.parse(url));
-      //print("Problème dans Lists liked");
-      final List<dynamic> data = json.decode(response.body);
+      var data = json.decode(response.body);
 
-      lists = List<Listes>.from(data.map((model) => Listes.fromJson(model)));
+      lists = List<Listes>.from(
+          data['listPost'].map((model) => Listes.fromJson(model)));
     } catch (e) {
       print(e);
       Fluttertoast.showToast(
-          msg: "Impossible d'accéder à la base de données par ici.");
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
     return lists;
   }

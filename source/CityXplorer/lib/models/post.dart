@@ -102,7 +102,9 @@ class Post {
       }
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
 
     return post;
@@ -428,12 +430,15 @@ class Post {
   void showValidation() {
     if (etat == postEtatBloque) {
       Fluttertoast.showToast(
+          backgroundColor: Styles.mainColor,
           msg: "Le post a été bloqué par un administrateur 😦 !");
     } else if (etat == postEtatValide) {
       Fluttertoast.showToast(
+          backgroundColor: Styles.mainColor,
           msg: "Le post a été validé par un administrateur ✌ !");
     } else {
       Fluttertoast.showToast(
+          backgroundColor: Styles.mainColor,
           msg: "Le post n'a pas encore été validé par un administeur 😶 !");
     }
   }

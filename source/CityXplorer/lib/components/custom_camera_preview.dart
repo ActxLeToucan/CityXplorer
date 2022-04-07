@@ -83,7 +83,10 @@ class _CustomCameraPreviewState extends State<CustomCameraPreview> {
                     });
                   }
                 } catch (e) {
-                  Fluttertoast.showToast(msg: 'Une erreur s\'est produite');
+                  Fluttertoast.showToast(
+                      backgroundColor:
+                          Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+                      msg: 'Une erreur s\'est produite');
                   setState(() {
                     isLoading = false;
                   });
@@ -212,8 +215,9 @@ class _CustomCameraPreviewState extends State<CustomCameraPreview> {
             onPressed: () async {
               if (imageFiles.isEmpty) {
                 Fluttertoast.showToast(
-                    msg: 'Prenez au moins une photo pour continuer',
-                    backgroundColor: Styles.mainColor);
+                    backgroundColor:
+                        Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+                    msg: 'Prenez au moins une photo pour continuer');
               } else {
                 List imagePaths = [];
                 for (var file in imageFiles) {
@@ -262,7 +266,9 @@ Future<List<double?>> _getLocation() async {
   if (!_serviceEnabled) {
     _serviceEnabled = await location.requestService();
     if (!_serviceEnabled) {
-      Fluttertoast.showToast(msg: 'Erreur : service désactivé !');
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: 'Erreur : service désactivé !');
       return res;
     }
   }
@@ -271,7 +277,9 @@ Future<List<double?>> _getLocation() async {
   if (_permissionGranted == PermissionStatus.denied) {
     _permissionGranted = await location.requestPermission();
     if (_permissionGranted != PermissionStatus.granted) {
-      Fluttertoast.showToast(msg: 'Erreur : permission manquante');
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: 'Erreur : permission manquante');
       return res;
     }
   }

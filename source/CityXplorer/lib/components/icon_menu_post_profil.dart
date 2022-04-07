@@ -188,14 +188,17 @@ class _IconMenuPostState extends State<IconMenuPost> {
       var response = await http.delete(Uri.parse(url));
       final Map<String, dynamic> data = json.decode(response.body);
 
-      Fluttertoast.showToast(msg: data['message']);
+      Fluttertoast.showToast(
+          backgroundColor: Styles.mainColor, msg: data['message']);
 
       if (data["result"] == 1) {
         routerDelegate.popRoute();
       }
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
   }
 
@@ -213,10 +216,13 @@ class _IconMenuPostState extends State<IconMenuPost> {
           body: json.encode(body),
           headers: {'content-type': 'application/json'});
       final Map<String, dynamic> data = json.decode(response.body);
-      Fluttertoast.showToast(msg: data['message']);
+      Fluttertoast.showToast(
+          backgroundColor: Styles.mainColor, msg: data['message']);
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
     Navigator.pop(context);
   }
@@ -232,10 +238,13 @@ class _IconMenuPostState extends State<IconMenuPost> {
           body: json.encode(body),
           headers: {'content-type': 'application/json'});
       final Map<String, dynamic> data = json.decode(response.body);
-      Fluttertoast.showToast(msg: data['message']);
+      Fluttertoast.showToast(
+          backgroundColor: Styles.mainColor, msg: data['message']);
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
   }
 }

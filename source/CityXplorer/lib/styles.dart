@@ -8,7 +8,7 @@ class Styles {
   static const Color darkTextColor = Colors.white;
   static const Color lightTextColor = Colors.black;
   static const Color lightElement = Colors.white;
-  static const Color darkElement = Color(0xFF1C1C1C);
+  static const Color darkElement = Color(0xFF202020);
 
   // global
   static const Color homeColor = Colors.lightGreen;

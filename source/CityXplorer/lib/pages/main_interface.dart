@@ -67,33 +67,38 @@ class _MainInterfaceState extends State<MainInterface> {
     ];
 
     return Scaffold(
-      backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
+      backgroundColor:
+          Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
       appBar: defaultAppBar(context),
       body: pages[_selectedIndex],
       drawer: const Menu(),
       bottomNavigationBar: _initialized && !_user.isEmpty()
           ? BottomNavigationBar(
-              backgroundColor: Styles.darkMode ? Colors.black12 : Colors.white,
+              backgroundColor:
+                  Styles.darkMode ? Styles.darkElement : Styles.lightElement,
               selectedItemColor:
                   Theme.of(context).textSelectionTheme.selectionColor,
               unselectedItemColor:
-                  Styles.darkMode ? Colors.white : Colors.black54,
+                  Styles.darkMode ? Styles.darkTextColor : Colors.black54,
               currentIndex: _selectedIndex,
               onTap: _onItemTapped,
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home,
-                      color: Styles.darkMode ? Colors.white : Colors.grey),
+                      color:
+                          Styles.darkMode ? Styles.darkTextColor : Colors.grey),
                   label: 'Accueil',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.add_a_photo_rounded,
-                      color: Styles.darkMode ? Colors.white : Colors.grey),
+                      color:
+                          Styles.darkMode ? Styles.darkTextColor : Colors.grey),
                   label: 'Créer un post',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.speed,
-                      color: Styles.darkMode ? Colors.white : Colors.grey),
+                      color:
+                          Styles.darkMode ? Styles.darkTextColor : Colors.grey),
                   label: 'Tableau de bord',
                 ),
               ],
@@ -109,7 +114,9 @@ class _MainInterfaceState extends State<MainInterface> {
       children: [
         Container(
           decoration: BoxDecoration(
-              color: (Styles.darkMode ? Colors.black : Colors.white)
+              color: (Styles.darkMode
+                      ? Styles.darkBackground
+                      : Styles.lightBackground)
                   .withOpacity(0.5)),
           height: footerHeight,
           child: Container(

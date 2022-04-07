@@ -57,7 +57,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
   Widget build(BuildContext context) {
     if (photos.isNotEmpty) {
       return Scaffold(
-        backgroundColor: Styles.darkMode ? Colors.black : Colors.white,
+        backgroundColor:
+            Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
         appBar: namedAppBar(context, "Créer un post"),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -72,8 +73,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   Text("Prise le : " + getCurrentDate(),
                       style: TextStyle(
                           fontSize: 16,
-                          color:
-                              Styles.darkMode ? Colors.white : Colors.black)),
+                          color: Styles.darkMode
+                              ? Styles.darkTextColor
+                              : Styles.lightTextColor)),
                   const SizedBox(height: 10),
                   InputField(
                     controller: controllerTitre,
@@ -114,19 +116,16 @@ class _NewPostScreenState extends State<NewPostScreen> {
       );
     } else {
       return Scaffold(
-          appBar: AppBar(
-            elevation: 0,
-            centerTitle: true,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => routerDelegate.popRoute(),
-            ),
-            title: const Text(
-              'Créer un post',
-            ),
-          ),
-          body: const Center(
-              child: Text("Photo invalide.", textAlign: TextAlign.center)));
+          backgroundColor:
+              Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
+          appBar: namedAppBar(context, "Créer un post"),
+          body: Center(
+              child: Text("Photo invalide.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Styles.darkMode
+                          ? Styles.darkTextColor
+                          : Styles.lightTextColor))));
     }
   }
 
@@ -206,6 +205,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
       } catch (e) {
         print(e);
         Fluttertoast.showToast(
+            backgroundColor:
+                Styles.darkMode ? Styles.darkRed : Colors.redAccent,
             msg: "Impossible d'accéder à la base de données.");
       }
     }
@@ -237,7 +238,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
       return adresses;
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
       return adresses;
     }
   }

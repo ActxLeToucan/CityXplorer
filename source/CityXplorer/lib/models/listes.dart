@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:cityxplorer/models/post.dart';
+import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 
 import '../conf.dart';
+import '../styles.dart';
 
 class Listes {
   final int id;
@@ -23,7 +25,9 @@ class Listes {
   factory Listes.fromJson(Map<String, dynamic> json) {
     var unescape = HtmlUnescape();
     return Listes(
-        id: json['idListe'],
+        id: json['isListe'] is String
+            ? int.parse(json['idListe'])
+            : json['idListe'],
         nomListe: unescape.convert(json['nomListe']),
         description: json['descrListe'],
         pseudoCreateur: json['pseudo']);
@@ -43,7 +47,9 @@ class Listes {
       }
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
 
     return liste;
@@ -73,7 +79,9 @@ class Listes {
       }
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
     return posts;
   }

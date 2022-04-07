@@ -46,11 +46,22 @@ class _PageListState extends State<PageList> {
     if (_initialized) {
       if (_list.isEmpty()) {
         return Scaffold(
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             appBar: defaultAppBar(context),
-            body: const Center(
-                child: Text("Liste invalide.", textAlign: TextAlign.center)));
+            body: Center(
+                child: Text("Liste invalide.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Styles.darkMode
+                            ? Styles.darkTextColor
+                            : Styles.lightTextColor))));
       } else {
         return Scaffold(
+            backgroundColor: Styles.darkMode
+                ? Styles.darkBackground
+                : Styles.lightBackground,
             appBar: defaultAppBar(context),
             body: ListView(
               physics: const BouncingScrollPhysics(),
@@ -59,6 +70,8 @@ class _PageListState extends State<PageList> {
       }
     } else {
       return Scaffold(
+          backgroundColor:
+              Styles.darkMode ? Styles.darkBackground : Styles.lightBackground,
           appBar: defaultAppBar(context),
           body: const Center(child: CircularProgressIndicator()));
     }
@@ -90,8 +103,13 @@ class _PageListState extends State<PageList> {
       }
     }
     if (list.isEmpty) {
-      return const Center(
-        child: Text("Cette liste est vide.", textAlign: TextAlign.center),
+      return Center(
+        child: Text("Cette liste est vide.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Styles.darkMode
+                    ? Styles.darkTextColor
+                    : Styles.lightTextColor)),
       );
     }
     return Column(children: list);
@@ -107,7 +125,11 @@ class _PageListState extends State<PageList> {
               children: [
                 Expanded(
                     child: Text(_list.nomListe,
-                        style: const TextStyle(fontSize: 20))),
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Styles.darkMode
+                                ? Styles.darkTextColor
+                                : Styles.lightTextColor))),
                 IconButton(
                   padding: EdgeInsets.zero,
                   icon: Icon(_liked ? Icons.check : Icons.add),
@@ -122,11 +144,19 @@ class _PageListState extends State<PageList> {
               description: _list.description.trim() == ""
                   ? "Pas de descrption"
                   : _list.description,
-              defaultColor: Colors.black.withOpacity(0.65)),
+              defaultColor: (Styles.darkMode
+                      ? Styles.darkTextColor
+                      : Styles.lightTextColor)
+                  .withOpacity(0.65)),
         ),
         Center(
           child: IconButton(
-              icon: const Icon(Icons.share),
+              icon: Icon(
+                Icons.share,
+                color: Styles.darkMode
+                    ? Styles.darkTextColor
+                    : Styles.lightTextColor,
+              ),
               onPressed: () =>
                   Share.share("${Conf.domainServer}/list?id=${_list.id}")),
         ),
@@ -149,6 +179,7 @@ class _PageListState extends State<PageList> {
     bool fav = _liked;
     if (_user.isEmpty()) {
       Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
           msg: "Vous devez être connecté pour enregistrer une liste.");
       return;
     }
@@ -169,7 +200,8 @@ class _PageListState extends State<PageList> {
               headers: {'content-type': 'application/json'});
       final Map<String, dynamic> data = json.decode(response.body);
 
-      Fluttertoast.showToast(msg: data['message']);
+      Fluttertoast.showToast(
+          backgroundColor: Styles.mainColor, msg: data['message']);
 
       if (data['result'] == 1) {
         setState(() {
@@ -178,7 +210,9 @@ class _PageListState extends State<PageList> {
       }
     } catch (e) {
       print(e);
-      Fluttertoast.showToast(msg: "Impossible d'accéder à la base de données.");
+      Fluttertoast.showToast(
+          backgroundColor: Styles.darkMode ? Styles.darkRed : Colors.redAccent,
+          msg: "Impossible d'accéder à la base de données.");
     }
   }
 }
