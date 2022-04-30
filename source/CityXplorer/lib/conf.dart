@@ -1,3 +1,4 @@
+import 'package:cityxplorer/conf_private.dart';
 import 'package:flutter/material.dart';
 
 class Conf {
@@ -8,7 +9,7 @@ class Conf {
   static const String domainServer = "https://cityxplorer.streamlor.io";
   static const String apiPath = _apiDev ? apiDevPath : "/api";
   static const String apiDevPath = "/api-dev";
-  static const String googleApiKey = "AIzaSyCoZ5pkSaTZk3rpiGrm3yuTIj48y7NdncU";
+  static const String googleApiKey = ConfPrivate.googleApiKey;
   static const String downloadRelease =
       "$domainServer/download/cityxplorer.apk";
   static const List downloadable = [TargetPlatform.android];
