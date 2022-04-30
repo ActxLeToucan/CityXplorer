@@ -2,3 +2,7 @@
 .idea/
 
 source/CityXplorer/lib/conf_private.dart
+
+source/CityXplorer/web/index.html
+
+source/CityXplorer/android/app/src/main/AndroidManifest.xml
