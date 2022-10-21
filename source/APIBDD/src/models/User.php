@@ -12,12 +12,12 @@ class User extends Model {
     public $timestamps = false;
 
     public function posts(): HasMany {
-        return $this->hasMany('cityXplorer\models\Post',"idUser");
+        return $this->hasMany(Post::class, "idUser");
     }
 
     public function likes(): BelongsToMany {
         return $this->belongsToMany(
-            "cityXplorer\models\Post",
+            Post::class,
             "avotepour",
             "idUtilisateur",
             "idPost"
@@ -25,12 +25,12 @@ class User extends Model {
     }
 
     public function createdLists(): HasMany {
-        return $this->hasMany('cityXplorer\models\Liste', 'idCreateur');
+        return $this->hasMany(Liste::class, 'idCreateur');
     }
 
     public function listLikes(): BelongsToMany{
         return $this->belongsToMany(
-            'cityXplorer\models\Liste',
+            Liste::class,
             'listeEnregistrees',
             'idUtilisateur',
             'IdListe'

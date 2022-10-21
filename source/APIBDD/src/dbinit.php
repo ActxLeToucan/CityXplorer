@@ -11,7 +11,7 @@ class dbInit {
      * @return Container
      */
     public static function init() : Container {
-        $tabFile = parse_ini_file("src".DIRECTORY_SEPARATOR."conf".DIRECTORY_SEPARATOR."conf.init.dist");
+        $tabFile = parse_ini_file("src".DIRECTORY_SEPARATOR."conf".DIRECTORY_SEPARATOR."db.ini");
 
         $db = new DB();
 

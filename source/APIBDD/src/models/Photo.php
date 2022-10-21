@@ -2,7 +2,7 @@
 
 namespace cityXplorer\models;
 
-use cityXplorer\Conf;
+use cityXplorer\conf\Conf;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -12,11 +12,11 @@ class Photo extends Model{
     public $timestamps = false;
 
     public function post(): BelongsTo {
-        return $this->belongsTo('cityXplorer\models\Post',"idPost");
+        return $this->belongsTo(Post::class, "idPost");
     }
 
     public function user(): BelongsTo {
-        return $this->belongsTo('cityXplorer\models\User', 'idUser');
+        return $this->belongsTo(User::class, 'idUser');
     }
 
     public function deleteFile() {

@@ -23,10 +23,6 @@ class ListController{
     }
 
     public function createList(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('createList');
-        $url = $base . $route_uri;
         $content = $rq->getParsedBody();
 
 
@@ -65,10 +61,6 @@ class ListController{
         return $rs->withJSON($tab, 200);
     }
     public function enregistrerPostList(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('insertPostToList');
-        $url = $base . $route_uri;
         $content = $rq->getQueryParams();
 
         $idPost=$content['idPost'];
@@ -119,11 +111,6 @@ class ListController{
 
 
     public function supprimerPostList(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('deletePostToList');
-        $url = $base . $route_uri;
-
         $idPost = $rq->getQueryParam('idPost', -1);
         $idList = $rq->getQueryParam('idList', -1);
         $token = $rq->getQueryParam('token', '_');
@@ -167,16 +154,11 @@ class ListController{
 
         return $rs->withJSON([
             "result" => 1,
-            "message" => "Post {$idPost} supprimé de la liste {$nomList}",
+            "message" => "Post $idPost supprimé de la liste $nomList",
         ], 200);
     }
 
     public function editList(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('edit_list');
-        $url = $base . $route_uri;
-
         $content = $rq->getParsedBody();
 
         $titre = filter_var($content['titre'] ?? "Sans titre", FILTER_SANITIZE_STRING);
@@ -222,10 +204,6 @@ class ListController{
 
 
     public function supprimerList(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('deleteList');
-        $url = $base . $route_uri;
         $content = $rq->getQueryParams();
         $idList=$content["idList"];
         $tab = [
@@ -264,11 +242,6 @@ class ListController{
 
     // enregistrement d'une liste (= like)
     public function likeList(Request $rq,Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('likeList');
-        $url = $base . $route_uri;
-
         $content = $rq->getParsedBody();
 
         if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
@@ -298,11 +271,6 @@ class ListController{
     }
 
     public function dislikeList(Request $rq,Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('dislikeList');
-        $url = $base . $route_uri;
-
         $content = $rq->getParsedBody();
 
         if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
@@ -332,10 +300,6 @@ class ListController{
     }
 
     public function getPostList(Request $rq,Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('postFromList');
-        $url = $base . $route_uri;
         $content = $rq->getQueryParams();
         $idList = $content["idList"];
         $tab = [
@@ -343,23 +307,19 @@ class ListController{
             "message" => "Erreur lors de la récupération des posts de la list",
             "listPost" => []
         ];
-                $list=Liste::where("idliste","=",$idList)->first();
-                $t = [];
-                foreach ($list->posts as $Post){
-                    //echo $Post;
-                    $t[] = $Post->toArray();
-                }
-                $tab =["result" => 1,
-                    "message" => "Récupération des posts de la list {$idList}",
-                    "listPost" => $t];
+        $list=Liste::where("idliste","=",$idList)->first();
+        $t = [];
+        foreach ($list->posts as $Post){
+            //echo $Post;
+            $t[] = $Post->toArray();
+        }
+        $tab =["result" => 1,
+            "message" => "Récupération des posts de la list $idList",
+            "listPost" => $t];
         return $rs->withJSON($tab, 200);
     }
 
     public function getLikedListUser(Request $rq,Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('ListLikedFromUser');
-        $url = $base . $route_uri;
         $content = $rq->getQueryParams();
         $tab = [
             "result" => 0,
@@ -389,10 +349,6 @@ class ListController{
     }
 
     public function getCreatedListUser(Request $rq,Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('ListCreatedByUser');
-        $url = $base . $route_uri;
         $content = $rq->getQueryParams();
         $tab = [
             "result" => 0,
@@ -422,11 +378,6 @@ class ListController{
     }
 
     public function getListById(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('get_list_id');
-        $url = $base . $route_uri;
-
         $id = $rq->getQueryParam('id', -1);
         if (is_null($list = Liste::find($id))) {
             return $rs->withJSON([

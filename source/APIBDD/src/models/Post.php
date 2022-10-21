@@ -17,16 +17,16 @@ class Post extends Model{
     const ETAT_BLOQUE = -1;
 
     public function photos(): HasMany {
-        return $this->hasMany('cityXplorer\models\Photo',"idPost");
+        return $this->hasMany(Photo::class, "idPost");
     }
 
     public function user(): BelongsTo {
-        return $this->belongsTo('cityXplorer\models\User', 'idUser');
+        return $this->belongsTo(User::class, 'idUser');
     }
 
     public function likedByUsers(): BelongsToMany {
         return $this->belongsToMany(
-            "cityXplorer\models\User",
+            User::class,
             "avotepour",
             "idPost",
             "idUtilisateur"
@@ -35,7 +35,7 @@ class Post extends Model{
 
     public function lists(): BelongsToMany{
         return $this->belongsToMany(
-            "cityXplorer\models\Liste",
+            Liste::class,
             "contient",
             "idPost",
             "idListe"

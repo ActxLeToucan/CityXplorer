@@ -1,5 +1,4 @@
 .idea/
 projet.iml
-/src/conf/conf.init.dist
+/src/conf/*
 /vendor/
-src/conf/webetu_conf.init.dist

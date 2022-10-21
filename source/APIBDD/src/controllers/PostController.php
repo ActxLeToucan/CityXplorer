@@ -2,13 +2,12 @@
 
 namespace cityXplorer\controllers;
 
-use cityXplorer\models\User;
-use cityXplorer\models\Partage;
+use cityXplorer\conf\Conf;
 use cityXplorer\models\Photo;
 use cityXplorer\models\Post;
-use cityXplorer\Conf;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use cityXplorer\models\User;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 class PostController {
     const TAILLE_TITRE_MAX = 100;
@@ -34,11 +33,6 @@ class PostController {
      * @return Response
      */
     public function addPost(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('createPost');
-        $url = $base . $route_uri;
-
         $content = $rq->getParsedBody();
 
         $startTime = strtotime($content['date']);
@@ -135,11 +129,6 @@ class PostController {
      * @return Response
      */
     public function getPostById(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('postId');
-        $url = $base . $route_uri;
-
         $id=$rq->getQueryParam("id", -1);
 
         $postExist = Post::where("idPost", "=", $id)->count();
@@ -165,11 +154,6 @@ class PostController {
      * @return Response
      */
     public function getUserPosts(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('postsUser');
-        $url = $base . $route_uri;
-
         $content = $rq->getQueryParams();
         $pseudo = $content['pseudo'];
 
@@ -189,11 +173,6 @@ class PostController {
     }
 
     public function delete(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('delete');
-        $url = $base . $route_uri;
-
         if (!isset($rq->getQueryParams()['token']) || is_null($user = User::where("token", "=", $rq->getQueryParam('token'))->first())) {
             return $rs->withJSON([
                 "result" => 0,
@@ -218,11 +197,6 @@ class PostController {
 
 
     public function like(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('like');
-        $url = $base . $route_uri;
-
         $content = $rq->getParsedBody();
 
         if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
@@ -252,11 +226,6 @@ class PostController {
     }
 
     public function dislike(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('dislike');
-        $url = $base . $route_uri;
-
         $content = $rq->getParsedBody();
 
         if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
@@ -286,11 +255,6 @@ class PostController {
     }
 
     public function editPost(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('edit_post');
-        $url = $base . $route_uri;
-
         $content = $rq->getParsedBody();
 
         $titre = filter_var($content['titre'] ?? "Sans titre", FILTER_SANITIZE_STRING);
@@ -335,11 +299,6 @@ class PostController {
     }
 
     public function setEtat(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('set_etat_post');
-        $url = $base . $route_uri;
-
         $content = $rq->getParsedBody();
 
         $etat = filter_var($content['etat'] ?? Post::ETAT_EN_ATTENTE, FILTER_SANITIZE_NUMBER_INT);
@@ -382,11 +341,6 @@ class PostController {
     }
 
     public function getPendingPosts(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('pending_posts');
-        $url = $base . $route_uri;
-
         $token = $rq->getQueryParam('token', '_');
         if (is_null($user = User::where('token', '=', $token)->first())) {
             return $rs->withJSON([
@@ -412,11 +366,6 @@ class PostController {
     }
 
     public function setPostPending(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('set_post_pending');
-        $url = $base . $route_uri;
-
         $content = $rq->getParsedBody();
 
         if (!isset($content['token']) || is_null($user = User::where("token", "=", $content['token'])->first())) {
@@ -457,11 +406,6 @@ class PostController {
     }
 
     public function getLikedPosts(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('liked_posts');
-        $url = $base . $route_uri;
-
         $content = $rq->getQueryParams();
         $pseudo = $content['pseudo'];
 

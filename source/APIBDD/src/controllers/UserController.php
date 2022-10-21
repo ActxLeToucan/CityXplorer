@@ -3,10 +3,10 @@
 
 namespace cityXplorer\controllers;
 
-use cityXplorer\Conf;
+use cityXplorer\conf\Conf;
 use cityXplorer\models\User;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 class UserController {
     const TAILLE_PSEUDO_MIN = 4;
@@ -39,10 +39,6 @@ class UserController {
      * @return Response
      */
     public function register(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('register');
-        $url = $base . $route_uri;
         $content = $rq->getParsedBody();
 
         $pseudo = filter_var($content['pseudo'], FILTER_SANITIZE_STRING);
@@ -128,10 +124,6 @@ class UserController {
      * @return Response
      */
     public function login(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('login');
-        $url = $base . $route_uri;
         $content = $rq->getParsedBody();
 
         $pseudo = $content['pseudo'];
@@ -160,18 +152,13 @@ class UserController {
     }
 
     /**
-     * Méthode servant à récupérer tout les utilisateurs dont le pseudo ressemble à celui donné
+     * Méthode servant à récupérer tous les utilisateurs dont le pseudo ressemble à celui donné
      * @param Request $rq
      * @param Response $rs
      * @param array $args
      * @return Response
      */
     public function searchUsers(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('users');
-        $url = $base . $route_uri;
-
         if (isset($_GET['q']) && $_GET['q'] !== "") {
             $usernameToSearch = '%'.$_GET["q"].'%';
             $users = User::where("pseudo","like",strtolower($usernameToSearch))->get();
@@ -186,10 +173,6 @@ class UserController {
     }
 
     public function user(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('user');
-        $url = $base . $route_uri;
         $pseudo=$rq->getQueryParam('pseudo', '_');
 
         $userNameExist = User::where("pseudo", "=", $pseudo)->count();
@@ -210,11 +193,6 @@ class UserController {
     }
 
     public function editUser(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('edit_user');
-        $url = $base . $route_uri;
-
         $content = $rq->getParsedBody();
 
         $name = filter_var($content['name'] ?? "name", FILTER_SANITIZE_STRING);
@@ -246,11 +224,6 @@ class UserController {
     }
 
     public function deleteUser(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('del_user');
-        $url = $base . $route_uri;
-
         if (!isset($rq->getQueryParams()['token'])) {
             return $rs->withJSON([
                 "result" => 0,
@@ -284,11 +257,6 @@ class UserController {
     }
 
     public function avatar(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('avatar');
-        $url = $base . $route_uri;
-
         $tab = [
             "result" => 0,
             "message" => "Erreur : Modification impossible"
@@ -306,10 +274,10 @@ class UserController {
                     $cheminServeur = $_FILES['avatar']['tmp_name'];
                     $extension = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
                     $fileName = time() . bin2hex(openssl_random_pseudo_bytes(20)) . '.' . $extension;
-                    $uploadFile = Conf::PATH_IMAGE_AVATAR . "/$fileName";
+                    $uploadFile = Conf::PATH_IMAGE_AVATARS . "/$fileName";
                     move_uploaded_file($cheminServeur, $uploadFile);
 
-                    if ($user->avatar != "" && !str_starts_with($user->avatar, '_') && file_exists(Conf::PATH_IMAGE_AVATAR . "/$user->avatar")) unlink(Conf::PATH_IMAGE_AVATAR . "/$user->avatar");
+                    if ($user->avatar != "" && !str_starts_with($user->avatar, '_') && file_exists(Conf::PATH_IMAGE_AVATARS . "/$user->avatar")) unlink(Conf::PATH_IMAGE_AVATARS . "/$user->avatar");
 
                     $user->avatar = $fileName;
                     $user->save();
@@ -332,11 +300,6 @@ class UserController {
     }
 
     public function changePass(Request $rq, Response $rs, array $args): Response {
-        $container = $this->c;
-        $base = $rq->getUri()->getBasePath();
-        $route_uri = $container->router->pathFor('change_pass');
-        $url = $base . $route_uri;
-
         $content = $rq->getParsedBody();
 
         $token = $content['token'];

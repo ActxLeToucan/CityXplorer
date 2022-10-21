@@ -13,23 +13,21 @@ class Liste extends Model {
     public $timestamps = false;
 
     public function creator():BelongsTo{
-        return $this->belongsTo(
-            'cityXplorer\models\User', 'idCreateur');
+        return $this->belongsTo(User::class, 'idCreateur');
     }
 
     public function likers(): BelongsToMany{
         return $this->belongsToMany(
-            'cityXplorer\models\User',
+            User::class,
             'listeEnregistrees',
             'IdListe',
             'idUtilisateur'
-
         );
     }
 
     public function posts(): BelongsToMany{
         return $this->belongsToMany(
-            'cityXplorer\models\Post',
+            Post::class,
             'contient',
             'idListe',
             'idPost'
