@@ -91,7 +91,7 @@ class Post {
   static Future<Post> fromId(String id) async {
     Post post = Post.empty();
 
-    String url = Conf.domainServer + Conf.apiPath + "/post?id=$id";
+    String url = Conf.domainApi + "/post?id=$id";
     try {
       var response = await http.get(Uri.parse(url));
       final Map<String, dynamic> data = json.decode(response.body);

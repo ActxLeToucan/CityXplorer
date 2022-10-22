@@ -184,7 +184,7 @@ class _PageListState extends State<PageList> {
       return;
     }
 
-    String url = Conf.domainServer + Conf.apiPath + "/saved_list";
+    String url = Conf.domainApi + "/saved_list";
     Map<String, dynamic> body = {
       "token": _user.token,
       "id": _list.id,

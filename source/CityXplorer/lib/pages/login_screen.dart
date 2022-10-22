@@ -129,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future login() async {
     if (_formKey.currentState!.validate()) {
-      String url = Conf.domainServer + Conf.apiPath + "/login";
+      String url = Conf.domainApi + "/login";
       Map<String, dynamic> body = {
         'pseudo': pseudo.text,
         'password': password.text,

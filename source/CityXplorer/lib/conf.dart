@@ -2,13 +2,8 @@ import 'package:cityxplorer/conf_private.dart';
 import 'package:flutter/material.dart';
 
 class Conf {
-  // TODO utiliser la version publique de l'api
-  // uniquement pour le développement, laisser à false sinon
-  static const bool _apiDev = false;
-
-  static const String domainServer = "https://cityxplorer.streamlor.io";
-  static const String apiPath = _apiDev ? apiDevPath : "/api";
-  static const String apiDevPath = "/api-dev";
+  static const String domainServer = "https://cityxplorer.antoinectx.fr";
+  static const String domainApi = "https://cityxplorer.api.antoinectx.fr";
   static const String googleApiKey = ConfPrivate.googleApiKey;
   static const String downloadRelease =
       "$domainServer/download/cityxplorer.apk";

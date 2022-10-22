@@ -85,7 +85,7 @@ class _ListeItemState extends State<ListeItem> {
       return;
     }
 
-    String url = Conf.domainServer + Conf.apiPath + "/saved_list";
+    String url = Conf.domainApi + "/saved_list";
     Map<String, dynamic> body = {
       "token": widget.user.token,
       "id": widget.liste.id,

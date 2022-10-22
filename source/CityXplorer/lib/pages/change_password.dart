@@ -155,7 +155,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   Future<void> changePass() async {
     if (_formKey.currentState!.validate()) {
-      String url = Conf.domainServer + Conf.apiPath + "/change_password";
+      String url = Conf.domainApi + "/change_password";
       Map<String, dynamic> body = {
         'token': _user.token,
         'oldPassword': oldPassword.text,

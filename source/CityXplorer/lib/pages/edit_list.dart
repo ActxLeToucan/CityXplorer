@@ -122,7 +122,7 @@ class _EditListState extends State<EditListPage> {
   //à implémenter
   Future<void> editList() async {
     if (_formKey.currentState!.validate()) {
-      String url = Conf.domainServer + Conf.apiPath + "/list";
+      String url = Conf.domainApi + "/list";
       Map<String, dynamic> body = {
         "id": _list.id,
         "token": _user.token,

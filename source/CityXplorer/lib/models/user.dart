@@ -53,7 +53,7 @@ class User {
   static Future<User> fromPseudo(String pseudo) async {
     User user = User.empty();
 
-    String url = Conf.domainServer + Conf.apiPath + "/user?pseudo=$pseudo";
+    String url = Conf.domainApi + "/user?pseudo=$pseudo";
     try {
       var response = await http.get(Uri.parse(url));
       final Map<String, dynamic> data = json.decode(response.body);
@@ -95,7 +95,7 @@ class User {
   Future<List<Post>> getPosts() async {
     List<Post> posts = [];
 
-    String url = Conf.domainServer + Conf.apiPath + "/postsUser?pseudo=$pseudo";
+    String url = Conf.domainApi + "/postsUser?pseudo=$pseudo";
     try {
       var response = await http.get(Uri.parse(url));
       final List<dynamic> data = json.decode(response.body);
@@ -114,8 +114,7 @@ class User {
   Future<List<Post>> getLikedPosts() async {
     List<Post> posts = [];
 
-    String url =
-        Conf.domainServer + Conf.apiPath + "/liked_posts?pseudo=$pseudo";
+    String url = Conf.domainApi + "/liked_posts?pseudo=$pseudo";
     try {
       var response = await http.get(Uri.parse(url));
       var data = json.decode(response.body);
@@ -134,8 +133,7 @@ class User {
   Future<List<Listes>> getListsCreated() async {
     List<Listes> lists = [];
 
-    String url =
-        Conf.domainServer + Conf.apiPath + "/listCreatedUser?pseudo=$pseudo";
+    String url = Conf.domainApi + "/listCreatedUser?pseudo=$pseudo";
 
     try {
       var response = await http.get(Uri.parse(url));
@@ -155,8 +153,7 @@ class User {
   Future<List<Listes>> getListsLiked() async {
     List<Listes> lists = [];
 
-    String url =
-        Conf.domainServer + Conf.apiPath + "/listLikedUser?pseudo=$pseudo";
+    String url = Conf.domainApi + "/listLikedUser?pseudo=$pseudo";
 
     try {
       var response = await http.get(Uri.parse(url));

@@ -118,9 +118,8 @@ class _AddPostToListState extends State<AddPostToList> {
 
   Future<void> _sendPostToList(int idPost, int idList) async {
     var tk = _user.token;
-    String url = Conf.domainServer +
-        Conf.apiPath +
-        "/postList?idPost=$idPost&idList=$idList&token=$tk";
+    String url =
+        Conf.domainApi + "/postList?idPost=$idPost&idList=$idList&token=$tk";
     try {
       var response = await http
           .post(Uri.parse(url), headers: {'content-type': 'application/json'});

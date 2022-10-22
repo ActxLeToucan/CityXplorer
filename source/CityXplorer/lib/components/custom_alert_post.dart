@@ -27,7 +27,7 @@ class _AdvanceCustomAlertState extends State<AdvanceCustomAlert> {
     return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
         child: Stack(
-          overflow: Overflow.visible,
+          clipBehavior: Clip.none,
           alignment: Alignment.topCenter,
           children: [
             SizedBox(

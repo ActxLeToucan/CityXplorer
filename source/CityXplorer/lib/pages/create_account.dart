@@ -168,7 +168,7 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
 
   Future register() async {
     if (_formKey.currentState!.validate()) {
-      String url = Conf.domainServer + Conf.apiPath + "/register";
+      String url = Conf.domainApi + "/register";
       Map<String, dynamic> body = {
         "pseudo": pseudo.text,
         "password": password.text,

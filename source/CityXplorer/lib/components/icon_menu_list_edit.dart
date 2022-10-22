@@ -109,8 +109,7 @@ class _IconMenuListEditState extends State<IconMenuListEdit> {
   }
 
   Future<void> deleteList(BuildContext context) async {
-    String url = Conf.domainServer +
-        Conf.apiPath +
+    String url = Conf.domainApi +
         "/list?idList=${widget.list.id}&token=${widget.user.token}";
     try {
       var response = await http.delete(Uri.parse(url));

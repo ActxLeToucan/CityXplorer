@@ -104,7 +104,7 @@ class _NewListScreenState extends State<NewListScreen> {
   /// methode appelee lors de la creation de la list dans la BDD
   Future<void> envoyerLaList() async {
     if (_formKey.currentState!.validate()) {
-      String url = Conf.domainServer + Conf.apiPath + "/list";
+      String url = Conf.domainApi + "/list";
       Map<String, dynamic> body = {
         "token": _user.token,
         "titre": controllerTitre.text,

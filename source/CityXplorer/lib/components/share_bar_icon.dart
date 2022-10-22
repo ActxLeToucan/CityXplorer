@@ -74,7 +74,7 @@ class _ShareBarState extends State<ShareBar> {
       return _isFavorited;
     }
 
-    String url = Conf.domainServer + Conf.apiPath + "/like";
+    String url = Conf.domainApi + "/like";
     Map<String, dynamic> body = {
       "token": user.token,
       "id": widget.post.id,

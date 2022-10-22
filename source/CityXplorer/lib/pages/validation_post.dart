@@ -103,8 +103,7 @@ class _ValidationPostState extends State<ValidationPost> {
 
   Future<List<Post>> getPosts(UserConnected user) async {
     List<Post> posts = [];
-    String url =
-        Conf.domainServer + Conf.apiPath + "/pending_posts?token=${user.token}";
+    String url = Conf.domainApi + "/pending_posts?token=${user.token}";
     try {
       var response = await http.get(Uri.parse(url));
       final Map<String, dynamic> data = json.decode(response.body);

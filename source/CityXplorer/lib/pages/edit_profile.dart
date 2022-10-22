@@ -154,7 +154,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     setState(() {
       _initialized = false;
     });
-    String url = Conf.domainServer + Conf.apiPath + "/avatar";
+    String url = Conf.domainApi + "/avatar";
     var request = http.MultipartRequest("POST", Uri.parse(url));
     request.fields['token'] = _user.token;
 
@@ -214,7 +214,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   Future<void> editProfile() async {
     if (_formKey.currentState!.validate()) {
-      String url = Conf.domainServer + Conf.apiPath + "/user";
+      String url = Conf.domainApi + "/user";
       Map<String, dynamic> body = {
         "token": _user.token,
         "name": name.text,
@@ -244,9 +244,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> deleteAccount() async {
-    String url = Conf.domainServer +
-        Conf.apiPath +
-        "/user?pseudo=${_user.pseudo}&token=${_user.token}";
+    String url =
+        Conf.domainApi + "/user?pseudo=${_user.pseudo}&token=${_user.token}";
 
     try {
       var response = await http.delete(Uri.parse(url));

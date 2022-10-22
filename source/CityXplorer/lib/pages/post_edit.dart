@@ -139,7 +139,7 @@ class _PostEditState extends State<PostEdit> {
 
   Future<void> editPost() async {
     if (_formKey.currentState!.validate()) {
-      String url = Conf.domainServer + Conf.apiPath + "/post";
+      String url = Conf.domainApi + "/post";
       Map<String, dynamic> body = {
         "token": _user.token,
         "id": _post.id,

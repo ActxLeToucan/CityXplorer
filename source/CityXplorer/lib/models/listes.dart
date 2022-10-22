@@ -36,7 +36,7 @@ class Listes {
   static Future<Listes> fromId(String id) async {
     Listes liste = Listes.empty();
 
-    String url = Conf.domainServer + Conf.apiPath + "/list?id=$id";
+    String url = Conf.domainApi + "/list?id=$id";
     try {
       var response = await http.get(Uri.parse(url));
       final Map<String, dynamic> data = json.decode(response.body);
@@ -66,7 +66,7 @@ class Listes {
 
   Future<List<Post>> getPostsOfList() async {
     List<Post> posts = [];
-    String url = Conf.domainServer + Conf.apiPath + "/postFromList?idList=$id";
+    String url = Conf.domainApi + "/postFromList?idList=$id";
     try {
       var response = await http.get(Uri.parse(url));
       final Map<String, dynamic> data = json.decode(response.body);

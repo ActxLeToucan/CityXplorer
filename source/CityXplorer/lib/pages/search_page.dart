@@ -74,8 +74,7 @@ class _SearchPageState extends State<SearchPage> {
       textInputAction: TextInputAction.search,
       controller: _controller,
       onSubmitted: (String text) async {
-        String url =
-            Conf.domainServer + Conf.apiPath + "/users?q=${text.toLowerCase()}";
+        String url = Conf.domainApi + "/users?q=${text.toLowerCase()}";
 
         _list = [];
         try {

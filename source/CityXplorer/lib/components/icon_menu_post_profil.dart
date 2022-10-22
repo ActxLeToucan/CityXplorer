@@ -180,8 +180,7 @@ class _IconMenuPostState extends State<IconMenuPost> {
   }
 
   Future<void> deletePost() async {
-    String url = Conf.domainServer +
-        Conf.apiPath +
+    String url = Conf.domainApi +
         "/post?id=${widget.post.id}&token=${widget.user.token}";
 
     try {
@@ -205,7 +204,7 @@ class _IconMenuPostState extends State<IconMenuPost> {
   /// methode qui envoie une requete patch avec en parametre l etat final du post
   /// affiche un toast pour l utilisateur l informant du resultat
   Future<void> changeState(String newState) async {
-    String url = Conf.domainServer + Conf.apiPath + "/post";
+    String url = Conf.domainApi + "/post";
     Map<String, dynamic> body = {
       "token": widget.user.token,
       "id": widget.post.id,
@@ -228,7 +227,7 @@ class _IconMenuPostState extends State<IconMenuPost> {
   }
 
   Future<void> blockedToPending() async {
-    String url = Conf.domainServer + Conf.apiPath + "/post_pending";
+    String url = Conf.domainApi + "/post_pending";
     Map<String, dynamic> body = {
       "token": widget.user.token,
       "id": widget.post.id
