@@ -25,8 +25,8 @@ class _AdvanceCustomAlertState extends State<AdvanceCustomAlert> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
-        child: Stack(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+      child: Stack(
           clipBehavior: Clip.none,
           alignment: Alignment.topCenter,
           children: [
@@ -34,35 +34,31 @@ class _AdvanceCustomAlertState extends State<AdvanceCustomAlert> {
               height: 200,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(10, 70, 10, 10),
-                child: Column(
-                  children: [
-                    Text(
-                      widget.message,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 20),
+                child: Column(children: [
+                  Text(
+                    widget.message,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    (noErr()
+                        ? 'Et voilà le post est créé 👍'
+                        : 'Une erreur est survenue 🤔'),
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            noErr() ? Colors.green : Colors.red)),
+                    child: Text(
+                      (noErr() ? 'Super ! ' : 'Mince ...'),
+                      style: const TextStyle(color: Colors.white),
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      (noErr()
-                          ? 'Et voilà le post est créé 👍'
-                          : 'Une erreur est survenue 🤔'),
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    RaisedButton(
-                      onPressed: () => Navigator.pop(context),
-                      color: (noErr() ? Colors.lightGreen : Colors.redAccent),
-                      child: Text(
-                        (noErr() ? 'Super ! ' : 'Mince ...'),
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ]),
               ),
             ),
             Positioned(
@@ -76,8 +72,8 @@ class _AdvanceCustomAlertState extends State<AdvanceCustomAlert> {
                     size: 80,
                   ),
                 )),
-          ],
-        ));
+          ]),
+    );
   }
 
   /// return true si l insertion est passee
