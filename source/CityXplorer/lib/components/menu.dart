@@ -165,7 +165,7 @@ class _MenuState extends State<Menu> {
     if (photo == "") {
       return "";
     } else {
-      return "${Conf.domainServer}/img/avatar/$photo";
+      return "${Conf.domainServer}/img/avatars/$photo";
     }
   }
 }

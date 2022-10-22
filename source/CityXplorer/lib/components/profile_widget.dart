@@ -45,7 +45,7 @@ class ProfileWidget extends StatelessWidget {
 
   Widget buildImage() {
     final image =
-        NetworkImage("${Conf.domainServer}/img/avatar/${user.avatar}");
+        NetworkImage("${Conf.domainServer}/img/avatars/${user.avatar}");
 
     return ClipOval(
       child: Material(
